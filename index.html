@@ -207,7 +207,10 @@ section{padding-block:56px;border-top:1px solid var(--line)}
 .team-id{display:flex;align-items:center;gap:10px;min-width:0}
 .tcode{display:inline-grid;place-items:center;flex:none;min-width:44px;height:26px;padding:0 7px;border-radius:4px;background:var(--tc);color:#0b0a09;font-family:var(--mono);font-weight:700;font-size:.8rem;letter-spacing:.08em;box-shadow:inset 0 -2px 0 rgba(0,0,0,.25)}
 .tcode.dark{color:#fff}
-.team-name{font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:1.25rem;line-height:1;overflow-wrap:anywhere}
+.tlogo{display:block;flex:none;height:34px;width:auto;max-width:120px;object-fit:contain;background:#fff;border-radius:5px;padding:3px}
+.standings .tlogo{height:24px;max-width:70px;padding:2px}
+.reg-side .tlogo{height:22px;max-width:64px;padding:2px;display:inline-block;vertical-align:middle}
+.team-name{font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:1.25rem;line-height:1;padding-left:8px;margin-top:-2px}
 .team-car{width:54px;height:22px;flex:none;color:var(--tc)}
 .team-count{display:flex;align-items:baseline;gap:8px;padding-left:8px;font-family:var(--mono);font-weight:700;font-size:1.7rem;line-height:1;font-variant-numeric:tabular-nums}
 .team-count small{font-family:var(--display);font-weight:700;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
@@ -394,8 +397,8 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
 @media (max-width:480px){
   .flags{grid-template-columns:1fr}
   .teams{grid-template-columns:1fr 1fr}
-  .team-name{font-size:1.05rem;overflow-wrap:anywhere}
-  .team-car{display:none}
+  .team-name{font-size:1.05rem}
+  .team-car{width:40px}
 }
 @media (prefers-reduced-motion:reduce){
   .ticket,.btn,.team{transition:none}
@@ -942,17 +945,17 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
   var API_URL = "https://script.google.com/macros/s/AKfycbwzI3VCRCsb5U5CglBz10JoIbhvVKt8h3_CF9Es5HqMAV2IjYxIJyZAgTcYSvVN75KQ5A/exec";
   var MAX_SEATS = 30;
   var TEAMS = [
-    {name:"Ferrari", code:"FER", color:"#e8002d"},
-    {name:"McLaren", code:"MCL", color:"#ff8000"},
-    {name:"Mercedes", code:"MER", color:"#27f4d2"},
-    {name:"Red Bull Racing", code:"RBR", color:"#3671c6"},
-    {name:"Aston Martin", code:"AMR", color:"#229971"},
-    {name:"Alpine", code:"ALP", color:"#0093cc"},
-    {name:"Williams", code:"WIL", color:"#1868db"},
-    {name:"Haas", code:"HAA", color:"#b6babd"},
-    {name:"Racing Bulls", code:"RB", color:"#6692ff"},
-    {name:"Audi", code:"AUD", color:"#f50537"},
-    {name:"Cadillac", code:"CAD", color:"#d7c28e"}
+    {name:"Ferrari", code:"FER", color:"#e8002d", logo:"logos/ferrari.png"},
+    {name:"McLaren", code:"MCL", color:"#ff8000", logo:"logos/mclaren.png"},
+    {name:"Mercedes", code:"MER", color:"#27f4d2", logo:"logos/mercedes.png"},
+    {name:"Red Bull Racing", code:"RBR", color:"#3671c6", logo:"logos/redbull.png"},
+    {name:"Aston Martin", code:"AMR", color:"#229971", logo:"logos/astonmartin.png"},
+    {name:"Alpine", code:"ALP", color:"#0093cc", logo:"logos/alpine.png"},
+    {name:"Williams", code:"WIL", color:"#1868db", logo:"logos/williams.png"},
+    {name:"Haas", code:"HAA", color:"#b6babd", logo:"logos/haas.png"},
+    {name:"Racing Bulls", code:"RB", color:"#6692ff", logo:"logos/racingbulls.png"},
+    {name:"Audi", code:"AUD", color:"#f50537", logo:""},
+    {name:"Cadillac", code:"CAD", color:"#d7c28e", logo:"logos/cadillac.png"}
   ];
 
   var $ = function(id){ return document.getElementById(id); };
@@ -1198,6 +1201,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
   function myKey(){ var n = norm($("f-p1").value); return n ? keyOf(n) : null; }
   function isMine(e){ var k = myKey(); return (k && e.id === k) || (k && keyOf(e.pilot1) === k) || (!k && e.id === myId); }
   function myEntry(){ return entries.filter(isMine)[0]; }
+  function badge(t){ return t.logo ? '<img class="tlogo" src="' + t.logo + '" alt="' + esc(t.name) + '">' : '<b class="tcode">' + esc(t.code) + '</b>'; }
   function teamByName(n){ for (var i = 0; i < TEAMS.length; i++) if (TEAMS[i].name === n) return TEAMS[i]; return null; }
   function seatsOf(teamName, excludeMine){
     var out = [];
@@ -1218,7 +1222,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
       var full = othersSeats >= MAX_SEATS && !mine;
       var cls = "team" + (selectedTeam === t.name ? " selected" : "") + (full ? " full" : "");
       html += '<button type="button" class="' + cls + '" role="radio" aria-checked="' + (selectedTeam === t.name) + '" data-team="' + esc(t.name) + '" style="--tc:' + t.color + '"' + (full ? ' aria-disabled="true"' : '') + '>';
-      html += '<div class="team-head"><span class="team-id"><b class="tcode">' + esc(t.code) + '</b><span class="team-name">' + esc(t.name) + '</span></span><svg class="team-car" viewBox="0 0 160 60" aria-hidden="true"><use href="#f1car"/></svg></div>';
+      html += '<div class="team-head">' + badge(t) + '<svg class="team-car" viewBox="0 0 160 60" aria-hidden="true"><use href="#f1car"/></svg></div><div class="team-name">' + esc(t.name) + '</div>';
       html += '<div class="team-count">' + seats.length + '<small>' + (seats.length > 1 ? "pilotes" : "pilote") + ' · ' + seats.length + ' / ' + MAX_SEATS + '</small></div>';
       html += '<div class="team-bar" aria-hidden="true"><i style="width:' + Math.min(100, seats.length / MAX_SEATS * 100).toFixed(1) + '%"></i></div>';
       html += '<div class="members">';
@@ -1235,7 +1239,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     var ranked = TEAMS.map(function(t){ return {t:t, n:seatsOf(t.name, null).length}; }).filter(function(r){ return r.n > 0; }).sort(function(a, b){ return b.n - a.n; });
     $("standings").hidden = !ranked.length;
     $("standings-list").innerHTML = ranked.map(function(r, i){
-      return '<li style="--tc:' + r.t.color + '"><span class="pos">' + (i + 1) + '</span><span class="team-id"><b class="tcode">' + esc(r.t.code) + '</b>' + esc(r.t.name) + '</span><span class="bar"><i style="--w:' + Math.min(100, r.n / MAX_SEATS * 100).toFixed(1) + '%"></i></span><span class="n">' + r.n + '</span></li>';
+      return '<li style="--tc:' + r.t.color + '"><span class="pos">' + (i + 1) + '</span><span class="team-id">' + badge(r.t) + esc(r.t.name) + '</span><span class="bar"><i style="--w:' + Math.min(100, r.n / MAX_SEATS * 100).toFixed(1) + '%"></i></span><span class="n">' + r.n + '</span></li>';
     }).join("");
     wrap.querySelectorAll(".x[data-edit]").forEach(function(x){
       x.addEventListener("click", function(ev){
@@ -1275,7 +1279,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     $("side-who").textContent = p1 || "Votre nom";
     var t = teamByName(selectedTeam);
     var tm = $("side-team");
-    tm.innerHTML = '<i></i>' + (t ? '<b class="tcode" style="--tc:' + t.color + '">' + esc(t.code) + '</b> ' + esc(t.name) : "Aucune écurie choisie");
+    tm.innerHTML = '<i></i>' + (t ? (t.logo ? '<img class="tlogo" src="' + t.logo + '" alt="">' : '<b class="tcode" style="--tc:' + t.color + '">' + esc(t.code) + '</b>') + ' ' + esc(t.name) : "Aucune écurie choisie");
     tm.style.setProperty("--tc", t ? t.color : "");
     var mine = myEntry();
     if (mine && !selectedTeam) selectedTeam = mine.team;
