@@ -1,0 +1,15 @@
+{
+  "name": "Grand Prix de nos 30 ans",
+  "short_name": "GP 30 ans",
+  "description": "Invitation aux 30 ans de Lucie et Lilian, 20 mars 2027, Écaussinnes.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0f0d0c",
+  "theme_color": "#0f0d0c",
+  "lang": "fr",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
