@@ -7,6 +7,7 @@
 <meta name="description" content="Lucie et Lilian vous invitent au Grand Prix de leurs 30 ans : samedi 20 mars 2027, 19h30, La Palette Verte, Écaussinnes.">
 <meta name="robots" content="noindex, nofollow">
 <base href="../">
+<link rel="stylesheet" href="test/extras.css">
 <meta name="theme-color" content="#0f0d0c">
 <link rel="canonical" href="https://grandprix30ans.be/">
 <meta property="og:type" content="website">
@@ -575,10 +576,12 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
   <header class="topbar">
     <div class="brand"><svg id="crest-btn" role="img" aria-label="Écusson L&L Racing"><use href="#crest"/></svg><span>L&amp;L Racing <span>· Écurie n°30</span></span></div>
     <div class="topright">
+      <button type="button" class="sound-btn" id="sound-btn" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg><span>Son coupé</span></button>
       <a class="chip chip-link" href="test/galerie.html"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7l1.5-3h5L16 7"/><circle cx="12" cy="13.5" r="3.5"/></svg>Le jour de la course</a>
       <div class="chip">20<i>·</i>03<i>·</i>2027 <span style="color:var(--muted);margin-inline:8px">|</span> 19:30</div>
     </div>
   </header>
+  <div class="ticker" aria-label="Race control"><span class="tk-tag"><i></i>Race control</span><div class="tk-track"><div class="tk-run" id="tk-run"><span>Chargement du paddock…</span></div></div></div>
 
   <section class="hero">
     <div class="light-panel" id="light-panel" role="button" tabindex="0" aria-label="Relancer la procédure de départ">
@@ -594,6 +597,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     <p class="eyebrow">Lucie &amp; Lilian vous invitent au</p>
     <h1>Grand Prix <span>de nos</span> 30 ans</h1>
     <p>Une seule manche, un seul soir, plus de 100 pilotes sur la grille. Rendez-vous à La Palette Verte pour fêter nos deux fois 30 ans.</p>
+    <div class="stage3d" id="stage3d"><span class="s3-label">Monoplace L&amp;L · n°30 · vue 3D</span><span class="s3-hint">Glissez pour tourner · défilez pour survoler</span></div>
     <div class="btn-row hero-actions">
       <a class="btn primary" href="grandprix30ans.ics" download="grandprix30ans.ics">
         <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M12 13v5M9.5 15.5h5"/></svg>Ajouter à mon agenda
@@ -643,6 +647,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
         </div>
       </aside>
     </article>
+    <div style="text-align:center"><button type="button" class="btn gyro-btn" id="gyro-btn">Activer l'effet 3D du billet</button></div>
   </div>
 
   <div class="timing" id="timing" aria-label="Compte à rebours">
@@ -673,6 +678,78 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
       <span id="cd-note" hidden></span>
     </div>
   </div>
+
+  <section id="pilotes">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow">Écurie n°30</p>
+        <h2 class="sec-title">Les pilotes</h2>
+      </div>
+      <p class="lap">Touchez une carte <b>pour la retourner</b></p>
+    </div>
+    <div class="drivers">
+      <div class="dcard" tabindex="0" role="button" aria-label="Fiche pilote de Lucie">
+        <div class="dface dfront"><span class="dnum">30</span>
+          <div class="dhelmet"><svg viewBox="0 0 200 170" aria-hidden="true">
+            <defs><linearGradient id="hg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".35"/><stop offset=".5" stop-color="#ffffff" stop-opacity="0"/><stop offset="1" stop-color="#000000" stop-opacity=".35"/></linearGradient></defs>
+            <path d="M20 112 C20 52 60 20 105 20 C152 20 186 52 186 102 L186 132 C186 143 176 151 162 151 L52 151 C34 151 20 141 20 126 Z" fill="#efe7d8"/>
+            <path d="M44 62 C72 32 142 32 172 62 L160 76 C136 52 78 52 56 76 Z" fill="#c8102e"/>
+            <path d="M20 112 C20 52 60 20 105 20 C152 20 186 52 186 102 L186 132 C186 143 176 151 162 151 L52 151 C34 151 20 141 20 126 Z" fill="url(#hg1)"/>
+            <path d="M72 72 C104 62 152 64 184 86 L184 118 C150 112 104 108 72 112 Z" fill="#0e0f12"/>
+            <path d="M80 78 C110 70 150 72 178 88 L178 96 C150 84 112 82 80 88 Z" fill="#ffffff" opacity=".14"/>
+            <rect x="60" y="118" width="26" height="4" rx="2" fill="#15151a" opacity=".6"/><rect x="60" y="126" width="26" height="4" rx="2" fill="#15151a" opacity=".6"/>
+            <text x="38" y="104" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="800" font-size="22" fill="#c8102e">30</text>
+            <ellipse cx="103" cy="158" rx="70" ry="7" fill="rgba(0,0,0,.45)"/>
+          </svg></div>
+          <div class="dname"><p class="eyebrow">Pilote n°30 · Voiture 1</p><h3>Lucie</h3><div class="dteam">L&amp;L Racing · débuts en 1997</div></div>
+          <span class="flipme">Retourner la fiche →</span>
+        </div>
+        <div class="dface dback">
+          <h3>Palmarès · Lucie</h3>
+          <dl>
+            <dt>Débuts</dt><dd>1997, saison inaugurale</dd>
+            <dt>Saisons</dt><dd>30, sans abandon</dd>
+            <dt>Victoires</dt><dd>Toutes les soirées où elle était en grille</dd>
+            <dt>Meilleur tour</dt><dd>À venir, le 20 mars 2027</dd>
+            <dt>Pneus préférés</dt><dd>Les bulles</dd>
+            <dt>Coéquipier</dt><dd>Lilian, voiture 2</dd>
+            <dt>Objectif 2027</dt><dd>Le podium à deux</dd>
+          </dl>
+          <span class="stamp">Super licence</span>
+        </div>
+      </div>
+      <div class="dcard" tabindex="0" role="button" aria-label="Fiche pilote de Lilian">
+        <div class="dface dfront"><span class="dnum">30</span>
+          <div class="dhelmet"><svg viewBox="0 0 200 170" aria-hidden="true">
+            <defs><linearGradient id="hg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".35"/><stop offset=".5" stop-color="#ffffff" stop-opacity="0"/><stop offset="1" stop-color="#000000" stop-opacity=".35"/></linearGradient></defs>
+            <path d="M20 112 C20 52 60 20 105 20 C152 20 186 52 186 102 L186 132 C186 143 176 151 162 151 L52 151 C34 151 20 141 20 126 Z" fill="#c8102e"/>
+            <path d="M44 62 C72 32 142 32 172 62 L160 76 C136 52 78 52 56 76 Z" fill="#efe7d8"/>
+            <path d="M20 112 C20 52 60 20 105 20 C152 20 186 52 186 102 L186 132 C186 143 176 151 162 151 L52 151 C34 151 20 141 20 126 Z" fill="url(#hg2)"/>
+            <path d="M72 72 C104 62 152 64 184 86 L184 118 C150 112 104 108 72 112 Z" fill="#0e0f12"/>
+            <path d="M80 78 C110 70 150 72 178 88 L178 96 C150 84 112 82 80 88 Z" fill="#ffffff" opacity=".14"/>
+            <rect x="60" y="118" width="26" height="4" rx="2" fill="#15151a" opacity=".6"/><rect x="60" y="126" width="26" height="4" rx="2" fill="#15151a" opacity=".6"/>
+            <text x="38" y="104" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="800" font-size="22" fill="#efe7d8">30</text>
+            <ellipse cx="103" cy="158" rx="70" ry="7" fill="rgba(0,0,0,.45)"/>
+          </svg></div>
+          <div class="dname"><p class="eyebrow">Pilote n°30 · Voiture 2</p><h3>Lilian</h3><div class="dteam">L&amp;L Racing · débuts en 1997</div></div>
+          <span class="flipme">Retourner la fiche →</span>
+        </div>
+        <div class="dface dback">
+          <h3>Palmarès · Lilian</h3>
+          <dl>
+            <dt>Débuts</dt><dd>1997, saison inaugurale</dd>
+            <dt>Saisons</dt><dd>30, sans abandon</dd>
+            <dt>Arrêts aux stands</dt><dd>Stratégiques, de préférence au bar</dd>
+            <dt>Meilleur tour</dt><dd>À venir, le 20 mars 2027</dd>
+            <dt>Pneus préférés</dt><dd>Tendres</dd>
+            <dt>Coéquipière</dt><dd>Lucie, voiture 1</dd>
+            <dt>Objectif 2027</dt><dd>Le podium à deux</dd>
+          </dl>
+          <span class="stamp">Super licence</span>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <section id="programme">
     <div class="sec-head">
@@ -965,6 +1042,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
   <span class="mark" style="left:86%">Circuit</span>
   <span class="mark" style="left:96%">Photos</span>
   <span class="speed" id="speed">Vitesse <b>0</b> km/h</span>
+  <span class="drs" id="drs">DRS activé</span>
   <span class="road"></span>
   <span class="finish"></span>
   <svg class="car" id="scrollcar" viewBox="0 0 160 60"><use href="#f1car"/></svg>
@@ -1561,5 +1639,8 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
   if (!API_URL) setPitEntries(pitDemoLoad());
 })();
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+<script src="test/gp3d.js" defer></script>
+<script src="test/extras.js" defer></script>
 </body>
 </html>

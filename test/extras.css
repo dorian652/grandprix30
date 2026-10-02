@@ -1,0 +1,74 @@
+/* Grand Prix de nos 30 ans : extras de la version rêve */
+
+/* Scène 3D */
+.stage3d{position:relative;width:min(100%,1100px);margin:26px auto 0;height:clamp(260px,46vw,480px);border-radius:16px;overflow:hidden;background:radial-gradient(ellipse at 50% 70%,rgba(200,16,46,.18),transparent 60%),linear-gradient(180deg,#0b0a09,#15110e);border:1px solid var(--line);box-shadow:0 40px 90px -40px rgba(0,0,0,.9)}
+.stage3d canvas{display:block;width:100%!important;height:100%!important;touch-action:pan-y}
+.stage3d .s3-label{position:absolute;left:14px;top:12px;font-family:var(--mono);font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);pointer-events:none}
+.stage3d .s3-hint{position:absolute;right:14px;bottom:12px;font-family:var(--mono);font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);pointer-events:none;opacity:0;transition:opacity .6s}
+.stage3d.ready .s3-hint{opacity:1}
+.stage3d.no3d{display:none}
+.stage3d::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,transparent 70%,rgba(15,13,12,.9));mix-blend-mode:multiply}
+
+/* Bandeau Race control défilant */
+.ticker{position:relative;overflow:hidden;border-bottom:1px solid var(--line);background:#0a0908;font-family:var(--mono);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);height:34px;display:flex;align-items:center}
+.ticker .tk-tag{flex:none;padding:0 14px;height:100%;display:flex;align-items:center;gap:8px;background:var(--red);color:#fff;font-weight:700;z-index:2}
+.ticker .tk-tag i{width:7px;height:7px;border-radius:50%;background:#fff;animation:blink 1.2s infinite}
+.ticker .tk-track{flex:1;overflow:hidden;position:relative;height:100%;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.ticker .tk-run{position:absolute;white-space:nowrap;top:0;height:100%;display:flex;align-items:center;gap:40px;padding-left:100%;animation:tkrun 42s linear infinite;will-change:transform}
+.ticker .tk-run b{color:var(--fg);font-weight:700}
+.ticker .tk-run span::before{content:"◆";color:var(--red);margin-right:14px;font-size:.6rem}
+@keyframes tkrun{to{transform:translateX(-100%)}}
+.ticker:hover .tk-run{animation-play-state:paused}
+
+/* Billet holographique */
+.ticket-stage{perspective:1400px}
+.ticket.tilt{transition:transform .08s linear,box-shadow .3s;transform-style:preserve-3d;will-change:transform}
+.ticket .holo{position:absolute;inset:0;border-radius:14px;pointer-events:none;z-index:4;mix-blend-mode:screen;opacity:.0;transition:opacity .3s;
+  background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.22) 45%,rgba(255,170,120,.18) 50%,rgba(120,200,255,.16) 55%,transparent 70%);background-size:220% 220%;background-position:var(--hx,50%) var(--hy,50%)}
+.ticket.tilt .holo{opacity:1}
+.gyro-btn{margin:10px auto 0;display:none}
+.gyro-btn.show{display:inline-flex}
+
+/* Fiches pilotes (cartes 3D) */
+.drivers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;margin-top:28px;perspective:1600px}
+.dcard{position:relative;aspect-ratio:3/4;max-height:520px;cursor:pointer;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.dcard.flipped{transform:rotateY(180deg)}
+.dface{position:absolute;inset:0;border-radius:16px;border:1px solid var(--line);overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column}
+.dfront{background:radial-gradient(ellipse at 50% 20%,rgba(200,16,46,.35),transparent 55%),linear-gradient(180deg,#1b1613,#0e0c0a)}
+.dfront .dnum{position:absolute;right:16px;top:8px;font-family:var(--mono);font-weight:700;font-size:clamp(4rem,12vw,7rem);line-height:1;color:rgba(239,231,216,.08)}
+.dfront .dhelmet{flex:1;display:grid;place-items:center;padding:26px 20px 0}
+.dfront .dhelmet svg{width:min(70%,260px);height:auto;filter:drop-shadow(0 20px 30px rgba(0,0,0,.6))}
+.dfront .dname{padding:0 22px 22px}
+.dfront .dname .eyebrow{color:var(--red)}
+.dfront .dname h3{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(2.2rem,6vw,3.4rem);line-height:.95;letter-spacing:.02em}
+.dfront .dname .dteam{font-family:var(--mono);font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:8px}
+.dfront .flipme{position:absolute;left:22px;bottom:8px;font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.dback{background:var(--paper);color:var(--ink);transform:rotateY(180deg);padding:22px}
+.dback h3{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:1.6rem;letter-spacing:.04em;border-bottom:2px solid var(--ink);padding-bottom:8px}
+.dback dl{margin:14px 0 0;display:grid;grid-template-columns:auto 1fr;gap:9px 14px;font-size:.95rem}
+.dback dt{font-family:var(--display);font-weight:700;letter-spacing:.18em;text-transform:uppercase;font-size:.7rem;color:var(--ink-soft);padding-top:3px}
+.dback dd{margin:0;font-weight:600}
+.dback .stamp{margin-top:auto;align-self:flex-end;font-family:var(--display);font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--red);border:3px solid var(--red);padding:6px 10px;transform:rotate(-8deg);opacity:.85}
+
+/* Fumée de pneus */
+.smoke{position:fixed;z-index:49;width:14px;height:14px;border-radius:50%;background:rgba(200,195,185,.55);pointer-events:none;animation:smoke .9s ease-out forwards}
+@keyframes smoke{to{transform:translate(-40px,-26px) scale(3.2);opacity:0}}
+.pitwall .drs{position:absolute;right:22px;bottom:calc(40px + env(safe-area-inset-bottom,0px));font-family:var(--mono);font-size:.64rem;letter-spacing:.2em;color:var(--green);text-transform:uppercase;opacity:0;transition:opacity .2s}
+.pitwall .drs.on{opacity:1}
+.pitwall .speed.hide{opacity:0}
+
+/* Interrupteur son */
+.sound-btn{display:inline-flex;align-items:center;gap:8px;cursor:pointer;background:none;border:1px solid var(--line);border-radius:999px;padding:6px 12px;color:var(--fg);font-family:var(--display);font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:.85rem}
+.sound-btn.on{border-color:var(--green);color:#fff}
+.sound-btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* Apparitions au défilement (transformation seule : le contenu reste lisible) */
+.rv{transform:translateY(22px);transition:transform .7s cubic-bezier(.2,.8,.2,1)}
+.rv.in{transform:none}
+
+/* Circuit en relief */
+.track-card.tilt{transition:transform .12s linear;transform-style:preserve-3d;will-change:transform}
+.circuit{perspective:1200px}
+
+@media (max-width:760px){.drivers{grid-template-columns:1fr}.dcard{max-height:none}}
+@media (prefers-reduced-motion:reduce){.ticker .tk-run{animation:none;padding-left:0}.rv{transform:none;transition:none}.dcard{transition:none}}
