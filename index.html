@@ -571,7 +571,7 @@ footer .tag b{color:var(--fg)}
       </div>
       <p class="lap">Écuries <b>11</b> · Pilotes <b>30</b> max par écurie</p>
     </div>
-    <p class="lead">Choisissez l'écurie pour laquelle vous roulerez le 20 mars, seul ou en duo. Chacun fait ce qu'il veut : rejoignez vos amis, ou allez défier l'écurie d'en face. Le soir du Grand Prix, vous saurez qui sont vos coéquipiers.</p>
+    <p class="lead">Choisissez l'écurie pour laquelle vous roulerez le 20 mars. Chacun fait ce qu'il veut : rejoignez vos amis, ou allez défier l'écurie d'en face. Le soir du Grand Prix, vous saurez qui sont vos coéquipiers.</p>
     <div class="grid-summary">
       <span class="pill">Pilotes engagés : <b id="n-pilots">0</b></span>
       <span class="pill">Écuries représentées : <b id="n-teams">0</b> / 11</span>
@@ -591,15 +591,10 @@ footer .tag b{color:var(--fg)}
 
     <div class="reg">
       <form id="reg-form" novalidate>
-        <div class="two">
-          <div class="field">
-            <label for="f-p1">Pilote 1</label>
-            <input type="text" id="f-p1" name="pilot1" placeholder="Prénom" autocomplete="given-name" maxlength="40">
-          </div>
-          <div class="field">
-            <label for="f-p2">Pilote 2 <small>(facultatif)</small></label>
-            <input type="text" id="f-p2" name="pilot2" placeholder="Prénom de votre coéquipier(ère)" maxlength="40">
-          </div>
+        <div class="field">
+          <label for="f-p1">Votre prénom</label>
+          <input type="text" id="f-p1" name="pilot1" placeholder="Prénom (et nom si vous voulez)" autocomplete="given-name" maxlength="40">
+          <input type="hidden" id="f-p2" value="">
         </div>
         <div class="btn-row">
           <button class="btn primary" type="submit" id="submit-btn">
@@ -617,7 +612,7 @@ footer .tag b{color:var(--fg)}
           <div class="tm" id="side-team"><i></i>Aucune écurie choisie</div>
           <ul>
             <li>Cliquez sur une écurie dans la grille</li>
-            <li>Indiquez votre prénom, et celui de votre duo</li>
+            <li>Indiquez votre prénom</li>
             <li>Validez : votre nom rejoint l'écurie</li>
           </ul>
         </div>
@@ -1114,8 +1109,8 @@ footer .tag b{color:var(--fg)}
   }
   function setStatus(msg, cls){ var s = $("reg-status"); s.textContent = msg; s.className = "status" + (cls ? " " + cls : ""); }
   function renderSide(){
-    var p1 = $("f-p1").value.trim(), p2 = $("f-p2").value.trim();
-    $("side-who").textContent = p1 ? (p2 ? p1 + " & " + p2 : p1) : "Votre nom";
+    var p1 = $("f-p1").value.trim(), p2 = "";
+    $("side-who").textContent = p1 || "Votre nom";
     var t = teamByName(selectedTeam);
     var tm = $("side-team");
     tm.innerHTML = '<i></i>' + (t ? esc(t.name) : "Aucune écurie choisie");
@@ -1128,7 +1123,6 @@ footer .tag b{color:var(--fg)}
     var mine = entries.filter(function(e){ return e.id === myId; })[0] || saved;
     if (mine) {
       if (!$("f-p1").value) $("f-p1").value = mine.pilot1 || "";
-      if (!$("f-p2").value) $("f-p2").value = mine.pilot2 || "";
       if (!selectedTeam) selectedTeam = mine.team;
     }
   }
@@ -1154,9 +1148,9 @@ footer .tag b{color:var(--fg)}
   $("reg-form").addEventListener("input", renderSide);
   $("reg-form").addEventListener("submit", function(e){
     e.preventDefault();
-    var p1 = $("f-p1").value.trim(), p2 = $("f-p2").value.trim(), note = "";
+    var p1 = $("f-p1").value.trim(), p2 = "", note = "";
     if (!selectedTeam) { setStatus("Choisissez d'abord une écurie dans la grille.", "err"); return; }
-    if (!p1) { setStatus("Indiquez au moins le prénom du pilote 1.", "err"); $("f-p1").focus(); return; }
+    if (!p1) { setStatus("Indiquez votre prénom.", "err"); $("f-p1").focus(); return; }
     var others = seatsOf(selectedTeam, myId).length, need = p2 ? 2 : 1;
     if (others + need > MAX_SEATS) { setStatus(need === 2 ? "Il ne reste qu'une place dans cette écurie : inscrivez-vous séparément ou choisissez-en une autre." : "Cette écurie affiche complet.", "err"); return; }
     var btn = $("submit-btn"); btn.disabled = true; setStatus("Transmission au stand…");
@@ -1167,7 +1161,7 @@ footer .tag b{color:var(--fg)}
         if (res.entries) entries = res.entries;
         try { localStorage.setItem("gp30-entry", JSON.stringify(payload)); } catch(err){}
         renderTeams(); renderSide();
-        setStatus("Engagement confirmé : " + (p2 ? p1 + " et " + p2 + " roulent" : p1 + " roule") + " pour " + selectedTeam + ".", "ok");
+        setStatus("Engagement confirmé : " + p1 + " roule pour " + selectedTeam + ".", "ok");
       } else if (res && res.error === "full") {
         setStatus("Cette écurie vient d'afficher complet. Choisissez-en une autre.", "err"); loadEntries();
       } else {
@@ -1182,7 +1176,7 @@ footer .tag b{color:var(--fg)}
       if (res && res.ok) {
         if (res.entries) entries = res.entries;
         try { localStorage.removeItem("gp30-entry"); } catch(err){}
-        saved = null; selectedTeam = null; $("f-p1").value = ""; $("f-p2").value = "";
+        saved = null; selectedTeam = null; $("f-p1").value = "";
         renderTeams(); renderSide(); setStatus("Vous avez quitté la grille. Vous pouvez rejoindre une écurie quand vous voulez.", "ok");
       } else setStatus("Le retrait n'a pas abouti. Réessayez.", "err");
     }).catch(function(){ btn.disabled = false; setStatus("Le retrait n'a pas abouti. Réessayez.", "err"); });

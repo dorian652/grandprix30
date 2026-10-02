@@ -12,7 +12,7 @@ Publié avec GitHub Pages sur https://grandprix30ans.be/ (adresse de secours : h
 
 ## Activer les inscriptions par écurie
 
-Les invités (plus de 100) choisissent l'écurie pour laquelle ils roulent, seuls ou en duo. Pour que ces choix soient enregistrés et visibles par tous, le site a besoin d'une feuille Google Sheets reliée par un petit script.
+Les invités (plus de 100) choisissent chacun l'écurie pour laquelle ils roulent. Pour que ces choix soient enregistrés et visibles par tous, le site a besoin d'une feuille Google Sheets reliée par un petit script.
 
 1. Créer une feuille Google Sheets vide.
 2. Extensions > Apps Script, coller le contenu de `apps-script/Code.gs`, enregistrer.
@@ -24,7 +24,7 @@ Tant que `API_URL` est vide, la grille et le classement du pit stop fonctionnent
 ## Règles de la grille
 
 - 11 écuries, 30 pilotes maximum par écurie.
-- Une inscription couvre une personne ou un duo.
+- Une inscription = un pilote ; chacun s'inscrit lui-même.
 - Chaque visiteur peut modifier ou retirer son propre engagement depuis le même navigateur.
 - Mode organisateur : ajouter `#admin` à l'adresse du site, saisir le code `ADMIN_PIN` défini dans le script ; une croix apparaît sur chaque inscription et chaque chrono pour les retirer.
 - La feuille Google Sheets reste la référence : supprimer une ligne retire l'engagement du site.
