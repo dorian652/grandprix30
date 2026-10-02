@@ -20,7 +20,7 @@
  * On peut supprimer une ligne à la main pour retirer quelqu'un.
  */
 
-var ADMIN_PIN = '2027';   // code organisateur : à changer avant de déployer
+var ADMIN_PIN = 'A-REMPLACER';   // code organisateur : à définir avant de déployer (chiffres ou lettres, entre apostrophes)
 var SHEET_NAME = 'Engagements';
 var PIT_SHEET = 'PitStop';
 var MAX_SEATS = 30;
