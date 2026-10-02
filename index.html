@@ -290,6 +290,8 @@ footer .tag b{color:var(--fg)}
 .pitwall .car{position:absolute;left:0;bottom:calc(11px + env(safe-area-inset-bottom,0px));width:64px;height:24px;color:var(--red);will-change:transform;filter:drop-shadow(0 2px 2px rgba(0,0,0,.6))}
 .pitwall .car .flame{opacity:0;transition:opacity .15s}
 .pitwall .car.fast .flame{opacity:1}
+.pitwall .car.boost{animation:boost .9s ease-out}
+@keyframes boost{0%{transform:translateX(0)}40%{transform:translateX(90px)}100%{transform:translateX(0)}}
 .pitwall .speed{position:absolute;right:22px;bottom:calc(40px + env(safe-area-inset-bottom,0px));font-family:var(--mono);font-size:.64rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;font-variant-numeric:tabular-nums}
 .pitwall .speed b{color:var(--fg)}
 
@@ -324,6 +326,7 @@ footer .tag b{color:var(--fg)}
 @media (prefers-reduced-motion:reduce){
   .ticket,.btn,.team{transition:none}
   .wave i,.timing-head .live i{animation:none}
+  .pitwall .car.boost{animation:none}
   html{scroll-behavior:auto}
 }
 </style>
@@ -421,7 +424,6 @@ footer .tag b{color:var(--fg)}
         </div>
         <svg class="barcode" id="barcode" viewBox="0 0 200 44" preserveAspectRatio="none" aria-hidden="true"></svg>
         <div class="s-code">LL · 30 · 2027 · VIP</div>
-        <div class="s-tag">Un tour de plus<br>autour du bonheur</div>
       </aside>
     </article>
   </div>
@@ -566,7 +568,7 @@ footer .tag b{color:var(--fg)}
     </div>
     <div class="circuit">
       <div class="track-card">
-        <span class="tn">Tracé officiel · sens antihoraire</span>
+        <span class="tn">Tracé officiel · sens horaire</span>
         <svg viewBox="0 0 640 360" aria-label="Tracé imaginaire du circuit de la Palette Verte">
           <defs>
             <path id="trk" d="M 80 280 L 420 280 C 500 280 510 200 450 190 C 400 182 380 150 410 120 C 440 90 520 100 560 80 C 600 60 590 30 540 36 C 470 46 420 40 360 60 C 300 80 280 60 220 70 C 150 82 110 70 60 110 C 20 150 30 230 80 280 Z"/>
@@ -650,7 +652,7 @@ footer .tag b{color:var(--fg)}
   </section>
 
   <footer>
-    <p class="tag"><b>Un tour de plus</b> autour du bonheur</p>
+    <p class="tag"><b>Grand Prix</b> de nos 30 ans · 20 · 03 · 2027</p>
     <span class="checker" aria-hidden="true"></span>
     <p class="tag">L&amp;L Racing · Saison 2027</p>
   </footer>
@@ -689,7 +691,6 @@ footer .tag b{color:var(--fg)}
     {name:"Cadillac", color:"#d7c28e"}
   ];
 
-  var boostStart = -1e9;
   var $ = function(id){ return document.getElementById(id); };
   var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
@@ -717,7 +718,7 @@ footer .tag b{color:var(--fg)}
       setAll("green");
       label.textContent = "C'est parti !"; label.classList.add("go");
       if (withSound) engineRev();
-      boostStart = performance.now();
+      var car = $("scrollcar"); car.classList.remove("boost"); void car.offsetWidth; car.classList.add("boost");
     }, hold));
     seqTimer.push(setTimeout(function(){ setAll(""); label.textContent = "Rejouer la procédure"; label.classList.remove("go"); running = false; }, hold + 2600));
   }
@@ -817,9 +818,7 @@ footer .tag b{color:var(--fg)}
   }
   function animateCar(){
     curX += (goalX - curX) * (reduced ? 1 : 0.18);
-    var bp = (performance.now() - boostStart) / 900, boost = (bp > 0 && bp < 1 && !reduced) ? Math.sin(bp * Math.PI) * 90 : 0;
-    if (boost > 0) car.classList.add("fast"); 
-    car.style.transform = "translateX(" + (curX + boost).toFixed(1) + "px)";
+    car.style.transform = "translateX(" + curX.toFixed(1) + "px)";
     requestAnimationFrame(animateCar);
   }
   function onScroll(){
