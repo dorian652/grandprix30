@@ -204,7 +204,10 @@ section{padding-block:56px;border-top:1px solid var(--line)}
 .team.full{cursor:not-allowed;opacity:.72}
 .team.full:hover{transform:none}
 .team-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-left:8px}
-.team-name{font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:1.25rem;line-height:1}
+.team-id{display:flex;align-items:center;gap:10px;min-width:0}
+.tcode{display:inline-grid;place-items:center;flex:none;min-width:44px;height:26px;padding:0 7px;border-radius:4px;background:var(--tc);color:#0b0a09;font-family:var(--mono);font-weight:700;font-size:.8rem;letter-spacing:.08em;box-shadow:inset 0 -2px 0 rgba(0,0,0,.25)}
+.tcode.dark{color:#fff}
+.team-name{font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:1.25rem;line-height:1;overflow-wrap:anywhere}
 .team-car{width:54px;height:22px;flex:none;color:var(--tc)}
 .team-count{display:flex;align-items:baseline;gap:8px;padding-left:8px;font-family:var(--mono);font-weight:700;font-size:1.7rem;line-height:1;font-variant-numeric:tabular-nums}
 .team-count small{font-family:var(--display);font-weight:700;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
@@ -225,7 +228,7 @@ section{padding-block:56px;border-top:1px solid var(--line)}
 .member .x:hover,.leader li .x:hover{color:#fff}
 .standings{margin-top:22px;background:#0a0908;border:1px solid var(--line);border-radius:12px;padding:16px 18px}
 .standings ol{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:7px}
-.standings li{display:grid;grid-template-columns:28px 150px minmax(0,1fr) 36px;gap:10px;align-items:center;font-family:var(--mono);font-size:.82rem;letter-spacing:.06em;text-transform:uppercase}
+.standings li{display:grid;grid-template-columns:28px 190px minmax(0,1fr) 36px;gap:10px;align-items:center;font-family:var(--mono);font-size:.82rem;letter-spacing:.06em;text-transform:uppercase}
 .standings li .pos{color:var(--muted)}
 .standings li .bar{height:10px;border-radius:5px;background:#1e1a17;overflow:hidden}
 .standings li .bar i{display:block;height:100%;width:var(--w,0%);background:var(--tc);transition:width .6s}
@@ -368,7 +371,8 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
   .flags{grid-template-columns:repeat(2,minmax(0,1fr))}
   .circuit,.reg,.pit-wrap{grid-template-columns:1fr}
   .pit-form{grid-template-columns:1fr}
-  .standings li{grid-template-columns:24px 96px minmax(0,1fr) 30px;font-size:.72rem}
+  .standings li{grid-template-columns:24px 120px minmax(0,1fr) 30px;font-size:.72rem}
+  .standings .team-name{display:none}
 }
 @media (max-width:760px){
   .ticket{grid-template-columns:1fr;transform:none}
@@ -390,8 +394,8 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
 @media (max-width:480px){
   .flags{grid-template-columns:1fr}
   .teams{grid-template-columns:1fr 1fr}
-  .team-name{font-size:1.05rem}
-  .team-car{width:44px}
+  .team-name{font-size:1.05rem;overflow-wrap:anywhere}
+  .team-car{display:none}
 }
 @media (prefers-reduced-motion:reduce){
   .ticket,.btn,.team{transition:none}
@@ -938,17 +942,17 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
   var API_URL = "https://script.google.com/macros/s/AKfycbwzI3VCRCsb5U5CglBz10JoIbhvVKt8h3_CF9Es5HqMAV2IjYxIJyZAgTcYSvVN75KQ5A/exec";
   var MAX_SEATS = 30;
   var TEAMS = [
-    {name:"Ferrari", color:"#e8002d"},
-    {name:"McLaren", color:"#ff8000"},
-    {name:"Mercedes", color:"#27f4d2"},
-    {name:"Red Bull Racing", color:"#3671c6"},
-    {name:"Aston Martin", color:"#229971"},
-    {name:"Alpine", color:"#0093cc"},
-    {name:"Williams", color:"#1868db"},
-    {name:"Haas", color:"#b6babd"},
-    {name:"Racing Bulls", color:"#6692ff"},
-    {name:"Audi", color:"#f50537"},
-    {name:"Cadillac", color:"#d7c28e"}
+    {name:"Ferrari", code:"FER", color:"#e8002d"},
+    {name:"McLaren", code:"MCL", color:"#ff8000"},
+    {name:"Mercedes", code:"MER", color:"#27f4d2"},
+    {name:"Red Bull Racing", code:"RBR", color:"#3671c6"},
+    {name:"Aston Martin", code:"AMR", color:"#229971"},
+    {name:"Alpine", code:"ALP", color:"#0093cc"},
+    {name:"Williams", code:"WIL", color:"#1868db"},
+    {name:"Haas", code:"HAA", color:"#b6babd"},
+    {name:"Racing Bulls", code:"RB", color:"#6692ff"},
+    {name:"Audi", code:"AUD", color:"#f50537"},
+    {name:"Cadillac", code:"CAD", color:"#d7c28e"}
   ];
 
   var $ = function(id){ return document.getElementById(id); };
@@ -1214,7 +1218,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
       var full = othersSeats >= MAX_SEATS && !mine;
       var cls = "team" + (selectedTeam === t.name ? " selected" : "") + (full ? " full" : "");
       html += '<button type="button" class="' + cls + '" role="radio" aria-checked="' + (selectedTeam === t.name) + '" data-team="' + esc(t.name) + '" style="--tc:' + t.color + '"' + (full ? ' aria-disabled="true"' : '') + '>';
-      html += '<div class="team-head"><span class="team-name">' + esc(t.name) + '</span><svg class="team-car" viewBox="0 0 160 60" aria-hidden="true"><use href="#f1car"/></svg></div>';
+      html += '<div class="team-head"><span class="team-id"><b class="tcode">' + esc(t.code) + '</b><span class="team-name">' + esc(t.name) + '</span></span><svg class="team-car" viewBox="0 0 160 60" aria-hidden="true"><use href="#f1car"/></svg></div>';
       html += '<div class="team-count">' + seats.length + '<small>' + (seats.length > 1 ? "pilotes" : "pilote") + ' · ' + seats.length + ' / ' + MAX_SEATS + '</small></div>';
       html += '<div class="team-bar" aria-hidden="true"><i style="width:' + Math.min(100, seats.length / MAX_SEATS * 100).toFixed(1) + '%"></i></div>';
       html += '<div class="members">';
@@ -1231,7 +1235,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     var ranked = TEAMS.map(function(t){ return {t:t, n:seatsOf(t.name, null).length}; }).filter(function(r){ return r.n > 0; }).sort(function(a, b){ return b.n - a.n; });
     $("standings").hidden = !ranked.length;
     $("standings-list").innerHTML = ranked.map(function(r, i){
-      return '<li style="--tc:' + r.t.color + '"><span class="pos">' + (i + 1) + '</span><span>' + esc(r.t.name) + '</span><span class="bar"><i style="--w:' + Math.min(100, r.n / MAX_SEATS * 100).toFixed(1) + '%"></i></span><span class="n">' + r.n + '</span></li>';
+      return '<li style="--tc:' + r.t.color + '"><span class="pos">' + (i + 1) + '</span><span class="team-id"><b class="tcode">' + esc(r.t.code) + '</b>' + esc(r.t.name) + '</span><span class="bar"><i style="--w:' + Math.min(100, r.n / MAX_SEATS * 100).toFixed(1) + '%"></i></span><span class="n">' + r.n + '</span></li>';
     }).join("");
     wrap.querySelectorAll(".x[data-edit]").forEach(function(x){
       x.addEventListener("click", function(ev){
@@ -1271,7 +1275,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     $("side-who").textContent = p1 || "Votre nom";
     var t = teamByName(selectedTeam);
     var tm = $("side-team");
-    tm.innerHTML = '<i></i>' + (t ? esc(t.name) : "Aucune écurie choisie");
+    tm.innerHTML = '<i></i>' + (t ? '<b class="tcode" style="--tc:' + t.color + '">' + esc(t.code) + '</b> ' + esc(t.name) : "Aucune écurie choisie");
     tm.style.setProperty("--tc", t ? t.color : "");
     var mine = myEntry();
     if (mine && !selectedTeam) selectedTeam = mine.team;
