@@ -12,7 +12,7 @@
 <meta property="og:locale" content="fr_BE">
 <meta property="og:site_name" content="L&amp;L Racing">
 <meta property="og:title" content="Grand Prix de nos 30 ans">
-<meta property="og:description" content="Lucie et Lilian vous invitent : samedi 20 mars 2027, 19h30, La Palette Verte, Écaussinnes. Accès VIP.">
+<meta property="og:description" content="Lucie et Lilian vous invitent : samedi 20 mars 2027, 19h30, La Palette Verte, Écaussinnes. Choisissez votre écurie.">
 <meta property="og:url" content="https://dorian652.github.io/grandprix30/">
 <meta property="og:image" content="https://dorian652.github.io/grandprix30/og.jpg">
 <meta property="og:image:width" content="1200">
@@ -29,12 +29,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="GP 30 ans">
-<style>html{background:#0f0d0c}img{max-width:100%}[hidden]{display:none!important}</style>
-</head>
-<body>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;800&family=Barlow:wght@400;500;600&family=Allura&display=swap">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;800&family=Barlow:wght@400;500;600&family=Chakra+Petch:wght@600;700&family=Allura&display=swap">
 <style>
-/* Layout: a night paddock. One cream ticket sits on carbon black; everything below it is timing-tower typography in condensed caps, with racing red used once per section. */
+/* Layout : un paddock de nuit. Un billet crème sur carbone, puis des blocs façon écran de chronométrage. Le rouge course est utilisé une fois par section ; les couleurs de secteur (violet, vert, jaune) sont réservées au chrono. */
 :root{
   --bg:#0f0d0c;
   --bg-2:#181513;
@@ -43,60 +42,75 @@
   --muted:#a1978a;
   --line:rgba(239,231,216,.14);
   --red:#c8102e;
-  --red-deep:#8e0b20;
   --paper:#ece3cf;
   --paper-2:#dccfb4;
   --ink:#151210;
   --ink-soft:#4a433b;
+  --purple:#b14bf4;
+  --green:#2fd27a;
+  --yellow:#f5c518;
   --display:"Barlow Condensed","Arial Narrow",Impact,sans-serif;
   --body:"Barlow","Helvetica Neue",Arial,sans-serif;
   --script:"Allura","Brush Script MT",cursive;
+  --mono:"Chakra Petch","Barlow Condensed",monospace;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
+html{background:var(--bg);scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+img{max-width:100%}
+[hidden]{display:none!important}
 body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:
-    radial-gradient(1200px 600px at 50% -10%,rgba(200,16,46,.14),transparent 60%),
-    repeating-linear-gradient(0deg,rgba(255,255,255,.012) 0 1px,transparent 1px 3px);
-}
-.wrap{position:relative;z-index:1;max-width:1080px;margin-inline:auto;padding-inline:clamp(16px,4vw,40px);padding-block:0 72px}
+  background:radial-gradient(1200px 600px at 50% -10%,rgba(200,16,46,.14),transparent 60%),
+             repeating-linear-gradient(0deg,rgba(255,255,255,.012) 0 1px,transparent 1px 3px)}
+.wrap{position:relative;z-index:1;max-width:1080px;margin-inline:auto;padding-inline:clamp(16px,4vw,40px);padding-block:0 110px}
 a{color:inherit}
 h1,h2,h3{margin:0;text-wrap:balance}
-.eyebrow{font-family:var(--display);font-weight:700;font-size:.82rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
-.eyebrow b{color:var(--red);font-weight:700}
+.eyebrow{font-family:var(--display);font-weight:700;font-size:.82rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin:0}
 .sec-title{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(2rem,5vw,3rem);letter-spacing:.02em;line-height:.95}
 section{padding-block:56px;border-top:1px solid var(--line)}
-section .lead{max-width:62ch;color:var(--muted);margin:14px 0 0}
+.lead{max-width:62ch;color:var(--muted);margin:14px 0 0}
 .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
-.lap{font-family:var(--display);font-weight:700;font-size:.9rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;font-variant-numeric:tabular-nums}
+.lap{font-family:var(--display);font-weight:700;font-size:.9rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;font-variant-numeric:tabular-nums;margin:0}
 .lap b{color:var(--fg)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-family:var(--display);font-weight:700;letter-spacing:.16em;text-transform:uppercase;font-size:.95rem;padding:13px 20px;border-radius:8px;border:1px solid var(--line);background:var(--bg-3);color:var(--fg);text-decoration:none;cursor:pointer;transition:transform .15s,background .15s}
+.btn:hover{transform:translateY(-1px);background:#2b2622}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn:focus-visible,input:focus-visible,textarea:focus-visible,.light-panel:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.btn.primary{background:var(--red);border-color:var(--red);color:#fff}
+.btn.primary:hover{background:#d8183a}
+.btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.card{background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:22px}
+.status{font-size:.95rem;color:var(--muted);min-height:1.4em;margin:0}
 
-/* Top bar */
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:18px;border-bottom:1px solid var(--line)}
+/* Barre du haut */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:12px;font-family:var(--display);font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:.9rem}
 .brand svg{width:34px;height:36px}
+.brand span span{color:var(--muted)}
 .chip{font-family:var(--display);font-weight:700;letter-spacing:.14em;font-size:.85rem;text-transform:uppercase;border:1px solid var(--line);padding:6px 12px;border-radius:999px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .chip i{color:var(--red);font-style:normal;margin-inline:6px}
 
-/* Hero */
-.hero{padding-block:44px 8px;text-align:center}
-.lights{display:flex;justify-content:center;gap:10px;margin:0 auto 26px;width:max-content;padding:10px 14px;border-radius:12px;background:var(--bg-2);border:1px solid var(--line)}
-.light{width:22px;height:22px;border-radius:50%;background:#2a2320;box-shadow:inset 0 2px 4px rgba(0,0,0,.6);transition:background .15s,box-shadow .15s}
-.light.on{background:#ff2a3c;box-shadow:0 0 14px rgba(255,42,60,.75),inset 0 1px 2px rgba(255,255,255,.4)}
+/* Procédure de départ */
+.hero{padding-block:44px 8px;text-align:center;border-top:0}
+.light-panel{display:inline-flex;flex-direction:column;align-items:center;gap:10px;margin:0 auto 22px;padding:14px 18px 12px;border-radius:14px;background:var(--bg-2);border:1px solid var(--line);cursor:pointer;user-select:none}
+.lights{display:flex;gap:12px}
+.lcol{display:flex;flex-direction:column;gap:8px;padding:8px 6px;background:#0a0908;border-radius:8px;border:1px solid rgba(255,255,255,.06)}
+.light{width:22px;height:22px;border-radius:50%;background:#241e1b;box-shadow:inset 0 2px 4px rgba(0,0,0,.7);transition:background .12s,box-shadow .12s}
+.light.red{background:#ff2a3c;box-shadow:0 0 14px rgba(255,42,60,.8),inset 0 1px 2px rgba(255,255,255,.4)}
+.light.green{background:#38f27a;box-shadow:0 0 16px rgba(56,242,122,.85),inset 0 1px 2px rgba(255,255,255,.4)}
+.light-label{font-family:var(--mono);font-weight:700;letter-spacing:.3em;text-transform:uppercase;font-size:.72rem;color:var(--muted);min-height:1.2em}
+.light-label.go{color:#38f27a}
 .hero .eyebrow{margin-bottom:10px}
 .hero h1{font-family:var(--display);font-weight:800;text-transform:uppercase;line-height:.9;font-size:clamp(2.6rem,8vw,5.4rem);letter-spacing:.01em}
 .hero h1 span{display:block;font-family:var(--script);text-transform:none;font-weight:400;font-size:.52em;letter-spacing:0;color:var(--red);line-height:1.1;margin-block:6px 2px}
 .hero p{color:var(--muted);max-width:60ch;margin:16px auto 0}
 
-/* Ticket */
+/* Billet */
 .ticket-stage{padding-block:34px 10px;perspective:1600px}
 .ticket{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 230px;background:var(--paper);color:var(--ink);border-radius:14px;margin-inline:auto;max-width:980px;
   box-shadow:0 40px 80px -30px rgba(0,0,0,.9),0 2px 0 rgba(255,255,255,.08) inset;
-  background-image:
-    radial-gradient(circle at 20% 30%,rgba(120,90,50,.08),transparent 40%),
-    radial-gradient(circle at 80% 80%,rgba(120,90,50,.1),transparent 45%),
-    repeating-linear-gradient(135deg,rgba(0,0,0,.015) 0 2px,transparent 2px 6px);
+  background-image:radial-gradient(circle at 20% 30%,rgba(120,90,50,.08),transparent 40%),radial-gradient(circle at 80% 80%,rgba(120,90,50,.1),transparent 45%),repeating-linear-gradient(135deg,rgba(0,0,0,.015) 0 2px,transparent 2px 6px);
   transform:rotate(-1.2deg);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
 .ticket:hover{transform:rotate(0deg) translateY(-4px)}
 .notch{position:absolute;width:40px;height:40px;border-radius:50%;background:var(--bg);z-index:3;box-shadow:inset 0 6px 10px -6px rgba(0,0,0,.8)}
@@ -111,25 +125,21 @@ section .lead{max-width:62ch;color:var(--muted);margin:14px 0 0}
 .t-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 68%,var(--paper) 100%),linear-gradient(0deg,rgba(236,227,207,.2),transparent 40%)}
 .t-photo .ed{position:absolute;left:18px;bottom:14px;font-family:var(--display);font-weight:700;letter-spacing:.3em;font-size:.72rem;text-transform:uppercase;color:var(--ink-soft);z-index:2}
 .t-body{padding:26px 24px 22px 10px;display:flex;flex-direction:column;align-items:center;text-align:center;min-width:0;position:relative}
-.t-head{display:flex;align-items:center;gap:12px;width:100%;font-family:var(--display);font-weight:700;letter-spacing:.34em;text-transform:uppercase;font-size:clamp(1rem,2.2vw,1.35rem);color:var(--ink)}
+.t-head{display:flex;align-items:center;gap:12px;width:100%;font-family:var(--display);font-weight:700;letter-spacing:.34em;text-transform:uppercase;font-size:clamp(1rem,2.2vw,1.35rem)}
 .t-head::before,.t-head::after{content:"";flex:1;height:2px;background:var(--ink)}
-.t-script{font-family:var(--script);font-size:clamp(2rem,4vw,2.6rem);line-height:1;margin-top:4px;color:var(--ink)}
+.t-script{font-family:var(--script);font-size:clamp(2rem,4vw,2.6rem);line-height:1;margin-top:4px}
 .t-30{display:flex;align-items:center;gap:14px;font-family:var(--display);font-weight:800;font-size:clamp(3.4rem,7.5vw,5.6rem);line-height:.9;letter-spacing:.02em;margin-top:-2px}
-.flag{width:.42em;height:.42em;background:
-  conic-gradient(var(--ink) 25%,transparent 0 50%,var(--ink) 0 75%,transparent 0);
-  background-size:50% 50%;flex:none}
+.flag{width:.42em;height:.42em;background:conic-gradient(var(--ink) 25%,transparent 0 50%,var(--ink) 0 75%,transparent 0);background-size:50% 50%;flex:none}
 .t-sub{font-family:var(--display);font-weight:700;letter-spacing:.3em;text-transform:uppercase;font-size:.85rem;margin-top:6px}
 .t-names{font-family:var(--script);font-size:clamp(1.9rem,3.6vw,2.5rem);color:var(--red);line-height:1;margin-top:12px}
 .t-meta{display:grid;grid-template-columns:auto 1fr;gap:8px 12px;margin:16px 0 0;text-align:left;width:100%;max-width:300px}
 .t-meta dt{font-family:var(--display);font-weight:700;letter-spacing:.22em;font-size:.68rem;text-transform:uppercase;color:var(--ink-soft);padding-top:3px}
 .t-meta dd{margin:0;font-weight:600;font-size:.98rem;line-height:1.3;font-variant-numeric:tabular-nums}
-.t-foot{margin-top:auto;padding-top:16px;font-family:var(--display);font-weight:700;letter-spacing:.26em;text-transform:uppercase;font-size:.72rem;color:var(--ink);display:flex;align-items:center;gap:10px;width:100%}
+.t-foot{margin-top:auto;padding-top:16px;font-family:var(--display);font-weight:700;letter-spacing:.26em;text-transform:uppercase;font-size:.72rem;display:flex;align-items:center;gap:10px;width:100%}
 .t-foot::before,.t-foot::after{content:"";flex:1;height:1px;background:var(--ink-soft)}
 .t-stripe{position:absolute;right:-6px;bottom:0;width:70px;height:110px;pointer-events:none;
-  background:linear-gradient(135deg,transparent 48%,var(--red) 48% 54%,transparent 54%),
-  conic-gradient(var(--ink) 25%,var(--paper) 0 50%,var(--ink) 0 75%,var(--paper) 0);
-  background-size:100% 100%,16px 16px;
-  clip-path:polygon(100% 0,100% 100%,0 100%);opacity:.95}
+  background:linear-gradient(135deg,transparent 48%,var(--red) 48% 54%,transparent 54%),conic-gradient(var(--ink) 25%,var(--paper) 0 50%,var(--ink) 0 75%,var(--paper) 0);
+  background-size:100% 100%,16px 16px;clip-path:polygon(100% 0,100% 100%,0 100%);opacity:.95}
 .t-stub{background:var(--ink);color:var(--paper);padding:26px 22px 22px;border-radius:0 14px 14px 0;border-left:2px dashed rgba(236,227,207,.55);display:flex;flex-direction:column;gap:14px;min-width:0}
 .t-stub .s-title{font-family:var(--display);font-weight:700;letter-spacing:.24em;text-transform:uppercase;font-size:1.05rem;line-height:1.2;text-align:center;padding-bottom:10px;border-bottom:1px solid rgba(236,227,207,.35)}
 .t-stub .s-row{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;padding-bottom:10px;border-bottom:1px solid rgba(236,227,207,.2)}
@@ -143,90 +153,150 @@ section .lead{max-width:62ch;color:var(--muted);margin:14px 0 0}
 .t-stub .s-tag{margin-top:auto;text-align:center;font-family:var(--display);font-weight:700;letter-spacing:.22em;text-transform:uppercase;font-size:.66rem;line-height:1.7;position:relative;padding-top:8px}
 .t-stub .s-tag::before{content:"";position:absolute;top:0;left:30%;right:30%;height:2px;background:var(--red)}
 
-/* Countdown */
-.countdown{margin:40px auto 0;max-width:820px;text-align:center}
-.cd-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}
-.cd{background:var(--bg-2);border:1px solid var(--line);border-radius:10px;padding:16px 8px 12px;position:relative;overflow:hidden}
-.cd::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--red)}
-.cd b{display:block;font-family:var(--display);font-weight:800;font-size:clamp(2.2rem,7vw,4rem);line-height:1;font-variant-numeric:tabular-nums;letter-spacing:.02em}
-.cd span{display:block;margin-top:6px;font-family:var(--display);font-weight:700;letter-spacing:.22em;font-size:.72rem;text-transform:uppercase;color:var(--muted)}
-.cd-note{margin-top:12px;color:var(--muted);font-size:.95rem}
+/* Chrono façon écran de chronométrage */
+.timing{margin:44px auto 0;max-width:900px;background:#0a0908;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 30px 60px -40px rgba(0,0,0,.9)}
+.timing-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;background:linear-gradient(90deg,var(--red),#7a0a1c);font-family:var(--mono);font-weight:700;letter-spacing:.24em;text-transform:uppercase;font-size:.74rem;color:#fff;flex-wrap:wrap}
+.timing-head .live{display:inline-flex;align-items:center;gap:8px}
+.timing-head .live i{width:8px;height:8px;border-radius:50%;background:#fff;animation:blink 1.2s infinite}
+@keyframes blink{50%{opacity:.25}}
+.timing-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line)}
+.tcell{background:#0a0908;padding:18px 10px 14px;text-align:center;position:relative}
+.tcell b{display:block;font-family:var(--mono);font-weight:700;font-size:clamp(2.2rem,7vw,4.2rem);line-height:1;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.tcell span{display:block;margin-top:8px;font-family:var(--display);font-weight:700;letter-spacing:.24em;font-size:.72rem;text-transform:uppercase;color:var(--muted)}
+.tcell.purple b{color:var(--purple);text-shadow:0 0 18px rgba(177,75,244,.35)}
+.tcell.green b{color:var(--green);text-shadow:0 0 18px rgba(47,210,122,.35)}
+.tcell.yellow b{color:var(--yellow);text-shadow:0 0 18px rgba(245,197,24,.3)}
+.tcell.white b{color:#fff}
+.tcell::before{content:attr(data-s);position:absolute;top:8px;left:10px;font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;color:var(--muted)}
+.sectors{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:14px 16px 6px}
+.sector{height:8px;border-radius:4px;background:#1e1a17;position:relative;overflow:hidden}
+.sector::after{content:"";position:absolute;inset:0;width:var(--p,0%);background:var(--c,var(--muted));border-radius:4px;transition:width 1s}
+.sector-labels{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:0 16px 14px;font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.sector-labels span:nth-child(2){text-align:center}
+.sector-labels span:nth-child(3){text-align:right}
+.timing-foot{display:flex;flex-wrap:wrap;gap:8px 22px;padding:12px 16px;border-top:1px solid var(--line);font-family:var(--mono);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.timing-foot b{color:var(--fg);font-weight:700}
 
 /* Programme */
-.prog{list-style:none;margin:28px 0 0;padding:0;display:grid;gap:0;border-left:2px solid var(--line);margin-left:6px}
+.prog{list-style:none;margin:28px 0 0;padding:0;border-left:2px solid var(--line);margin-left:6px}
 .prog li{display:grid;grid-template-columns:92px minmax(0,1fr);gap:16px;padding:16px 0 16px 22px;position:relative;border-bottom:1px solid var(--line)}
 .prog li:last-child{border-bottom:0}
 .prog li::before{content:"";position:absolute;left:-7px;top:24px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--muted)}
 .prog li.key::before{background:var(--red);border-color:var(--red);box-shadow:0 0 0 4px rgba(200,16,46,.2)}
-.prog time{font-family:var(--display);font-weight:800;font-size:1.6rem;line-height:1.1;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.prog time{font-family:var(--mono);font-weight:700;font-size:1.5rem;line-height:1.1;font-variant-numeric:tabular-nums}
 .prog h3{font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:1.15rem}
+.prog h3 small{font-family:var(--mono);font-weight:600;font-size:.68rem;letter-spacing:.2em;color:var(--red);margin-left:10px;vertical-align:middle}
 .prog p{margin:4px 0 0;color:var(--muted)}
 
+/* Grille de départ : écuries */
+.grid-summary{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.pill{font-family:var(--mono);font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:.74rem;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--bg-2);color:var(--fg)}
+.pill b{color:var(--red)}
+.teams{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-top:22px}
+.team{position:relative;text-align:left;background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:16px 16px 14px;cursor:pointer;color:var(--fg);font:inherit;display:flex;flex-direction:column;gap:10px;transition:transform .15s,border-color .15s,box-shadow .15s;overflow:hidden}
+.team::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--tc)}
+.team:hover{transform:translateY(-2px);border-color:rgba(239,231,216,.3)}
+.team.selected{border-color:var(--tc);box-shadow:0 0 0 1px var(--tc),0 16px 40px -24px var(--tc)}
+.team.full{cursor:not-allowed;opacity:.72}
+.team.full:hover{transform:none}
+.team-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-left:8px}
+.team-name{font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:1.25rem;line-height:1}
+.team-car{width:54px;height:22px;flex:none;color:var(--tc)}
+.seats{display:grid;gap:6px;padding-left:8px}
+.seat{display:flex;align-items:center;gap:8px;font-size:.92rem;min-height:26px;padding:3px 8px;border-radius:6px;background:rgba(255,255,255,.03);border:1px dashed var(--line);color:var(--muted);overflow-wrap:anywhere}
+.seat.taken{border-style:solid;color:var(--fg);background:rgba(255,255,255,.05)}
+.seat .n{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;color:var(--muted);flex:none}
+.seat.mine{border-color:var(--tc);color:#fff}
+.team-foot{display:flex;justify-content:space-between;align-items:center;padding-left:8px;font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.team-foot b{color:var(--fg)}
+.reg{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:22px;margin-top:26px;align-items:start}
+.reg form{display:grid;gap:14px}
+.field{display:grid;gap:6px}
+.field label{font-family:var(--display);font-weight:700;letter-spacing:.2em;font-size:.74rem;text-transform:uppercase;color:var(--muted)}
+.field small{color:var(--muted);font-size:.85rem}
+input[type=text],textarea{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px;min-width:0}
+textarea{min-height:72px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.linkbtn{background:none;border:0;color:var(--muted);font:inherit;font-size:.9rem;text-decoration:underline;cursor:pointer;padding:0}
+.linkbtn:hover{color:var(--fg)}
+.reg-side{position:relative;background:var(--paper);color:var(--ink);border-radius:12px;overflow:hidden;box-shadow:0 30px 60px -30px rgba(0,0,0,.9)}
+.reg-side .ph{background:var(--ink);color:var(--paper);padding:12px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px;font-family:var(--display);font-weight:700;letter-spacing:.22em;text-transform:uppercase;font-size:.76rem}
+.reg-side .ph span{color:#ff6b7a}
+.reg-side .pb{padding:18px}
+.reg-side .who{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:1.8rem;line-height:1;letter-spacing:.02em;overflow-wrap:anywhere;min-height:1em}
+.reg-side .tm{margin-top:8px;font-family:var(--mono);font-weight:700;letter-spacing:.18em;text-transform:uppercase;font-size:.74rem;display:flex;align-items:center;gap:8px}
+.reg-side .tm i{width:12px;height:12px;border-radius:50%;background:var(--tc,var(--ink-soft));display:inline-block;flex:none}
+.reg-side ul{margin:14px 0 0;padding:0;list-style:none;display:grid;gap:8px;color:var(--ink-soft);font-size:.95rem;border-top:1px dashed var(--ink-soft);padding-top:12px}
+.reg-side li{display:flex;gap:10px}
+.reg-side li::before{content:"✓";color:var(--red);font-weight:700}
+.notice{margin-top:14px;padding:12px 14px;border-radius:8px;background:rgba(245,197,24,.1);border:1px solid rgba(245,197,24,.35);color:var(--yellow);font-size:.95rem}
+.ok{color:var(--green)}
+.err{color:#ff6b7a}
+
+/* Radio */
+.radios{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:28px}
+.radio{background:#0a0908;border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.radio .rh{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.radio .rh b{color:var(--red)}
+.wave{display:flex;align-items:center;gap:3px;height:28px}
+.wave i{display:block;width:3px;border-radius:2px;background:var(--green);height:30%;animation:wave 1.1s ease-in-out infinite;animation-delay:calc(var(--i) * -.09s)}
+@keyframes wave{0%,100%{height:25%}50%{height:95%}}
+.radio p{margin:0;font-size:1rem}
+.radio p b{font-family:var(--display);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:.8rem;color:var(--muted);display:block;margin-bottom:2px}
+.radio p + p{padding-top:8px;border-top:1px solid var(--line)}
+
 /* Circuit */
-.circuit{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:28px;margin-top:28px;align-items:start}
-.card{background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:22px}
-.addr{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(1.6rem,3.5vw,2.2rem);line-height:1;letter-spacing:.02em}
+.circuit{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:22px;margin-top:28px;align-items:stretch}
+.track-card{background:#0a0908;border:1px solid var(--line);border-radius:12px;padding:12px 12px 6px;position:relative}
+.track-card svg{display:block;width:100%;height:auto}
+.track-card .tn{position:absolute;left:16px;top:14px;font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.addr{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(1.6rem,3.5vw,2.2rem);line-height:1;letter-spacing:.02em;margin:0}
 .addr small{display:block;font-family:var(--body);font-weight:500;text-transform:none;letter-spacing:0;font-size:1.05rem;color:var(--muted);margin-top:8px;line-height:1.5}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-family:var(--display);font-weight:700;letter-spacing:.16em;text-transform:uppercase;font-size:.95rem;padding:13px 20px;border-radius:8px;border:1px solid var(--line);background:var(--bg-3);color:var(--fg);text-decoration:none;cursor:pointer;transition:transform .15s,background .15s}
-.btn:hover{transform:translateY(-1px);background:#2b2622}
-.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--red);outline-offset:2px}
-.btn.primary{background:var(--red);border-color:var(--red);color:#fff}
-.btn.primary:hover{background:#d8183a}
-.btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
-.btn-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
-.facts{display:grid;gap:12px;margin:0}
-.facts div{display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px;padding-bottom:12px;border-bottom:1px solid var(--line)}
-.facts div:last-child{border-bottom:0;padding-bottom:0}
+.facts{display:grid;gap:12px;margin:18px 0 0;padding-top:16px;border-top:1px solid var(--line)}
+.facts div{display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px}
 .facts dt{font-family:var(--display);font-weight:700;letter-spacing:.2em;font-size:.72rem;text-transform:uppercase;color:var(--muted);padding-top:4px}
 .facts dd{margin:0;font-weight:500}
-.facts dd b{font-family:var(--display);font-weight:800;font-size:1.3rem;letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.facts dd b{font-family:var(--mono);font-weight:700;font-size:1.1rem}
 
-/* Règlement */
-.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:28px}
-.rule-card{background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:10px}
-.rule-card .art{font-family:var(--display);font-weight:700;letter-spacing:.22em;font-size:.72rem;text-transform:uppercase;color:var(--red)}
-.rule-card h3{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:1.5rem;letter-spacing:.03em;line-height:1}
-.rule-card p{margin:0;color:var(--muted)}
-.swatches{display:flex;gap:8px;margin-top:4px}
-.swatches i{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);display:block}
+/* Drapeaux */
+.flags{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:28px}
+.flagcard{background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.fl{width:64px;height:44px;border-radius:3px;transform:skewY(-4deg);box-shadow:4px 6px 0 rgba(0,0,0,.35);position:relative}
+.fl::before{content:"";position:absolute;left:-4px;top:-6px;bottom:-6px;width:3px;background:var(--muted);border-radius:2px}
+.fl.green{background:#1ec760}
+.fl.blue{background:#2a7bff}
+.fl.yellow{background:#f5c518}
+.fl.checker{background:conic-gradient(#efe7d8 25%,#151210 0 50%,#efe7d8 0 75%,#151210 0);background-size:16px 16px}
+.flagcard h3{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:1.3rem;letter-spacing:.03em;line-height:1}
+.flagcard .fk{font-family:var(--mono);font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--red)}
+.flagcard p{margin:0;color:var(--muted);font-size:.98rem}
+.swatches{display:flex;gap:8px}
+.swatches i{width:22px;height:22px;border-radius:50%;border:1px solid var(--line);display:block}
 
-/* RSVP */
-.rsvp{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;margin-top:28px;align-items:start}
-form{display:grid;gap:16px}
-.field{display:grid;gap:6px}
-.field label,.field .lbl{font-family:var(--display);font-weight:700;letter-spacing:.2em;font-size:.74rem;text-transform:uppercase;color:var(--muted)}
-input[type=text],input[type=number],textarea,select{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px;min-width:0}
-textarea{min-height:92px;resize:vertical}
-.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.seg input{position:absolute;opacity:0;width:0;height:0}
-.seg label{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);font-family:var(--display);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:.92rem;cursor:pointer;color:var(--fg)}
-.seg input:checked + label{border-color:var(--red);background:rgba(200,16,46,.14)}
-.seg input:focus-visible + label{outline:2px solid var(--red);outline-offset:2px}
-.two{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,.6fr);gap:12px}
-.pass{position:relative;background:var(--paper);color:var(--ink);border-radius:12px;padding:0;overflow:hidden;box-shadow:0 30px 60px -30px rgba(0,0,0,.9)}
-.pass-head{background:var(--ink);color:var(--paper);padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px;font-family:var(--display);font-weight:700;letter-spacing:.22em;text-transform:uppercase;font-size:.78rem}
-.pass-head span{color:#ff6b7a}
-.pass-body{padding:18px}
-.pass-body .who{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:1.9rem;line-height:1;letter-spacing:.02em;min-height:1em;overflow-wrap:anywhere}
-.pass-body .st{margin-top:6px;font-family:var(--display);font-weight:700;letter-spacing:.2em;text-transform:uppercase;font-size:.78rem;color:var(--red)}
-.pass-body pre{margin:14px 0 0;white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;font-size:.95rem;line-height:1.5;color:var(--ink);border-top:1px dashed var(--ink-soft);padding-top:12px}
-.pass-foot{padding:0 18px 18px;display:flex;gap:10px;flex-wrap:wrap}
-.pass-foot .btn{border-color:var(--ink);background:var(--ink);color:var(--paper)}
-.pass-foot .btn:hover{background:#2a2420}
-.pass-foot .btn.primary{background:var(--red);border-color:var(--red);color:#fff}
-.status{font-size:.95rem;color:var(--muted);min-height:1.4em;margin:0}
-.deadline{display:inline-flex;align-items:center;gap:10px;margin-top:14px;font-family:var(--display);font-weight:700;letter-spacing:.18em;text-transform:uppercase;font-size:.82rem;color:var(--fg);padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--bg-2)}
-.deadline i{width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block}
-
-/* Footer */
+/* Pied de page */
 footer{padding-top:40px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
-footer .tag{font-family:var(--display);font-weight:700;letter-spacing:.26em;text-transform:uppercase;font-size:.8rem;color:var(--muted)}
+footer .tag{font-family:var(--display);font-weight:700;letter-spacing:.26em;text-transform:uppercase;font-size:.8rem;color:var(--muted);margin:0}
 footer .tag b{color:var(--fg)}
 .checker{height:10px;width:160px;background:conic-gradient(var(--fg) 25%,transparent 0 50%,var(--fg) 0 75%,transparent 0);background-size:10px 10px;opacity:.7}
 
-@media (max-width:860px){
-  .circuit,.rsvp{grid-template-columns:1fr}
-  .rules{grid-template-columns:1fr}
+/* Muret des stands : la monoplace suit le défilement */
+.pitwall{position:fixed;left:0;right:0;bottom:0;z-index:50;height:54px;padding-bottom:env(safe-area-inset-bottom,0px);background:linear-gradient(180deg,rgba(15,13,12,0),rgba(15,13,12,.92) 30%,#0a0908);pointer-events:none}
+.pitwall .road{position:absolute;left:0;right:0;bottom:calc(10px + env(safe-area-inset-bottom,0px));height:26px;background:#1a1613;border-top:2px solid #2a2420;border-bottom:2px solid #2a2420}
+.pitwall .road::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;margin-top:-1px;background:repeating-linear-gradient(90deg,var(--paper-2) 0 18px,transparent 18px 34px);opacity:.55}
+.pitwall .kerb{position:absolute;left:0;right:0;bottom:calc(36px + env(safe-area-inset-bottom,0px));height:4px;background:repeating-linear-gradient(90deg,var(--red) 0 14px,var(--paper) 14px 28px);opacity:.8}
+.pitwall .mark{position:absolute;bottom:calc(40px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);font-family:var(--mono);font-size:.6rem;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;white-space:nowrap}
+.pitwall .finish{position:absolute;right:0;bottom:calc(10px + env(safe-area-inset-bottom,0px));width:14px;height:26px;background:conic-gradient(#efe7d8 25%,#151210 0 50%,#efe7d8 0 75%,#151210 0);background-size:7px 7px}
+.pitwall .car{position:absolute;left:0;bottom:calc(11px + env(safe-area-inset-bottom,0px));width:64px;height:24px;color:var(--red);will-change:transform;filter:drop-shadow(0 2px 2px rgba(0,0,0,.6))}
+.pitwall .car .flame{opacity:0;transition:opacity .15s}
+.pitwall .car.fast .flame{opacity:1}
+.pitwall .speed{position:absolute;right:22px;bottom:calc(40px + env(safe-area-inset-bottom,0px));font-family:var(--mono);font-size:.64rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;font-variant-numeric:tabular-nums}
+.pitwall .speed b{color:var(--fg)}
+
+@media (max-width:900px){
+  .radios{grid-template-columns:1fr}
+  .flags{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .circuit,.reg{grid-template-columns:1fr}
 }
 @media (max-width:760px){
   .ticket{grid-template-columns:1fr;transform:none}
@@ -237,20 +307,28 @@ footer .tag b{color:var(--fg)}
   .t-body{padding:14px 20px 22px}
   .t-stub{border-radius:0 0 14px 14px;border-left:0;border-top:2px dashed rgba(236,227,207,.55)}
   .notch.l,.notch.r{display:none}
-  .notch.pt,.notch.pb{right:auto;margin-right:0;top:auto;bottom:auto}
+  .notch.pt,.notch.pb{right:auto;margin-right:0;top:var(--perf,0px);bottom:auto;margin-top:-13px}
   .notch.pt{left:-13px}
-  .notch.pb{right:-13px}
-  .notch.pt,.notch.pb{top:var(--perf,0px);margin-top:-13px}
-  .cd-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .notch.pb{right:-13px;left:auto}
+  .timing-row{grid-template-columns:repeat(2,minmax(0,1fr))}
   .prog li{grid-template-columns:1fr;gap:4px}
   .two{grid-template-columns:1fr}
-  .topbar{flex-wrap:wrap}
+  .pitwall .mark{display:none}
+}
+@media (max-width:480px){
+  .flags{grid-template-columns:1fr}
+  .teams{grid-template-columns:1fr 1fr}
+  .team-name{font-size:1.05rem}
+  .team-car{width:44px}
 }
 @media (prefers-reduced-motion:reduce){
-  .ticket,.btn{transition:none}
-  .light.on{box-shadow:none}
+  .ticket,.btn,.team{transition:none}
+  .wave i,.timing-head .live i{animation:none}
+  html{scroll-behavior:auto}
 }
 </style>
+</head>
+<body>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="crest" viewBox="0 0 100 108">
@@ -261,21 +339,47 @@ footer .tag b{color:var(--fg)}
     <text x="50" y="76" text-anchor="middle" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="700" font-size="10.5" letter-spacing="2.5" fill="#efe7d8">RACING</text>
     <text x="50" y="87" text-anchor="middle" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="700" font-size="7.5" letter-spacing="1.5" fill="#a1978a">EST. 1997</text>
   </symbol>
+  <!-- Monoplace vue de dessus, dessin original. Pointe vers la droite. fill="currentColor" pour la couleur d'écurie. -->
+  <symbol id="f1car" viewBox="0 0 160 60">
+    <g class="flame" fill="#ffb347"><polygon points="2,24 22,27 2,30"/><polygon points="6,27 26,30 6,33" fill="#ff5a2b"/></g>
+    <rect x="18" y="12" width="6" height="36" rx="1" fill="currentColor"/>
+    <rect x="24" y="19" width="10" height="22" fill="#111"/>
+    <rect x="30" y="8" width="18" height="12" rx="3" fill="#161616"/>
+    <rect x="30" y="40" width="18" height="12" rx="3" fill="#161616"/>
+    <path d="M34 22 L70 18 L70 42 L34 38 Z" fill="currentColor"/>
+    <path d="M44 14 L70 20 L70 40 L44 46 Z" fill="currentColor" opacity=".85"/>
+    <rect x="70" y="24" width="56" height="12" rx="3" fill="currentColor"/>
+    <ellipse cx="76" cy="30" rx="7" ry="5" fill="#111"/>
+    <path d="M70 20 L96 24 L96 36 L70 40 Z" fill="currentColor" opacity=".9"/>
+    <rect x="100" y="9" width="16" height="11" rx="3" fill="#161616"/>
+    <rect x="100" y="40" width="16" height="11" rx="3" fill="#161616"/>
+    <path d="M126 26 L154 29 L154 31 L126 34 Z" fill="currentColor"/>
+    <rect x="146" y="12" width="7" height="36" rx="1" fill="currentColor"/>
+    <rect x="124" y="14" width="20" height="4" rx="1" fill="currentColor"/>
+    <rect x="124" y="42" width="20" height="4" rx="1" fill="currentColor"/>
+  </symbol>
 </svg>
 
 <div class="wrap">
   <header class="topbar">
-    <div class="brand"><svg><use href="#crest"/></svg><span>L&amp;L Racing <span style="color:var(--muted)">· Écurie n°30</span></span></div>
+    <div class="brand"><svg><use href="#crest"/></svg><span>L&amp;L Racing <span>· Écurie n°30</span></span></div>
     <div class="chip">20<i>·</i>03<i>·</i>2027 <span style="color:var(--muted);margin-inline:8px">|</span> 19:30</div>
   </header>
 
-  <section class="hero" style="border-top:0">
-    <div class="lights" id="lights" aria-hidden="true">
-      <span class="light"></span><span class="light"></span><span class="light"></span><span class="light"></span><span class="light"></span>
+  <section class="hero">
+    <div class="light-panel" id="light-panel" role="button" tabindex="0" aria-label="Relancer la procédure de départ">
+      <div class="lights" id="lights" aria-hidden="true">
+        <span class="lcol"><i class="light"></i><i class="light"></i></span>
+        <span class="lcol"><i class="light"></i><i class="light"></i></span>
+        <span class="lcol"><i class="light"></i><i class="light"></i></span>
+        <span class="lcol"><i class="light"></i><i class="light"></i></span>
+        <span class="lcol"><i class="light"></i><i class="light"></i></span>
+      </div>
+      <span class="light-label" id="light-label">Procédure de départ</span>
     </div>
     <p class="eyebrow">Lucie &amp; Lilian vous invitent au</p>
     <h1>Grand Prix <span>de nos</span> 30 ans</h1>
-    <p>Une seule manche, un seul soir, dix pilotes sur la grille. Rendez-vous à La Palette Verte pour fêter nos deux fois trente ans.</p>
+    <p>Une seule manche, un seul soir, une poignée de pilotes sur la grille. Rendez-vous à La Palette Verte pour fêter nos deux fois trente ans. Cliquez sur les feux pour entendre le moteur.</p>
   </section>
 
   <div class="ticket-stage">
@@ -322,46 +426,175 @@ footer .tag b{color:var(--fg)}
     </article>
   </div>
 
-  <div class="countdown">
-    <p class="eyebrow">Extinction des feux dans</p>
-    <div class="cd-grid" id="cd">
-      <div class="cd"><b id="cd-d">—</b><span>Jours</span></div>
-      <div class="cd"><b id="cd-h">—</b><span>Heures</span></div>
-      <div class="cd"><b id="cd-m">—</b><span>Minutes</span></div>
-      <div class="cd"><b id="cd-s">—</b><span>Secondes</span></div>
+  <div class="timing" id="timing" aria-label="Compte à rebours">
+    <div class="timing-head">
+      <span class="live"><i></i>Race control</span>
+      <span>Extinction des feux dans</span>
+      <span>Tour 30 / 30</span>
     </div>
-    <p class="cd-note" id="cd-note">Samedi 20 mars 2027, 19h30. Ajoutez-le au calendrier, la grille n'attend pas.</p>
+    <div class="timing-row">
+      <div class="tcell purple" data-s="S1"><b id="cd-d">—</b><span>Jours</span></div>
+      <div class="tcell green" data-s="S2"><b id="cd-h">—</b><span>Heures</span></div>
+      <div class="tcell yellow" data-s="S3"><b id="cd-m">—</b><span>Minutes</span></div>
+      <div class="tcell white" data-s="FL"><b id="cd-s">—</b><span>Secondes</span></div>
+    </div>
+    <div class="sectors" aria-hidden="true">
+      <div class="sector" id="sec1" style="--c:var(--purple)"></div>
+      <div class="sector" id="sec2" style="--c:var(--green)"></div>
+      <div class="sector" id="sec3" style="--c:var(--yellow)"></div>
+    </div>
+    <div class="sector-labels" aria-hidden="true"><span>Octobre</span><span>Saison 2026-27 · <b id="season-pct">0 %</b></span><span>20 mars</span></div>
+    <div class="timing-foot">
+      <span>Piste : <b>sèche</b></span>
+      <span>Air : <b>30°</b></span>
+      <span>Piste : <b>30°</b></span>
+      <span>Vent : <b>attention aux bougies</b></span>
+      <span id="cd-note">Samedi 20 mars 2027, 19h30</span>
+    </div>
   </div>
 
   <section id="programme">
     <div class="sec-head">
       <div>
         <p class="eyebrow">Briefing</p>
-        <h2 class="sec-title">Programme de la soirée</h2>
+        <h2 class="sec-title">Programme du week-end</h2>
       </div>
       <p class="lap">Distance <b>1 soirée</b> · Tours <b>30</b></p>
     </div>
     <ol class="prog">
-      <li><time>19:30</time><div><h3>Ouverture du paddock</h3><p>Accueil des pilotes, remise des accréditations, premiers tours de piste autour du bar.</p></div></li>
-      <li><time>20:00</time><div><h3>Tour de formation</h3><p>Apéritif et mise en grille. On prend ses marques, on choisit son écurie.</p></div></li>
-      <li class="key"><time>21:00</time><div><h3>Extinction des feux</h3><p>Dîner. Le départ est donné, personne ne cale.</p></div></li>
-      <li class="key"><time>23:00</time><div><h3>Podium</h3><p>Gâteau, champagne et hymne à la gloire des deux vainqueurs du jour.</p></div></li>
-      <li><time>23:30</time><div><h3>Course de nuit</h3><p>Piste de danse ouverte jusqu'au drapeau à damier.</p></div></li>
+      <li><time>19:30</time><div><h3>Ouverture du paddock<small>Accueil</small></h3><p>Les pilotes arrivent, retrouvent leur écurie et font les premiers tours de piste autour du bar.</p></div></li>
+      <li><time>20:00</time><div><h3>Essais libres<small>Apéritif</small></h3><p>On règle la voiture, on teste les gommes et les bulles. Mise en grille progressive.</p></div></li>
+      <li class="key"><time>21:00</time><div><h3>Extinction des feux<small>Dîner</small></h3><p>Le départ est donné. Personne ne cale, tout le monde passe le premier virage.</p></div></li>
+      <li class="key"><time>23:00</time><div><h3>Podium<small>Gâteau</small></h3><p>Champagne secoué, bougies soufflées, hymne à la gloire des deux vainqueurs du jour.</p></div></li>
+      <li><time>23:30</time><div><h3>Course de nuit<small>Piste de danse</small></h3><p>Feux verts jusqu'au drapeau à damier. Les arrêts aux stands sont autorisés au bar.</p></div></li>
     </ol>
+  </section>
+
+  <section id="grille">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow">Engagements</p>
+        <h2 class="sec-title">Choisissez votre écurie</h2>
+      </div>
+      <p class="lap">Écuries <b>11</b> · Baquets <b>2</b> par écurie</p>
+    </div>
+    <p class="lead">Chaque écurie a deux baquets. Prenez-en un pour vous, ou les deux si vous venez en duo. Si un baquet est déjà occupé, vous devenez le coéquipier ou la coéquipière de la personne en place.</p>
+    <div class="grid-summary">
+      <span class="pill">Pilotes engagés : <b id="n-pilots">0</b></span>
+      <span class="pill">Écuries représentées : <b id="n-teams">0</b> / 11</span>
+      <span class="pill">Baquets libres : <b id="n-free">22</b></span>
+    </div>
+    <div class="teams" id="teams" role="radiogroup" aria-label="Écuries"></div>
+
+    <div class="reg">
+      <form id="reg-form" novalidate>
+        <div class="two">
+          <div class="field">
+            <label for="f-p1">Pilote 1</label>
+            <input type="text" id="f-p1" name="pilot1" placeholder="Prénom" autocomplete="given-name" maxlength="40">
+          </div>
+          <div class="field">
+            <label for="f-p2">Pilote 2 <small>(facultatif)</small></label>
+            <input type="text" id="f-p2" name="pilot2" placeholder="Prénom de votre coéquipier(ère)" maxlength="40">
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-note">Message radio <small>(facultatif)</small></label>
+          <textarea id="f-note" name="note" placeholder="Un mot pour l'équipe, une chanson à passer…" maxlength="200"></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn primary" type="submit" id="submit-btn">
+            <svg viewBox="0 0 24 24"><path d="M5 21V4M5 4h13l-2 4 2 4H5"/></svg><span id="submit-label">Prendre le baquet</span>
+          </button>
+          <button class="linkbtn" type="button" id="leave-btn" hidden>Me retirer de la grille</button>
+        </div>
+        <p class="status" id="reg-status" aria-live="polite"></p>
+        <div class="notice" id="api-notice" hidden>La grille ouvre très bientôt : les inscriptions ne sont pas encore activées.</div>
+      </form>
+      <div class="reg-side" aria-live="polite">
+        <div class="ph"><span>Fiche d'engagement</span><em style="font-style:normal" id="side-no">N° —</em></div>
+        <div class="pb">
+          <div class="who" id="side-who">Votre nom</div>
+          <div class="tm" id="side-team"><i></i>Aucune écurie choisie</div>
+          <ul>
+            <li>Cliquez sur une écurie dans la grille</li>
+            <li>Indiquez votre prénom, et celui de votre duo</li>
+            <li>Validez : votre nom apparaît dans le baquet</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="radio">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow">Fréquence L&amp;L</p>
+        <h2 class="sec-title">Radio d'équipe</h2>
+      </div>
+      <p class="lap">Canal <b>30</b> · Signal <b>fort</b></p>
+    </div>
+    <div class="radios">
+      <div class="radio">
+        <div class="rh"><span>Tour 29 → 30</span><b>Lilian</b></div>
+        <div class="wave" aria-hidden="true"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i><i style="--i:4"></i><i style="--i:5"></i><i style="--i:6"></i><i style="--i:7"></i><i style="--i:8"></i><i style="--i:9"></i><i style="--i:10"></i><i style="--i:11"></i></div>
+        <p><b>Lilian → Stand</b>Confirmation : on fait les 30 ans ensemble ?</p>
+        <p><b>Stand → Lilian</b>Affirmatif. Même grille, même podium, même gâteau.</p>
+      </div>
+      <div class="radio">
+        <div class="rh"><span>Briefing</span><b>Ingénieur</b></div>
+        <div class="wave" aria-hidden="true"><i style="--i:3"></i><i style="--i:5"></i><i style="--i:1"></i><i style="--i:7"></i><i style="--i:2"></i><i style="--i:9"></i><i style="--i:4"></i><i style="--i:0"></i><i style="--i:8"></i><i style="--i:6"></i><i style="--i:10"></i><i style="--i:11"></i></div>
+        <p><b>Ingénieur → Tous les pilotes</b>Box, box, box. Rendez-vous au paddock de la Palette Verte, 19h30. Plan A : on fait la fête.</p>
+        <p><b>Tous les pilotes</b>Copy.</p>
+      </div>
+      <div class="radio">
+        <div class="rh"><span>Dernier tour</span><b>Lucie</b></div>
+        <div class="wave" aria-hidden="true"><i style="--i:6"></i><i style="--i:2"></i><i style="--i:9"></i><i style="--i:0"></i><i style="--i:4"></i><i style="--i:11"></i><i style="--i:1"></i><i style="--i:7"></i><i style="--i:3"></i><i style="--i:10"></i><i style="--i:5"></i><i style="--i:8"></i></div>
+        <p><b>Lucie → Stand</b>Il reste combien de tours ?</p>
+        <p><b>Stand → Lucie</b>Trente. Et ensuite on recommence.</p>
+      </div>
+    </div>
   </section>
 
   <section id="circuit">
     <div class="sec-head">
       <div>
         <p class="eyebrow">Le circuit</p>
-        <h2 class="sec-title">La Palette Verte</h2>
+        <h2 class="sec-title">Circuit de la Palette Verte</h2>
       </div>
-      <p class="lap">Secteur <b>Hainaut</b> · Virage <b>Écaussinnes</b></p>
+      <p class="lap">Longueur <b>1 soirée</b> · Virages <b>5</b></p>
     </div>
     <div class="circuit">
+      <div class="track-card">
+        <span class="tn">Tracé officiel · sens antihoraire</span>
+        <svg viewBox="0 0 640 360" aria-label="Tracé imaginaire du circuit de la Palette Verte">
+          <defs>
+            <path id="trk" d="M 80 280 L 420 280 C 500 280 510 200 450 190 C 400 182 380 150 410 120 C 440 90 520 100 560 80 C 600 60 590 30 540 36 C 470 46 420 40 360 60 C 300 80 280 60 220 70 C 150 82 110 70 60 110 C 20 150 30 230 80 280 Z"/>
+          </defs>
+          <use href="#trk" fill="none" stroke="#2a2420" stroke-width="26" stroke-linejoin="round"/>
+          <use href="#trk" fill="none" stroke="#3a322d" stroke-width="18" stroke-linejoin="round"/>
+          <use href="#trk" fill="none" stroke="#efe7d8" stroke-width="1.5" stroke-dasharray="6 10" opacity=".45"/>
+          <rect x="246" y="266" width="8" height="28" fill="url(#chk)"/>
+          <pattern id="chk" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="2" height="2" fill="#efe7d8"/><rect x="2" y="2" width="2" height="2" fill="#efe7d8"/><rect width="4" height="4" fill="none"/></pattern>
+          <g font-family="Chakra Petch,Barlow Condensed,sans-serif" font-size="11" letter-spacing="1.5" fill="#a1978a">
+            <text x="250" y="318" text-anchor="middle">LIGNE DES STANDS · DÉPART 19H30</text>
+            <text x="505" y="228">T1 VIRAGE JEAN JAURÈS</text>
+            <text x="300" y="118" text-anchor="end">T2 CHICANE DU GÂTEAU</text>
+            <text x="548" y="22" text-anchor="end">T3 ÉPINGLE DU PODIUM</text>
+            <text x="222" y="54" text-anchor="middle">T4 COURBE DU BAR</text>
+            <text x="34" y="200" text-anchor="start">T5 DESCENTE</text>
+            <text x="34" y="214" text-anchor="start">VERS LA GRILLE</text>
+          </g>
+          <g fill="#c8102e"><circle cx="455" cy="190" r="4"/><circle cx="410" cy="120" r="4"/><circle cx="540" cy="36" r="4"/><circle cx="220" cy="70" r="4"/><circle cx="60" cy="110" r="4"/></g>
+          <g id="lapcar" color="#c8102e">
+            <g transform="translate(-14,-5) scale(.175)"><use href="#f1car" width="160" height="60"/></g>
+            <animateMotion dur="16s" repeatCount="indefinite" rotate="auto"><mpath href="#trk"/></animateMotion>
+          </g>
+        </svg>
+      </div>
       <div class="card">
-        <p class="addr">Rue Jean Jaurès 5<small>7190 Écaussinnes, Belgique<br>Entrée des pilotes à partir de 19h30</small></p>
-        <div class="btn-row">
+        <p class="addr">La Palette Verte<small>Rue Jean Jaurès 5<br>7190 Écaussinnes, Belgique</small></p>
+        <div class="btn-row" style="margin-top:18px">
           <a class="btn primary" href="https://www.google.com/maps/dir/?api=1&destination=Rue+Jean+Jaur%C3%A8s+5%2C+%C3%89caussinnes" target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg>Itinéraire
           </a>
@@ -370,98 +603,48 @@ footer .tag b{color:var(--fg)}
           </button>
         </div>
         <p class="status" id="addr-status"></p>
+        <dl class="facts">
+          <div><dt>Arrivée</dt><dd><b>19h30</b> · la grille se forme avant l'extinction des feux à 21h.</dd></div>
+          <div><dt>Accès</dt><dd>Billet personnel : la grille est volontairement réduite à nos proches.</dd></div>
+          <div><dt>Retour</dt><dd>Pensez au pilote désigné ou à un taxi : les stands ferment tard.</dd></div>
+        </dl>
       </div>
-      <dl class="facts card">
-        <div><dt>Arrivée</dt><dd><b>19h30</b><br>La grille se forme avant l'extinction des feux à 21h.</dd></div>
-        <div><dt>Accès</dt><dd><b>VIP</b><br>Billet personnel : la grille est volontairement réduite à nos proches.</dd></div>
-        <div><dt>Retour</dt><dd>Pensez au pilote désigné ou à un taxi : les stands ferment tard.</dd></div>
-      </dl>
     </div>
   </section>
 
-  <section id="paddock">
+  <section id="drapeaux">
     <div class="sec-head">
       <div>
-        <p class="eyebrow">Règlement</p>
+        <p class="eyebrow">Commissaires de piste</p>
         <h2 class="sec-title">Règlement du paddock</h2>
       </div>
-      <p class="lap">Articles <b>3</b> · Pénalités <b>0</b></p>
+      <p class="lap">Drapeaux <b>4</b> · Pénalités <b>0</b></p>
     </div>
-    <div class="rules">
-      <div class="rule-card">
-        <span class="art">Article 1</span>
+    <div class="flags">
+      <div class="flagcard">
+        <span class="fl green" aria-hidden="true"></span>
+        <span class="fk">Drapeau vert</span>
         <h3>Tenue de paddock</h3>
-        <p>Élégant et prêt à monter sur le podium. Les couleurs de l'écurie sont les bienvenues : noir, blanc, rouge.</p>
+        <p>Piste libre : élégant et prêt pour le podium. Les couleurs d'écurie sont les bienvenues.</p>
         <div class="swatches" aria-hidden="true"><i style="background:#151210"></i><i style="background:#efe7d8"></i><i style="background:#c8102e"></i></div>
       </div>
-      <div class="rule-card">
-        <span class="art">Article 2</span>
+      <div class="flagcard">
+        <span class="fl blue" aria-hidden="true"></span>
+        <span class="fk">Drapeau bleu</span>
+        <h3>Laissez passer</h3>
+        <p>Au bar comme sur la piste, priorité aux deux vainqueurs du jour. Les dépassements se font dans la bonne humeur.</p>
+      </div>
+      <div class="flagcard">
+        <span class="fl yellow" aria-hidden="true"></span>
+        <span class="fk">Drapeau jaune</span>
+        <h3>Prudence</h3>
+        <p>Les stands ferment tard : pilote désigné, taxi ou nuit sur place. Pas de dépassement sur le retour.</p>
+      </div>
+      <div class="flagcard">
+        <span class="fl checker" aria-hidden="true"></span>
+        <span class="fk">Drapeau à damier</span>
         <h3>Trophées</h3>
-        <p>Votre présence est le seul laissez-passer exigé. Pour celles et ceux qui tiennent à marquer le coup, une cagnotte commune sera ouverte au paddock.</p>
-      </div>
-      <div class="rule-card">
-        <span class="art">Article 3</span>
-        <h3>Accréditation</h3>
-        <p>Chaque pilote confirme sa présence avant la date limite ci-dessous. Sans accréditation, pas de place sur la grille.</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="rsvp">
-    <div class="sec-head">
-      <div>
-        <p class="eyebrow">Accréditation</p>
-        <h2 class="sec-title">Confirmez votre place sur la grille</h2>
-      </div>
-    </div>
-    <p class="lead">Remplissez votre fiche pilote : le message est préparé pour vous, il ne reste qu'à l'envoyer à Lucie et Lilian.</p>
-    <p class="deadline"><i></i>Réponse souhaitée avant le 20 février 2027</p>
-
-    <div class="rsvp">
-      <form id="rsvp-form" novalidate>
-        <div class="field">
-          <label for="f-name">Prénom(s) du ou des pilotes</label>
-          <input type="text" id="f-name" name="name" placeholder="Ex. Dorian &amp; Eva" autocomplete="name">
-        </div>
-        <div class="field">
-          <span class="lbl" id="f-pres-lbl">Présence</span>
-          <div class="seg" role="radiogroup" aria-labelledby="f-pres-lbl">
-            <span><input type="radio" id="f-yes" name="presence" value="yes" checked><label for="f-yes">🏁 Sur la grille</label></span>
-            <span><input type="radio" id="f-no" name="presence" value="no"><label for="f-no">Forfait</label></span>
-          </div>
-        </div>
-        <div class="two">
-          <div class="field">
-            <label for="f-diet">Régime ou allergies</label>
-            <input type="text" id="f-diet" name="diet" placeholder="Végétarien, sans gluten, rien à signaler…">
-          </div>
-          <div class="field">
-            <label for="f-count">Pilotes</label>
-            <input type="number" id="f-count" name="count" min="1" max="6" value="2" inputmode="numeric">
-          </div>
-        </div>
-        <div class="field">
-          <label for="f-msg">Un mot pour les vainqueurs</label>
-          <textarea id="f-msg" name="msg" placeholder="Un message, une chanson à mettre, une anecdote à ressortir…"></textarea>
-        </div>
-      </form>
-
-      <div class="pass" aria-live="polite">
-        <div class="pass-head"><span>Pass paddock</span><em style="font-style:normal">N° <span id="pass-no">30</span></em></div>
-        <div class="pass-body">
-          <div class="who" id="pass-who">Votre nom</div>
-          <div class="st" id="pass-st">Sur la grille · 2 pilotes</div>
-          <pre id="pass-text"></pre>
-        </div>
-        <div class="pass-foot">
-          <a class="btn primary" id="wa-btn" href="#" target="_blank" rel="noopener" hidden>
-            <svg viewBox="0 0 24 24"><path d="M4 20l1.3-3.9A8 8 0 1 1 8.2 19L4 20z"/><path d="M9 9.5c.3 2.5 2.5 4.7 5 5l1.2-1.2 1.8.9-.4 1.6c-3.8.6-8.4-4-7.8-7.8l1.6-.4.9 1.8L9 9.5z"/></svg>Envoyer sur WhatsApp
-          </a>
-          <button class="btn" type="button" id="copy-btn">
-            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Copier la réponse
-          </button>
-          <p class="status" id="rsvp-status" style="flex-basis:100%"></p>
-        </div>
+        <p>Votre présence est le seul laissez-passer exigé. Pour marquer le coup, une cagnotte commune sera ouverte au paddock.</p>
       </div>
     </div>
   </section>
@@ -473,70 +656,144 @@ footer .tag b{color:var(--fg)}
   </footer>
 </div>
 
+<div class="pitwall" aria-hidden="true">
+  <span class="kerb"></span>
+  <span class="mark" style="left:8%">Grille</span>
+  <span class="mark" style="left:30%">Billet</span>
+  <span class="mark" style="left:50%">Programme</span>
+  <span class="mark" style="left:70%">Écuries</span>
+  <span class="mark" style="left:88%">Circuit</span>
+  <span class="speed" id="speed">Vitesse <b>0</b> km/h</span>
+  <span class="road"></span>
+  <span class="finish"></span>
+  <svg class="car" id="scrollcar" viewBox="0 0 160 60"><use href="#f1car"/></svg>
+</div>
+
 <script>
 (function(){
-  // Numéro WhatsApp qui recevra les réponses, au format international sans "+" ni espaces (ex. 32470123456). Vide : le bouton WhatsApp reste masqué.
-  var WHATSAPP_NUMBER = "";
+  /* ============ RÉGLAGES ============ */
+  // Adresse de l'application web Google Apps Script qui enregistre les engagements (voir README). Vide : grille en lecture seule.
+  var API_URL = "";
+  var MAX_SEATS = 2;
+  var TEAMS = [
+    {name:"Ferrari", color:"#e8002d"},
+    {name:"McLaren", color:"#ff8000"},
+    {name:"Mercedes", color:"#27f4d2"},
+    {name:"Red Bull Racing", color:"#3671c6"},
+    {name:"Aston Martin", color:"#229971"},
+    {name:"Alpine", color:"#0093cc"},
+    {name:"Williams", color:"#1868db"},
+    {name:"Haas", color:"#b6babd"},
+    {name:"Racing Bulls", color:"#6692ff"},
+    {name:"Audi", color:"#f50537"},
+    {name:"Cadillac", color:"#d7c28e"}
+  ];
 
+  var boostStart = -1e9;
   var $ = function(id){ return document.getElementById(id); };
   var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 
-  /* Feux de départ */
-  var lights = document.querySelectorAll("#lights .light");
-  if (reduced) { lights.forEach(function(l){ l.classList.add("on"); }); }
-  else {
-    var i = 0;
-    var step = setInterval(function(){
-      if (i < lights.length) { lights[i].classList.add("on"); i++; }
-      else {
-        clearInterval(step);
-        setTimeout(function(){ lights.forEach(function(l){ l.classList.remove("on"); }); }, 900);
-      }
-    }, 550);
+  /* ============ FEUX DE DÉPART ============ */
+  var cols = document.querySelectorAll("#lights .lcol");
+  var label = $("light-label");
+  var seqTimer = [];
+  var running = false;
+  function clearSeq(){ seqTimer.forEach(clearTimeout); seqTimer = []; }
+  function setAll(cls){ document.querySelectorAll("#lights .light").forEach(function(l){ l.className = "light" + (cls ? " " + cls : ""); }); }
+  function startSequence(withSound){
+    if (running) return; running = true; clearSeq(); setAll("");
+    label.textContent = "Procédure de départ"; label.classList.remove("go");
+    if (reduced) { setAll("red"); label.textContent = "Feux rouges"; running = false; return; }
+    var t = 400;
+    cols.forEach(function(c, i){
+      seqTimer.push(setTimeout(function(){
+        c.querySelectorAll(".light").forEach(function(l){ l.classList.add("red"); });
+        label.textContent = (i + 1) + " / 5";
+      }, t + i * 900));
+    });
+    var hold = t + 5 * 900 + 600 + Math.random() * 1400;
+    seqTimer.push(setTimeout(function(){
+      setAll("green");
+      label.textContent = "C'est parti !"; label.classList.add("go");
+      if (withSound) engineRev();
+      boostStart = performance.now();
+    }, hold));
+    seqTimer.push(setTimeout(function(){ setAll(""); label.textContent = "Rejouer la procédure"; label.classList.remove("go"); running = false; }, hold + 2600));
+  }
+  var panel = $("light-panel");
+  panel.addEventListener("click", function(){ startSequence(true); });
+  panel.addEventListener("keydown", function(e){ if (e.key === "Enter" || e.key === " ") { e.preventDefault(); startSequence(true); } });
+  setTimeout(function(){ startSequence(false); }, 500);
+
+  /* Son moteur synthétisé (uniquement après un clic) */
+  var actx = null;
+  function engineRev(){
+    try {
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+      if (actx.state === "suspended") actx.resume();
+      var t = actx.currentTime;
+      var master = actx.createGain(); master.gain.setValueAtTime(0.0001, t);
+      master.gain.exponentialRampToValueAtTime(0.35, t + 0.12);
+      master.gain.setValueAtTime(0.35, t + 1.3);
+      master.gain.exponentialRampToValueAtTime(0.0001, t + 2.6);
+      var filt = actx.createBiquadFilter(); filt.type = "lowpass"; filt.Q.value = 4;
+      filt.frequency.setValueAtTime(500, t); filt.frequency.exponentialRampToValueAtTime(3200, t + 1.3); filt.frequency.exponentialRampToValueAtTime(700, t + 2.6);
+      [[1,"sawtooth",0.5],[0.5,"square",0.35],[2,"sawtooth",0.18]].forEach(function(v){
+        var o = actx.createOscillator(); o.type = v[1];
+        var g = actx.createGain(); g.gain.value = v[2];
+        o.frequency.setValueAtTime(55 * v[0], t);
+        o.frequency.exponentialRampToValueAtTime(560 * v[0], t + 1.3);
+        o.frequency.exponentialRampToValueAtTime(120 * v[0], t + 2.6);
+        o.connect(g); g.connect(filt); o.start(t); o.stop(t + 2.7);
+      });
+      filt.connect(master); master.connect(actx.destination);
+    } catch(e) {}
   }
 
-  /* Code-barres décoratif, déterministe */
+  /* ============ CODE-BARRES DÉCORATIF ============ */
   (function(){
     var svg = $("barcode"); if (!svg) return;
     var seed = "LL302027VIP", x = 2, out = "";
     for (var k = 0; k < 64; k++) {
-      var c = seed.charCodeAt(k % seed.length) + k * 7;
-      var w = (c % 3) + 1;
-      var gap = (c % 2) + 1;
+      var c = seed.charCodeAt(k % seed.length) + k * 7, w = (c % 3) + 1, gap = (c % 2) + 1;
       if (x + w > 198) break;
-      out += '<rect x="' + x + '" y="0" width="' + w + '" height="44"/>';
-      x += w + gap;
+      out += '<rect x="' + x + '" y="0" width="' + w + '" height="44"/>'; x += w + gap;
     }
     svg.innerHTML = out;
   })();
 
-  /* Compte à rebours : 20 mars 2027, 19h30 heure de Bruxelles (CET, UTC+1) */
-  var target = Date.UTC(2027, 2, 20, 18, 30, 0);
+  /* ============ CHRONO ============ */
+  var target = Date.UTC(2027, 2, 20, 18, 30, 0);   // 20 mars 2027, 19h30 heure de Bruxelles (CET)
+  var seasonStart = Date.UTC(2026, 9, 1, 0, 0, 0);  // ouverture de la saison : octobre 2026
   function pad(n){ return (n < 10 ? "0" : "") + n; }
   function tick(){
-    var diff = target - Date.now();
+    var now = Date.now(), diff = target - now;
     if (diff <= 0) {
-      $("cd-d").textContent = "00"; $("cd-h").textContent = "00"; $("cd-m").textContent = "00"; $("cd-s").textContent = "00";
-      $("cd-note").textContent = "Les feux sont éteints : c'est parti !";
-      return;
+      ["cd-d","cd-h","cd-m","cd-s"].forEach(function(id){ $(id).textContent = "00"; });
+      $("cd-note").textContent = "Feux éteints : c'est parti !";
+    } else {
+      var s = Math.floor(diff / 1000), d = Math.floor(s / 86400); s -= d * 86400;
+      var h = Math.floor(s / 3600); s -= h * 3600; var m = Math.floor(s / 60); s -= m * 60;
+      $("cd-d").textContent = d; $("cd-h").textContent = pad(h); $("cd-m").textContent = pad(m); $("cd-s").textContent = pad(s);
     }
-    var s = Math.floor(diff / 1000);
-    var d = Math.floor(s / 86400); s -= d * 86400;
-    var h = Math.floor(s / 3600); s -= h * 3600;
-    var m = Math.floor(s / 60); s -= m * 60;
-    $("cd-d").textContent = d; $("cd-h").textContent = pad(h); $("cd-m").textContent = pad(m); $("cd-s").textContent = pad(s);
+    var p = Math.max(0, Math.min(1, (now - seasonStart) / (target - seasonStart)));
+    $("season-pct").textContent = Math.round(p * 100) + " %";
+    [1,2,3].forEach(function(i){
+      var lo = (i - 1) / 3, hi = i / 3, f = Math.max(0, Math.min(1, (p - lo) / (hi - lo)));
+      $("sec" + i).style.setProperty("--p", (f * 100) + "%");
+    });
   }
   tick(); setInterval(tick, 1000);
 
-  /* Encoche de la perforation en mode empilé */
+  /* ============ ENCOCHE DE PERFORATION (mobile) ============ */
   function placePerf(){
     var t = $("ticket"), stub = t.querySelector(".t-stub");
-    if (window.innerWidth <= 760) { t.style.setProperty("--perf", stub.offsetTop + "px"); }
-    else { t.style.removeProperty("--perf"); }
+    if (window.innerWidth <= 760) t.style.setProperty("--perf", stub.offsetTop + "px"); else t.style.removeProperty("--perf");
   }
   placePerf(); window.addEventListener("resize", placePerf);
 
-  /* Copie presse-papiers avec repli */
+  /* ============ PRESSE-PAPIERS ============ */
   function copyText(text, statusEl, okMsg){
     function fallback(){
       var ta = document.createElement("textarea"); ta.value = text; ta.setAttribute("readonly", "");
@@ -545,58 +802,161 @@ footer .tag b{color:var(--fg)}
       document.body.removeChild(ta);
       statusEl.textContent = ok ? okMsg : "Copie impossible ici : sélectionnez le texte et copiez-le manuellement.";
     }
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function(){ statusEl.textContent = okMsg; }, fallback);
-    } else { fallback(); }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function(){ statusEl.textContent = okMsg; }, fallback);
+    else fallback();
   }
-  $("copy-addr").addEventListener("click", function(){
-    copyText("La Palette Verte, Rue Jean Jaurès 5, 7190 Écaussinnes", $("addr-status"), "Adresse copiée.");
-  });
+  $("copy-addr").addEventListener("click", function(){ copyText("La Palette Verte, Rue Jean Jaurès 5, 7190 Écaussinnes", $("addr-status"), "Adresse copiée."); });
 
-  /* Fiche pilote */
-  var f = $("rsvp-form");
-  function build(){
-    var name = $("f-name").value.trim();
-    var yes = $("f-yes").checked;
-    var count = parseInt($("f-count").value, 10); if (!(count >= 1)) count = 1; if (count > 6) count = 6;
-    var diet = $("f-diet").value.trim();
-    var msg = $("f-msg").value.trim();
+  /* ============ MURET DES STANDS : LA VOITURE SUIT LE DÉFILEMENT ============ */
+  var car = $("scrollcar"), speedEl = $("speed").querySelector("b");
+  var lastY = window.scrollY, lastT = performance.now(), fastTimer = null, curX = 0, goalX = 0;
+  function layoutCar(){
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    var p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    goalX = p * (window.innerWidth - car.offsetWidth - 16);
+  }
+  function animateCar(){
+    curX += (goalX - curX) * (reduced ? 1 : 0.18);
+    var bp = (performance.now() - boostStart) / 900, boost = (bp > 0 && bp < 1 && !reduced) ? Math.sin(bp * Math.PI) * 90 : 0;
+    if (boost > 0) car.classList.add("fast"); 
+    car.style.transform = "translateX(" + (curX + boost).toFixed(1) + "px)";
+    requestAnimationFrame(animateCar);
+  }
+  function onScroll(){
+    layoutCar();
+    var now = performance.now(), dt = Math.max(16, now - lastT), dy = Math.abs(window.scrollY - lastY);
+    var v = dy / dt;                                   // px par ms
+    var kmh = Math.min(340, Math.round(v * 120));
+    speedEl.textContent = kmh;
+    lastY = window.scrollY; lastT = now;
+    if (v > 1.2) { car.classList.add("fast"); clearTimeout(fastTimer); fastTimer = setTimeout(function(){ car.classList.remove("fast"); speedEl.textContent = "0"; }, 260); }
+    else { clearTimeout(fastTimer); fastTimer = setTimeout(function(){ car.classList.remove("fast"); speedEl.textContent = "0"; }, 260); }
+  }
+  window.addEventListener("scroll", onScroll, {passive:true});
+  window.addEventListener("resize", layoutCar);
+  layoutCar(); curX = goalX; animateCar();
 
-    $("pass-who").textContent = name || "Votre nom";
-    $("pass-st").textContent = yes ? ("Sur la grille · " + count + (count > 1 ? " pilotes" : " pilote")) : "Forfait déclaré";
-    $("pass-no").textContent = yes ? "30" : "DNS";
+  /* ============ GRILLE DE DÉPART : ÉCURIES ============ */
+  var entries = [];           // {id, team, pilot1, pilot2, note}
+  var selectedTeam = null;
+  var myId = null;
+  try { myId = localStorage.getItem("gp30-id"); } catch(e){}
+  if (!myId) { myId = "LL-" + Math.random().toString(36).slice(2, 8).toUpperCase(); try { localStorage.setItem("gp30-id", myId); } catch(e){} }
+  var saved = null; try { saved = JSON.parse(localStorage.getItem("gp30-entry") || "null"); } catch(e){}
 
-    var lines = [];
-    lines.push("🏁 Accréditation Grand Prix de nos 30 ans");
-    lines.push("Pilote(s) : " + (name || "…"));
-    if (yes) {
-      lines.push("Présence : sur la grille le 20/03/2027 à 19h30, " + count + (count > 1 ? " personnes" : " personne"));
-      if (diet) lines.push("Régime / allergies : " + diet);
-    } else {
-      lines.push("Présence : forfait, je ne pourrai pas être là");
+  function teamByName(n){ for (var i = 0; i < TEAMS.length; i++) if (TEAMS[i].name === n) return TEAMS[i]; return null; }
+  function seatsOf(teamName, excludeId){
+    var out = [];
+    entries.forEach(function(e){
+      if (e.team !== teamName || e.id === excludeId) return;
+      out.push({name:e.pilot1, id:e.id}); if (e.pilot2) out.push({name:e.pilot2, id:e.id});
+    });
+    return out;
+  }
+  function renderTeams(){
+    var wrap = $("teams"), html = "", totalPilots = 0, teamsUsed = 0;
+    TEAMS.forEach(function(t){
+      var seats = seatsOf(t.name, null);
+      totalPilots += seats.length; if (seats.length) teamsUsed++;
+      var mine = entries.filter(function(e){ return e.id === myId && e.team === t.name; }).length > 0;
+      var othersSeats = seatsOf(t.name, myId).length;
+      var full = othersSeats >= MAX_SEATS && !mine;
+      var cls = "team" + (selectedTeam === t.name ? " selected" : "") + (full ? " full" : "");
+      html += '<button type="button" class="' + cls + '" role="radio" aria-checked="' + (selectedTeam === t.name) + '" data-team="' + esc(t.name) + '" style="--tc:' + t.color + '"' + (full ? ' aria-disabled="true"' : '') + '>';
+      html += '<div class="team-head"><span class="team-name">' + esc(t.name) + '</span><svg class="team-car" viewBox="0 0 160 60" aria-hidden="true"><use href="#f1car"/></svg></div>';
+      html += '<div class="seats">';
+      for (var i = 0; i < MAX_SEATS; i++) {
+        var s = seats[i];
+        if (s) html += '<span class="seat taken' + (s.id === myId ? ' mine' : '') + '"><span class="n">P' + (i + 1) + '</span>' + esc(s.name) + '</span>';
+        else html += '<span class="seat"><span class="n">P' + (i + 1) + '</span>Baquet libre</span>';
+      }
+      html += '</div>';
+      html += '<div class="team-foot"><span>' + (full ? "Écurie complète" : (MAX_SEATS - seats.length) + (MAX_SEATS - seats.length > 1 ? " baquets libres" : " baquet libre")) + '</span>' + (mine ? '<b>Votre écurie</b>' : '') + '</div>';
+      html += '</button>';
+    });
+    wrap.innerHTML = html;
+    $("n-pilots").textContent = totalPilots;
+    $("n-teams").textContent = teamsUsed;
+    $("n-free").textContent = Math.max(0, TEAMS.length * MAX_SEATS - totalPilots);
+    wrap.querySelectorAll(".team").forEach(function(b){
+      b.addEventListener("click", function(){
+        if (b.classList.contains("full")) { setStatus("Cette écurie est complète : choisissez-en une autre.", "err"); return; }
+        selectedTeam = b.getAttribute("data-team"); renderTeams(); renderSide(); $("f-p1").focus();
+      });
+    });
+  }
+  function setStatus(msg, cls){ var s = $("reg-status"); s.textContent = msg; s.className = "status" + (cls ? " " + cls : ""); }
+  function renderSide(){
+    var p1 = $("f-p1").value.trim(), p2 = $("f-p2").value.trim();
+    $("side-who").textContent = p1 ? (p2 ? p1 + " & " + p2 : p1) : "Votre nom";
+    var t = teamByName(selectedTeam);
+    var tm = $("side-team");
+    tm.innerHTML = '<i></i>' + (t ? esc(t.name) : "Aucune écurie choisie");
+    tm.style.setProperty("--tc", t ? t.color : "");
+    $("side-no").textContent = "N° " + (myId || "—");
+    var mine = entries.filter(function(e){ return e.id === myId; })[0];
+    $("submit-label").textContent = mine ? "Mettre à jour mon engagement" : "Prendre le baquet";
+    $("leave-btn").hidden = !mine;
+  }
+  function applyMine(){
+    var mine = entries.filter(function(e){ return e.id === myId; })[0] || saved;
+    if (mine) {
+      if (!$("f-p1").value) $("f-p1").value = mine.pilot1 || "";
+      if (!$("f-p2").value) $("f-p2").value = mine.pilot2 || "";
+      if (!$("f-note").value) $("f-note").value = mine.note || "";
+      if (!selectedTeam) selectedTeam = mine.team;
     }
-    if (msg) lines.push("Message : " + msg);
-    var text = lines.join("\n");
-    $("pass-text").textContent = text;
-
-    var wa = $("wa-btn");
-    if (WHATSAPP_NUMBER) {
-      wa.hidden = false;
-      wa.href = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(text);
-    } else { wa.hidden = true; }
-    return text;
   }
-  f.addEventListener("input", build);
-  f.addEventListener("change", build);
-  f.addEventListener("submit", function(e){ e.preventDefault(); });
-  $("copy-btn").addEventListener("click", function(){
-    var text = build();
-    if (!$("f-name").value.trim()) { $("rsvp-status").textContent = "Indiquez au moins votre prénom avant de copier."; $("f-name").focus(); return; }
-    copyText(text, $("rsvp-status"), "Réponse copiée : collez-la dans votre conversation avec Lucie ou Lilian.");
+  function loadEntries(){
+    if (!API_URL) { $("api-notice").hidden = false; $("submit-btn").disabled = true; renderTeams(); applyMine(); renderSide(); return; }
+    fetch(API_URL, {method:"GET", cache:"no-store"}).then(function(r){ return r.json(); }).then(function(data){
+      if (data && data.entries) entries = data.entries;
+      renderTeams(); applyMine(); renderTeams(); renderSide();
+    }).catch(function(){ setStatus("Impossible de charger la grille pour le moment. Réessayez dans un instant.", "err"); renderTeams(); renderSide(); });
+  }
+  function postEntry(payload){
+    return fetch(API_URL, {method:"POST", body: JSON.stringify(payload), redirect:"follow"}).then(function(r){ return r.json(); });
+  }
+  $("reg-form").addEventListener("input", renderSide);
+  $("reg-form").addEventListener("submit", function(e){
+    e.preventDefault();
+    var p1 = $("f-p1").value.trim(), p2 = $("f-p2").value.trim(), note = $("f-note").value.trim();
+    if (!selectedTeam) { setStatus("Choisissez d'abord une écurie dans la grille.", "err"); return; }
+    if (!p1) { setStatus("Indiquez au moins le prénom du pilote 1.", "err"); $("f-p1").focus(); return; }
+    var others = seatsOf(selectedTeam, myId).length, need = p2 ? 2 : 1;
+    if (others + need > MAX_SEATS) { setStatus(need === 2 ? "Il ne reste qu'un baquet dans cette écurie : venez seul(e) ou choisissez-en une autre." : "Cette écurie est complète.", "err"); return; }
+    var btn = $("submit-btn"); btn.disabled = true; setStatus("Transmission au stand…");
+    var payload = {id: myId, team: selectedTeam, pilot1: p1, pilot2: p2, note: note};
+    postEntry(payload).then(function(res){
+      btn.disabled = false;
+      if (res && res.ok) {
+        if (res.entries) entries = res.entries;
+        try { localStorage.setItem("gp30-entry", JSON.stringify(payload)); } catch(err){}
+        renderTeams(); renderSide();
+        setStatus("Engagement confirmé : " + (p2 ? p1 + " et " + p2 + " roulent" : p1 + " roule") + " pour " + selectedTeam + ".", "ok");
+      } else if (res && res.error === "full") {
+        setStatus("Quelqu'un vient de prendre ce baquet. Choisissez une autre écurie.", "err"); loadEntries();
+      } else {
+        setStatus("Le stand n'a pas reçu le message. Réessayez.", "err");
+      }
+    }).catch(function(){ btn.disabled = false; setStatus("Le stand n'a pas reçu le message. Vérifiez votre connexion et réessayez.", "err"); });
   });
-  build();
+  $("leave-btn").addEventListener("click", function(){
+    if (!API_URL) return;
+    var btn = $("leave-btn"); btn.disabled = true; setStatus("Retrait en cours…");
+    postEntry({id: myId, action: "delete"}).then(function(res){
+      btn.disabled = false;
+      if (res && res.ok) {
+        if (res.entries) entries = res.entries;
+        try { localStorage.removeItem("gp30-entry"); } catch(err){}
+        saved = null; selectedTeam = null; $("f-p1").value = ""; $("f-p2").value = ""; $("f-note").value = "";
+        renderTeams(); renderSide(); setStatus("Vous avez quitté la grille. Vous pouvez reprendre un baquet quand vous voulez.", "ok");
+      } else setStatus("Le retrait n'a pas abouti. Réessayez.", "err");
+    }).catch(function(){ btn.disabled = false; setStatus("Le retrait n'a pas abouti. Réessayez.", "err"); });
+  });
+  loadEntries();
+  if (API_URL) setInterval(loadEntries, 45000);
 })();
 </script>
-
 </body>
 </html>
