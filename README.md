@@ -8,7 +8,8 @@ Publié avec GitHub Pages sur https://grandprix30ans.be/ (adresse de secours : h
 - `index.html` : la page complète (billet, procédure de départ, chrono, programme, grille des écuries, radio, circuit, drapeaux). Aucune dépendance en dehors des polices Google.
 - `og.jpg` : image d'aperçu pour WhatsApp, Messenger et Facebook.
 - `icon-*.png`, `apple-touch-icon.png`, `manifest.webmanifest` : icône et installation sur l'écran d'accueil.
-- `apps-script/Code.gs` : script Google Apps Script qui enregistre les engagements par écurie et les chronos du concours de pit stop dans une feuille Google Sheets (onglets « Engagements » et « PitStop »).
+- `galerie.html` : le paddock photo, page à part où les invités déposent leurs photos (réduites à 1 600 px côté téléphone) ; elles vont dans le dossier Drive « GP 30 ans - Photos » et s'affichent pour tous.
+- `apps-script/Code.gs` : script Google Apps Script qui enregistre les engagements par écurie, les chronos du concours de pit stop et les photos dans une feuille Google Sheets (onglets « Engagements », « PitStop », « Photos »).
 
 ## Activer les inscriptions par écurie
 

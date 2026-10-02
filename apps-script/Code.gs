@@ -16,8 +16,12 @@
  *
  * La feuille se remplit toute seule :
  *  - onglet « Engagements » : une ligne par engagement (horodatage, identifiant, écurie, pilote 1, pilote 2, message) ;
- *  - onglet « PitStop » : une ligne par participant au concours (horodatage, identifiant, prénom, nom, temps en ms).
+ *  - onglet « PitStop » : une ligne par participant au concours (horodatage, identifiant, prénom, nom, temps en ms) ;
+ *  - onglet « Photos » : une ligne par photo déposée dans la galerie (les fichiers vont dans le dossier Drive « GP 30 ans - Photos »).
  * On peut supprimer une ligne à la main pour retirer quelqu'un.
+ *
+ * Après toute modification de ce fichier : Déployer > Gérer les déploiements > crayon > Version : Nouvelle version > Déployer.
+ * La première fois que la galerie est utilisée, Google demande une autorisation supplémentaire (accès à Drive).
  */
 
 var ADMIN_PIN = 'A-REMPLACER';   // code organisateur : à définir avant de déployer (chiffres ou lettres, entre apostrophes)
@@ -26,8 +30,12 @@ var PIT_SHEET = 'PitStop';
 var MAX_SEATS = 30;
 var HEADERS = ['Horodatage', 'Identifiant', 'Écurie', 'Pilote 1', 'Pilote 2', 'Message'];
 var PIT_HEADERS = ['Horodatage', 'Identifiant', 'Prénom', 'Nom', 'Temps (ms)'];
+var PHOTO_SHEET = 'Photos';
+var PHOTO_FOLDER = 'GP 30 ans - Photos';
+var PHOTO_HEADERS = ['Horodatage', 'Fichier', 'Photographe', 'Écurie', 'Déposant', 'Légende'];
 
-function doGet() {
+function doGet(e) {
+  if (e && e.parameter && e.parameter.what === 'photos') return json_(photoList_());
   return json_(list_());
 }
 
@@ -39,6 +47,32 @@ function doPost(e) {
 
     if (body.action === 'admin_check') {
       return json_({ ok: String(body.pin) === ADMIN_PIN, error: String(body.pin) === ADMIN_PIN ? undefined : 'pin' });
+    }
+    if (body.action === 'admin_delete_photo') {
+      if (String(body.pin) !== ADMIN_PIN) return json_({ ok: false, error: 'pin' });
+      var fid = clean_(body.target, 80);
+      var psh = photoSheet_();
+      var prows = psh.getDataRange().getValues();
+      for (var q = prows.length - 1; q >= 1; q--) {
+        if (String(prows[q][1]) === fid) psh.deleteRow(q + 1);
+      }
+      try { DriveApp.getFileById(fid).setTrashed(true); } catch (err) {}
+      return json_(photoList_());
+    }
+    if (body.action === 'photo_upload') {
+      var data = String(body.data || '');
+      if (data.indexOf('base64,') >= 0) data = data.split('base64,')[1];
+      if (!data || data.length > 12000000) return json_({ ok: false, error: 'invalid' });
+      var who = clean_(body.name, 60) || 'Pilote anonyme';
+      var team = clean_(body.team, 40);
+      var caption = clean_(body.caption, 140);
+      var bytes = Utilities.base64Decode(data);
+      var stamp = Utilities.formatDate(new Date(), 'Europe/Brussels', 'yyyyMMdd-HHmmss');
+      var blob = Utilities.newBlob(bytes, 'image/jpeg', 'gp30-' + stamp + '-' + who.replace(/[^A-Za-z0-9]+/g, '_') + '.jpg');
+      var file = photoFolder_().createFile(blob);
+      try { file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (err) {}
+      photoSheet_().appendRow([new Date(), file.getId(), who, team, id, caption]);
+      return json_(photoList_());
     }
     if (body.action === 'admin_delete' || body.action === 'admin_delete_pit') {
       if (String(body.pin) !== ADMIN_PIN) return json_({ ok: false, error: 'pin' });
@@ -130,6 +164,35 @@ function pitSheet_() {
     sh.setFrozenRows(1);
   }
   return sh;
+}
+
+function photoFolder_() {
+  var it = DriveApp.getFoldersByName(PHOTO_FOLDER);
+  return it.hasNext() ? it.next() : DriveApp.createFolder(PHOTO_FOLDER);
+}
+
+function photoSheet_() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName(PHOTO_SHEET);
+  if (!sh) sh = ss.insertSheet(PHOTO_SHEET);
+  if (sh.getLastRow() === 0) {
+    sh.appendRow(PHOTO_HEADERS);
+    sh.getRange(1, 1, 1, PHOTO_HEADERS.length).setFontWeight('bold');
+    sh.setFrozenRows(1);
+  }
+  return sh;
+}
+
+function photoList_() {
+  var rows = photoSheet_().getDataRange().getValues();
+  var out = [];
+  for (var i = rows.length - 1; i >= 1; i--) {
+    var r = rows[i];
+    if (!r[1]) continue;
+    out.push({ id: String(r[1]), name: String(r[2]), team: String(r[3]), caption: String(r[5] || ''), at: r[0] instanceof Date ? r[0].toISOString() : String(r[0]) });
+    if (out.length >= 600) break;
+  }
+  return { ok: true, photos: out };
 }
 
 function pitList_() {
