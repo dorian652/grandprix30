@@ -267,12 +267,12 @@ textarea{min-height:72px;resize:vertical}
 
 /* Pit stop */
 .pit-wrap{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);gap:22px;margin-top:26px;align-items:center}
-.pit{position:relative;width:100%;max-width:560px;aspect-ratio:160/60;color:var(--red);margin-inline:auto}
+.pit{position:relative;width:100%;max-width:620px;aspect-ratio:400/160;color:var(--red);margin-inline:auto}
 .pit-car{position:absolute;inset:0;width:100%;height:100%}
-.wheel{position:absolute;width:clamp(36px,9vw,52px);height:clamp(36px,9vw,52px);transform:translate(-50%,-50%);border-radius:50%;border:3px solid var(--fg);background:rgba(239,231,216,.08);cursor:pointer;padding:0;transition:background .1s,border-color .1s,transform .1s}
+.wheel{position:absolute;width:clamp(42px,11vw,62px);height:clamp(42px,11vw,62px);transform:translate(-50%,-50%);border-radius:50%;border:3px solid rgba(239,231,216,.55);background:rgba(239,231,216,.04);cursor:pointer;padding:0;transition:background .1s,border-color .1s,transform .1s}
 .wheel:disabled{opacity:.45;cursor:default}
 .wheel.armed{border-color:var(--yellow);box-shadow:0 0 0 4px rgba(245,197,24,.25);animation:pulse 1s infinite}
-.wheel.done{background:var(--green);border-color:var(--green);box-shadow:0 0 18px rgba(47,210,122,.6);animation:none}
+.wheel.done{background:rgba(47,210,122,.55);border-color:var(--green);box-shadow:0 0 18px rgba(47,210,122,.6);animation:none}
 @keyframes pulse{50%{transform:translate(-50%,-50%) scale(1.08)}}
 .pit-side{text-align:center;display:grid;gap:12px;justify-items:center}
 .pit-clock{font-family:var(--mono);font-weight:700;font-size:clamp(3rem,10vw,4.6rem);line-height:1;font-variant-numeric:tabular-nums;letter-spacing:.02em}
@@ -430,6 +430,90 @@ footer .tag b{color:var(--fg)}
     <circle cx="53" cy="60" r="1.8" fill="#1a1512"/>
     <circle cx="65" cy="60" r="1.8" fill="#1a1512"/>
     <path d="M53 64 Q59 69 65 64" fill="none" stroke="#1a1512" stroke-width="1.5" stroke-linecap="round"/>
+  </symbol>
+  <!-- Monoplace détaillée vue de dessus pour le pit stop, dessin original. Avant à droite. fill="currentColor" = couleur d'écurie. -->
+  <symbol id="f1car-detail" viewBox="0 0 400 160">
+    <defs>
+      <linearGradient id="gTyre" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3a3a"/><stop offset=".5" stop-color="#101010"/><stop offset="1" stop-color="#2a2a2a"/></linearGradient>
+      <linearGradient id="gCarbon" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b2b2b"/><stop offset="1" stop-color="#121212"/></linearGradient>
+      <linearGradient id="gFloor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1c1c1c"/><stop offset=".5" stop-color="#262626"/><stop offset="1" stop-color="#1c1c1c"/></linearGradient>
+    </defs>
+    <g class="flame" fill="#ffb347"><polygon points="0,74 20,78 0,82"/><polygon points="4,78 24,82 4,86" fill="#ff5a2b"/></g>
+    <!-- ombre au sol -->
+    <ellipse cx="205" cy="82" rx="190" ry="60" fill="rgba(0,0,0,.35)"/>
+    <!-- aileron arrière -->
+    <rect x="10" y="18" width="34" height="4" rx="1" fill="url(#gCarbon)"/>
+    <rect x="10" y="138" width="34" height="4" rx="1" fill="url(#gCarbon)"/>
+    <rect x="16" y="22" width="12" height="116" rx="2" fill="currentColor"/>
+    <rect x="28" y="24" width="7" height="112" rx="2" fill="url(#gCarbon)"/>
+    <rect x="16" y="22" width="12" height="116" rx="2" fill="#000" opacity=".25"/>
+    <rect x="18" y="24" width="3" height="112" fill="#fff" opacity=".18"/>
+    <!-- supports d'aileron et diffuseur -->
+    <rect x="34" y="70" width="22" height="20" rx="2" fill="url(#gCarbon)"/>
+    <path d="M36 44 L62 54 L62 106 L36 116 Z" fill="url(#gCarbon)"/>
+    <path d="M40 48 L58 56 M40 112 L58 104 M48 52 L48 108" stroke="#3a3a3a" stroke-width="1.5"/>
+    <!-- fond plat -->
+    <path d="M60 40 L120 36 L170 40 L250 38 L296 44 L296 116 L250 122 L170 120 L120 124 L60 120 Z" fill="url(#gFloor)"/>
+    <path d="M296 44 L310 52 L310 108 L296 116 Z" fill="url(#gFloor)"/>
+    <!-- bargeboards -->
+    <path d="M250 40 L262 36 L266 44 Z M250 120 L262 124 L266 116 Z" fill="url(#gCarbon)"/>
+    <!-- pontons -->
+    <path d="M112 50 Q100 60 100 80 Q100 100 112 110 L236 106 Q252 100 254 80 Q252 60 236 54 Z" fill="currentColor"/>
+    <path d="M112 50 Q100 60 100 80 Q100 100 112 110 L236 106 Q252 100 254 80 Q252 60 236 54 Z" fill="#000" opacity=".18"/>
+    <path d="M236 54 L254 56 L254 72 L240 70 Z M236 106 L254 104 L254 88 L240 90 Z" fill="#0b0b0b"/>
+    <path d="M120 56 Q110 66 110 80 Q110 94 120 104" fill="none" stroke="#fff" stroke-width="2" opacity=".22"/>
+    <!-- capot moteur et museau -->
+    <path d="M56 70 L120 60 L200 64 L300 70 L372 76 Q392 80 372 84 L300 90 L200 96 L120 100 L56 90 Z" fill="currentColor"/>
+    <path d="M56 70 L120 60 L200 64 L300 70 L372 76 L372 78 L300 74 L200 70 L120 68 L56 76 Z" fill="#fff" opacity=".28"/>
+    <path d="M56 84 L120 92 L200 90 L300 86 L372 82 Q392 80 372 84 L300 90 L200 96 L120 100 L56 90 Z" fill="#000" opacity=".3"/>
+    <!-- aileron de requin -->
+    <rect x="60" y="78" width="80" height="4" rx="2" fill="url(#gCarbon)"/>
+    <!-- prise d'air et arceau -->
+    <path d="M136 72 L160 70 L160 90 L136 88 Z" fill="url(#gCarbon)"/>
+    <ellipse cx="148" cy="80" rx="8" ry="6" fill="#050505"/>
+    <!-- cockpit, halo, casque -->
+    <ellipse cx="190" cy="80" rx="20" ry="11" fill="#050505"/>
+    <path d="M166 80 Q166 62 196 62 Q214 62 216 80 Q214 98 196 98 Q166 98 166 80 Z" fill="none" stroke="#1b1b1b" stroke-width="4"/>
+    <path d="M216 80 L234 80" stroke="#1b1b1b" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="186" cy="80" r="8" fill="#f5f0e6"/>
+    <path d="M190 74 A8 8 0 0 1 190 86 Z" fill="#1b1b1b"/>
+    <circle cx="186" cy="80" r="8" fill="none" stroke="#c8102e" stroke-width="1.2"/>
+    <!-- rétroviseurs -->
+    <rect x="206" y="56" width="10" height="5" rx="1.5" fill="url(#gCarbon)"/>
+    <rect x="206" y="99" width="10" height="5" rx="1.5" fill="url(#gCarbon)"/>
+    <!-- suspensions arrière -->
+    <path d="M66 36 L96 68 M80 36 L104 70 M66 124 L96 92 M80 124 L104 90" stroke="#2a2a2a" stroke-width="3" stroke-linecap="round"/>
+    <!-- suspensions avant -->
+    <path d="M312 36 L340 74 M330 36 L352 74 M312 124 L340 86 M330 124 L352 86" stroke="#2a2a2a" stroke-width="3" stroke-linecap="round"/>
+    <!-- pneus arrière -->
+    <rect x="42" y="8" width="56" height="28" rx="6" fill="url(#gTyre)"/>
+    <rect x="42" y="124" width="56" height="28" rx="6" fill="url(#gTyre)"/>
+    <rect x="46" y="10" width="48" height="2" rx="1" fill="#f5c518"/>
+    <rect x="46" y="148" width="48" height="2" rx="1" fill="#f5c518"/>
+    <path d="M50 22 L90 22" stroke="#000" stroke-width="1" opacity=".6"/>
+    <path d="M50 138 L90 138" stroke="#000" stroke-width="1" opacity=".6"/>
+    <!-- pneus avant -->
+    <rect x="304" y="10" width="50" height="26" rx="6" fill="url(#gTyre)"/>
+    <rect x="304" y="124" width="50" height="26" rx="6" fill="url(#gTyre)"/>
+    <rect x="308" y="12" width="42" height="2" rx="1" fill="#f5c518"/>
+    <rect x="308" y="146" width="42" height="2" rx="1" fill="#f5c518"/>
+    <path d="M312 23 L346 23" stroke="#000" stroke-width="1" opacity=".6"/>
+    <path d="M312 137 L346 137" stroke="#000" stroke-width="1" opacity=".6"/>
+    <!-- écopes de freins -->
+    <rect x="96" y="30" width="8" height="8" rx="2" fill="url(#gCarbon)"/><rect x="96" y="122" width="8" height="8" rx="2" fill="url(#gCarbon)"/>
+    <rect x="296" y="30" width="8" height="8" rx="2" fill="url(#gCarbon)"/><rect x="296" y="122" width="8" height="8" rx="2" fill="url(#gCarbon)"/>
+    <!-- aileron avant -->
+    <rect x="350" y="8" width="42" height="4" rx="1" fill="url(#gCarbon)"/>
+    <rect x="350" y="148" width="42" height="4" rx="1" fill="url(#gCarbon)"/>
+    <path d="M358 12 L368 12 L370 66 L372 94 L368 148 L358 148 Z" fill="currentColor"/>
+    <path d="M358 12 L368 12 L370 66 L372 94 L368 148 L358 148 Z" fill="#000" opacity=".2"/>
+    <path d="M369 14 L377 16 L379 66 L379 94 L377 144 L369 146 L372 94 L370 66 Z" fill="url(#gCarbon)"/>
+    <path d="M378 18 L386 22 L387 66 L387 94 L386 138 L378 142 L379 94 L379 66 Z" fill="currentColor"/>
+    <path d="M378 18 L386 22 L387 66 L387 94 L386 138 L378 142 L379 94 L379 66 Z" fill="#000" opacity=".12"/>
+    <path d="M360 14 L363 14 L364 146 L360 146 Z" fill="#fff" opacity=".22"/>
+    <!-- numéro -->
+    <text x="330" y="84" text-anchor="middle" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="800" font-size="13" fill="#fff" opacity=".9" transform="rotate(90 330 80)">30</text>
+    <text x="90" y="80" text-anchor="middle" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="800" font-size="11" fill="#fff" opacity=".85" transform="rotate(90 90 76)">L&amp;L</text>
   </symbol>
   <!-- Monoplace vue de dessus, dessin original. Pointe vers la droite. fill="currentColor" pour la couleur d'écurie. -->
   <symbol id="f1car" viewBox="0 0 160 60">
@@ -663,11 +747,11 @@ footer .tag b{color:var(--fg)}
     <p class="lead">Quatre roues à changer, le plus vite possible. Appuyez sur GO, puis touchez les quatre roues. Le chrono s'arrête à la dernière. Enregistrez votre temps : le meilleur chrono de la grille au 20 mars reçoit un cadeau sur le podium.</p>
     <div class="pit-wrap">
       <div class="pit" id="pit">
-        <svg viewBox="0 0 160 60" class="pit-car" aria-hidden="true"><use href="#f1car"/></svg>
-        <button type="button" class="wheel" data-w="0" style="left:24.4%;top:23%" aria-label="Roue arrière gauche"></button>
-        <button type="button" class="wheel" data-w="1" style="left:24.4%;top:77%" aria-label="Roue arrière droite"></button>
-        <button type="button" class="wheel" data-w="2" style="left:67.5%;top:24%" aria-label="Roue avant gauche"></button>
-        <button type="button" class="wheel" data-w="3" style="left:67.5%;top:76%" aria-label="Roue avant droite"></button>
+        <svg viewBox="0 0 400 160" class="pit-car" aria-hidden="true"><use href="#f1car-detail"/></svg>
+        <button type="button" class="wheel" data-w="0" style="left:17.5%;top:13.75%" aria-label="Roue arrière gauche"></button>
+        <button type="button" class="wheel" data-w="1" style="left:17.5%;top:86.25%" aria-label="Roue arrière droite"></button>
+        <button type="button" class="wheel" data-w="2" style="left:82.25%;top:14.4%" aria-label="Roue avant gauche"></button>
+        <button type="button" class="wheel" data-w="3" style="left:82.25%;top:85.6%" aria-label="Roue avant droite"></button>
       </div>
       <div class="pit-side">
         <div class="pit-clock" id="pit-clock">0.00</div>
