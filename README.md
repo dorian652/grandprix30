@@ -12,7 +12,7 @@ Publié avec GitHub Pages : https://dorian652.github.io/grandprix30/
 
 ## Activer les inscriptions par écurie
 
-Les invités choisissent une écurie et prennent un ou deux baquets. Pour que ces choix soient enregistrés et visibles par tous, le site a besoin d'une feuille Google Sheets reliée par un petit script.
+Les invités (plus de 100) choisissent l'écurie pour laquelle ils roulent, seuls ou en duo. Pour que ces choix soient enregistrés et visibles par tous, le site a besoin d'une feuille Google Sheets reliée par un petit script.
 
 1. Créer une feuille Google Sheets vide.
 2. Extensions > Apps Script, coller le contenu de `apps-script/Code.gs`, enregistrer.
@@ -23,7 +23,7 @@ Tant que `API_URL` est vide, la grille s'affiche en lecture seule.
 
 ## Règles de la grille
 
-- 11 écuries, 2 baquets chacune.
-- Une personne seule prend un baquet ; un duo prend les deux.
+- 11 écuries, 30 pilotes maximum par écurie.
+- Une inscription couvre une personne ou un duo.
 - Chaque visiteur peut modifier ou retirer son propre engagement depuis le même navigateur.
 - La feuille Google Sheets reste la référence : supprimer une ligne retire l'engagement du site.

@@ -202,11 +202,12 @@ section{padding-block:56px;border-top:1px solid var(--line)}
 .team-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-left:8px}
 .team-name{font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:1.25rem;line-height:1}
 .team-car{width:54px;height:22px;flex:none;color:var(--tc)}
-.seats{display:grid;gap:6px;padding-left:8px}
-.seat{display:flex;align-items:center;gap:8px;font-size:.92rem;min-height:26px;padding:3px 8px;border-radius:6px;background:rgba(255,255,255,.03);border:1px dashed var(--line);color:var(--muted);overflow-wrap:anywhere}
-.seat.taken{border-style:solid;color:var(--fg);background:rgba(255,255,255,.05)}
-.seat .n{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;color:var(--muted);flex:none}
-.seat.mine{border-color:var(--tc);color:#fff}
+.team-count{display:flex;align-items:baseline;gap:8px;padding-left:8px;font-family:var(--mono);font-weight:700;font-size:1.7rem;line-height:1;font-variant-numeric:tabular-nums}
+.team-count small{font-family:var(--display);font-weight:700;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.members{display:flex;flex-wrap:wrap;gap:6px;padding-left:8px;min-height:30px;align-content:flex-start}
+.member{font-size:.85rem;line-height:1.3;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line);overflow-wrap:anywhere}
+.member.mine{border-color:var(--tc);background:rgba(255,255,255,.12);color:#fff;font-weight:600}
+.members .empty{color:var(--muted);font-size:.88rem;font-style:italic;padding:4px 0}
 .team-foot{display:flex;justify-content:space-between;align-items:center;padding-left:8px;font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
 .team-foot b{color:var(--fg)}
 .reg{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:22px;margin-top:26px;align-items:start}
@@ -265,7 +266,8 @@ textarea{min-height:72px;resize:vertical}
 .fl{width:64px;height:44px;border-radius:3px;transform:skewY(-4deg);box-shadow:4px 6px 0 rgba(0,0,0,.35);position:relative}
 .fl::before{content:"";position:absolute;left:-4px;top:-6px;bottom:-6px;width:3px;background:var(--muted);border-radius:2px}
 .fl.green{background:#1ec760}
-.fl.blue{background:#2a7bff}
+.fl.red{background:#e0141c}
+.marshal{display:inline-block;width:14px;height:14px;border-radius:50%;background:#ff7a00;box-shadow:0 0 0 3px rgba(255,122,0,.25);vertical-align:-1px;margin-right:10px}
 .fl.yellow{background:#f5c518}
 .fl.checker{background:conic-gradient(#efe7d8 25%,#151210 0 50%,#efe7d8 0 75%,#151210 0);background-size:16px 16px}
 .flagcard h3{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:1.3rem;letter-spacing:.03em;line-height:1}
@@ -278,7 +280,7 @@ textarea{min-height:72px;resize:vertical}
 footer{padding-top:40px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
 footer .tag{font-family:var(--display);font-weight:700;letter-spacing:.26em;text-transform:uppercase;font-size:.8rem;color:var(--muted);margin:0}
 footer .tag b{color:var(--fg)}
-.checker{height:10px;width:160px;background:conic-gradient(var(--fg) 25%,transparent 0 50%,var(--fg) 0 75%,transparent 0);background-size:10px 10px;opacity:.7}
+.chq{height:10px;width:160px;background:conic-gradient(var(--fg) 25%,transparent 0 50%,var(--fg) 0 75%,transparent 0);background-size:10px 10px;opacity:.7}
 
 /* Muret des stands : la monoplace suit le défilement */
 .pitwall{position:fixed;left:0;right:0;bottom:0;z-index:50;height:54px;padding-bottom:env(safe-area-inset-bottom,0px);background:linear-gradient(180deg,rgba(15,13,12,0),rgba(15,13,12,.92) 30%,#0a0908);pointer-events:none}
@@ -382,7 +384,7 @@ footer .tag b{color:var(--fg)}
     </div>
     <p class="eyebrow">Lucie &amp; Lilian vous invitent au</p>
     <h1>Grand Prix <span>de nos</span> 30 ans</h1>
-    <p>Une seule manche, un seul soir, une poignée de pilotes sur la grille. Rendez-vous à La Palette Verte pour fêter nos deux fois trente ans. Cliquez sur les feux pour entendre le moteur.</p>
+    <p>Une seule manche, un seul soir, plus de cent pilotes sur la grille. Rendez-vous à La Palette Verte pour fêter nos deux fois trente ans. Cliquez sur les feux pour entendre le moteur.</p>
   </section>
 
   <div class="ticket-stage">
@@ -478,13 +480,13 @@ footer .tag b{color:var(--fg)}
         <p class="eyebrow">Engagements</p>
         <h2 class="sec-title">Choisissez votre écurie</h2>
       </div>
-      <p class="lap">Écuries <b>11</b> · Baquets <b>2</b> par écurie</p>
+      <p class="lap">Écuries <b>11</b> · Pilotes <b>30</b> max par écurie</p>
     </div>
-    <p class="lead">Chaque écurie a deux baquets. Prenez-en un pour vous, ou les deux si vous venez en duo. Si un baquet est déjà occupé, vous devenez le coéquipier ou la coéquipière de la personne en place.</p>
+    <p class="lead">Choisissez l'écurie pour laquelle vous roulerez le 20 mars, seul ou en duo. Chacun fait ce qu'il veut : rejoignez vos amis, ou allez défier l'écurie d'en face. Le soir du Grand Prix, vous saurez qui sont vos coéquipiers.</p>
     <div class="grid-summary">
       <span class="pill">Pilotes engagés : <b id="n-pilots">0</b></span>
       <span class="pill">Écuries représentées : <b id="n-teams">0</b> / 11</span>
-      <span class="pill">Baquets libres : <b id="n-free">22</b></span>
+      <span class="pill">En tête du championnat : <b id="n-lead">—</b></span>
     </div>
     <div class="teams" id="teams" role="radiogroup" aria-label="Écuries"></div>
 
@@ -506,7 +508,7 @@ footer .tag b{color:var(--fg)}
         </div>
         <div class="btn-row">
           <button class="btn primary" type="submit" id="submit-btn">
-            <svg viewBox="0 0 24 24"><path d="M5 21V4M5 4h13l-2 4 2 4H5"/></svg><span id="submit-label">Prendre le baquet</span>
+            <svg viewBox="0 0 24 24"><path d="M5 21V4M5 4h13l-2 4 2 4H5"/></svg><span id="submit-label">Rejoindre l'écurie</span>
           </button>
           <button class="linkbtn" type="button" id="leave-btn" hidden>Me retirer de la grille</button>
         </div>
@@ -521,7 +523,7 @@ footer .tag b{color:var(--fg)}
           <ul>
             <li>Cliquez sur une écurie dans la grille</li>
             <li>Indiquez votre prénom, et celui de votre duo</li>
-            <li>Validez : votre nom apparaît dans le baquet</li>
+            <li>Validez : votre nom rejoint l'écurie</li>
           </ul>
         </div>
       </div>
@@ -607,7 +609,8 @@ footer .tag b{color:var(--fg)}
         <p class="status" id="addr-status"></p>
         <dl class="facts">
           <div><dt>Arrivée</dt><dd><b>19h30</b> · la grille se forme avant l'extinction des feux à 21h.</dd></div>
-          <div><dt>Accès</dt><dd>Billet personnel : la grille est volontairement réduite à nos proches.</dd></div>
+          <div><dt>Tenue</dt><dd>Élégant et prêt pour le podium. Les couleurs de votre écurie sont les bienvenues.</dd></div>
+          <div><dt>Trophées</dt><dd>Votre présence est le seul laissez-passer exigé. Pour marquer le coup, une cagnotte commune sera ouverte au paddock.</dd></div>
           <div><dt>Retour</dt><dd>Pensez au pilote désigné ou à un taxi : les stands ferment tard.</dd></div>
         </dl>
       </div>
@@ -617,43 +620,43 @@ footer .tag b{color:var(--fg)}
   <section id="drapeaux">
     <div class="sec-head">
       <div>
-        <p class="eyebrow">Commissaires de piste</p>
-        <h2 class="sec-title">Règlement du paddock</h2>
+        <p class="eyebrow">Direction de course</p>
+        <h2 class="sec-title">Drapeaux et pénitences</h2>
       </div>
-      <p class="lap">Drapeaux <b>4</b> · Pénalités <b>0</b></p>
+      <p class="lap">Commissaires <b>4</b> · Drapeaux <b>4</b></p>
     </div>
+    <p class="lead"><span class="marshal" aria-hidden="true"></span>Quatre commissaires de course, reconnaissables à leur tenue orange, circulent toute la soirée drapeaux en main. Un drapeau levé devant vous, c'est une pénitence immédiate, sans appel ni enquête des stewards. Les pilotes désignés roulent à l'eau : pour eux, le drapeau à damier est permanent.</p>
     <div class="flags">
       <div class="flagcard">
         <span class="fl green" aria-hidden="true"></span>
         <span class="fk">Drapeau vert</span>
-        <h3>Tenue de paddock</h3>
-        <p>Piste libre : élégant et prêt pour le podium. Les couleurs d'écurie sont les bienvenues.</p>
-        <div class="swatches" aria-hidden="true"><i style="background:#151210"></i><i style="background:#efe7d8"></i><i style="background:#c8102e"></i></div>
-      </div>
-      <div class="flagcard">
-        <span class="fl blue" aria-hidden="true"></span>
-        <span class="fk">Drapeau bleu</span>
-        <h3>Laissez passer</h3>
-        <p>Au bar comme sur la piste, priorité aux deux vainqueurs du jour. Les dépassements se font dans la bonne humeur.</p>
+        <h3>Une gorgée à offrir</h3>
+        <p>Piste libre pour vous : vous distribuez une gorgée à la personne de votre choix.</p>
       </div>
       <div class="flagcard">
         <span class="fl yellow" aria-hidden="true"></span>
         <span class="fk">Drapeau jaune</span>
-        <h3>Prudence</h3>
-        <p>Les stands ferment tard : pilote désigné, taxi ou nuit sur place. Pas de dépassement sur le retour.</p>
+        <h3>Trois gorgées</h3>
+        <p>Danger sur la piste : vous buvez trois gorgées, sans dépasser personne.</p>
+      </div>
+      <div class="flagcard">
+        <span class="fl red" aria-hidden="true"></span>
+        <span class="fk">Drapeau rouge</span>
+        <h3>Affond</h3>
+        <p>Course interrompue : vous videz votre verre avant de retourner en piste.</p>
       </div>
       <div class="flagcard">
         <span class="fl checker" aria-hidden="true"></span>
         <span class="fk">Drapeau à damier</span>
-        <h3>Trophées</h3>
-        <p>Votre présence est le seul laissez-passer exigé. Pour marquer le coup, une cagnotte commune sera ouverte au paddock.</p>
+        <h3>De l'eau</h3>
+        <p>Fin de relais : vous buvez un verre d'eau. Le plus redouté des drapeaux, ou le plus salvateur.</p>
       </div>
     </div>
   </section>
 
   <footer>
     <p class="tag"><b>Grand Prix</b> de nos 30 ans · 20 · 03 · 2027</p>
-    <span class="checker" aria-hidden="true"></span>
+    <span class="chq" aria-hidden="true"></span>
     <p class="tag">L&amp;L Racing · Saison 2027</p>
   </footer>
 </div>
@@ -676,7 +679,7 @@ footer .tag b{color:var(--fg)}
   /* ============ RÉGLAGES ============ */
   // Adresse de l'application web Google Apps Script qui enregistre les engagements (voir README). Vide : grille en lecture seule.
   var API_URL = "";
-  var MAX_SEATS = 2;
+  var MAX_SEATS = 30;
   var TEAMS = [
     {name:"Ferrari", color:"#e8002d"},
     {name:"McLaren", color:"#ff8000"},
@@ -853,33 +856,32 @@ footer .tag b{color:var(--fg)}
     return out;
   }
   function renderTeams(){
-    var wrap = $("teams"), html = "", totalPilots = 0, teamsUsed = 0;
+    var wrap = $("teams"), html = "", totalPilots = 0, teamsUsed = 0, lead = null;
     TEAMS.forEach(function(t){
       var seats = seatsOf(t.name, null);
       totalPilots += seats.length; if (seats.length) teamsUsed++;
+      if (seats.length && (!lead || seats.length > lead.n)) lead = {name:t.name, n:seats.length};
       var mine = entries.filter(function(e){ return e.id === myId && e.team === t.name; }).length > 0;
       var othersSeats = seatsOf(t.name, myId).length;
       var full = othersSeats >= MAX_SEATS && !mine;
       var cls = "team" + (selectedTeam === t.name ? " selected" : "") + (full ? " full" : "");
       html += '<button type="button" class="' + cls + '" role="radio" aria-checked="' + (selectedTeam === t.name) + '" data-team="' + esc(t.name) + '" style="--tc:' + t.color + '"' + (full ? ' aria-disabled="true"' : '') + '>';
       html += '<div class="team-head"><span class="team-name">' + esc(t.name) + '</span><svg class="team-car" viewBox="0 0 160 60" aria-hidden="true"><use href="#f1car"/></svg></div>';
-      html += '<div class="seats">';
-      for (var i = 0; i < MAX_SEATS; i++) {
-        var s = seats[i];
-        if (s) html += '<span class="seat taken' + (s.id === myId ? ' mine' : '') + '"><span class="n">P' + (i + 1) + '</span>' + esc(s.name) + '</span>';
-        else html += '<span class="seat"><span class="n">P' + (i + 1) + '</span>Baquet libre</span>';
-      }
+      html += '<div class="team-count">' + seats.length + '<small>' + (seats.length > 1 ? "pilotes" : "pilote") + '</small></div>';
+      html += '<div class="members">';
+      if (!seats.length) html += '<span class="empty">Aucun pilote engagé pour l\'instant</span>';
+      seats.forEach(function(sx){ html += '<span class="member' + (sx.id === myId ? ' mine' : '') + '">' + esc(sx.name) + '</span>'; });
       html += '</div>';
-      html += '<div class="team-foot"><span>' + (full ? "Écurie complète" : (MAX_SEATS - seats.length) + (MAX_SEATS - seats.length > 1 ? " baquets libres" : " baquet libre")) + '</span>' + (mine ? '<b>Votre écurie</b>' : '') + '</div>';
+      html += '<div class="team-foot"><span>' + (full ? "Écurie complète" : (mine ? "Cliquez pour modifier" : "Cliquez pour rejoindre")) + '</span>' + (mine ? '<b>Votre écurie</b>' : '') + '</div>';
       html += '</button>';
     });
     wrap.innerHTML = html;
     $("n-pilots").textContent = totalPilots;
     $("n-teams").textContent = teamsUsed;
-    $("n-free").textContent = Math.max(0, TEAMS.length * MAX_SEATS - totalPilots);
+    $("n-lead").textContent = lead ? lead.name + " (" + lead.n + ")" : "—";
     wrap.querySelectorAll(".team").forEach(function(b){
       b.addEventListener("click", function(){
-        if (b.classList.contains("full")) { setStatus("Cette écurie est complète : choisissez-en une autre.", "err"); return; }
+        if (b.classList.contains("full")) { setStatus("Cette écurie affiche complet (" + MAX_SEATS + " pilotes) : choisissez-en une autre.", "err"); return; }
         selectedTeam = b.getAttribute("data-team"); renderTeams(); renderSide(); $("f-p1").focus();
       });
     });
@@ -894,7 +896,7 @@ footer .tag b{color:var(--fg)}
     tm.style.setProperty("--tc", t ? t.color : "");
     $("side-no").textContent = "N° " + (myId || "—");
     var mine = entries.filter(function(e){ return e.id === myId; })[0];
-    $("submit-label").textContent = mine ? "Mettre à jour mon engagement" : "Prendre le baquet";
+    $("submit-label").textContent = mine ? "Mettre à jour mon engagement" : "Rejoindre l'écurie";
     $("leave-btn").hidden = !mine;
   }
   function applyMine(){
@@ -923,7 +925,7 @@ footer .tag b{color:var(--fg)}
     if (!selectedTeam) { setStatus("Choisissez d'abord une écurie dans la grille.", "err"); return; }
     if (!p1) { setStatus("Indiquez au moins le prénom du pilote 1.", "err"); $("f-p1").focus(); return; }
     var others = seatsOf(selectedTeam, myId).length, need = p2 ? 2 : 1;
-    if (others + need > MAX_SEATS) { setStatus(need === 2 ? "Il ne reste qu'un baquet dans cette écurie : venez seul(e) ou choisissez-en une autre." : "Cette écurie est complète.", "err"); return; }
+    if (others + need > MAX_SEATS) { setStatus(need === 2 ? "Il ne reste qu'une place dans cette écurie : inscrivez-vous séparément ou choisissez-en une autre." : "Cette écurie affiche complet.", "err"); return; }
     var btn = $("submit-btn"); btn.disabled = true; setStatus("Transmission au stand…");
     var payload = {id: myId, team: selectedTeam, pilot1: p1, pilot2: p2, note: note};
     postEntry(payload).then(function(res){
@@ -934,7 +936,7 @@ footer .tag b{color:var(--fg)}
         renderTeams(); renderSide();
         setStatus("Engagement confirmé : " + (p2 ? p1 + " et " + p2 + " roulent" : p1 + " roule") + " pour " + selectedTeam + ".", "ok");
       } else if (res && res.error === "full") {
-        setStatus("Quelqu'un vient de prendre ce baquet. Choisissez une autre écurie.", "err"); loadEntries();
+        setStatus("Cette écurie vient d'afficher complet. Choisissez-en une autre.", "err"); loadEntries();
       } else {
         setStatus("Le stand n'a pas reçu le message. Réessayez.", "err");
       }
@@ -949,7 +951,7 @@ footer .tag b{color:var(--fg)}
         if (res.entries) entries = res.entries;
         try { localStorage.removeItem("gp30-entry"); } catch(err){}
         saved = null; selectedTeam = null; $("f-p1").value = ""; $("f-p2").value = ""; $("f-note").value = "";
-        renderTeams(); renderSide(); setStatus("Vous avez quitté la grille. Vous pouvez reprendre un baquet quand vous voulez.", "ok");
+        renderTeams(); renderSide(); setStatus("Vous avez quitté la grille. Vous pouvez rejoindre une écurie quand vous voulez.", "ok");
       } else setStatus("Le retrait n'a pas abouti. Réessayez.", "err");
     }).catch(function(){ btn.disabled = false; setStatus("Le retrait n'a pas abouti. Réessayez.", "err"); });
   });

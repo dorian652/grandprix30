@@ -16,7 +16,7 @@
  */
 
 var SHEET_NAME = 'Engagements';
-var MAX_SEATS = 2;
+var MAX_SEATS = 30;
 var HEADERS = ['Horodatage', 'Identifiant', 'Écurie', 'Pilote 1', 'Pilote 2', 'Message'];
 
 function doGet() {
