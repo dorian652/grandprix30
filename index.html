@@ -469,7 +469,6 @@ footer .tag b{color:var(--fg)}
     <p class="eyebrow">Lucie &amp; Lilian vous invitent au</p>
     <h1>Grand Prix <span>de nos</span> 30 ans</h1>
     <p>Une seule manche, un seul soir, plus de 100 pilotes sur la grille. Rendez-vous à La Palette Verte pour fêter nos deux fois 30 ans.</p>
-    <p class="hint">Touchez les feux pour relancer la procédure de départ.</p>
   </section>
 
   <div class="ticket-stage">
@@ -866,17 +865,9 @@ footer .tag b{color:var(--fg)}
     seqTimer.push(setTimeout(function(){ setAll(""); label.textContent = "Rejouer la procédure"; label.classList.remove("go"); running = false; }, hold + 2600));
   }
   var panel = $("light-panel");
-  panel.addEventListener("click", function(){ unlockAudio(); startSequence(true); });
-  panel.addEventListener("keydown", function(e){ if (e.key === "Enter" || e.key === " ") { e.preventDefault(); startSequence(true); } });
-  var started = false;
-  function firstTouch(){
-    if (started) return; started = true;
-    unlockAudio(); startSequence(true);
-    document.removeEventListener("pointerdown", firstTouch); document.removeEventListener("keydown", firstTouch);
-  }
-  document.addEventListener("pointerdown", firstTouch); document.addEventListener("keydown", firstTouch);
-  label.textContent = "Touchez l'écran pour le départ";
-  setTimeout(function(){ if (!started) { started = true; startSequence(false); } }, 3000);
+  panel.addEventListener("click", function(){ startSequence(false); });
+  panel.addEventListener("keydown", function(e){ if (e.key === "Enter" || e.key === " ") { e.preventDefault(); startSequence(false); } });
+  setTimeout(function(){ startSequence(false); }, 500);
 
   /* Bips des feux (uniquement après un toucher : règle des navigateurs) */
   var actx = null;
@@ -1195,7 +1186,7 @@ footer .tag b{color:var(--fg)}
   $("pit-go").addEventListener("click", function(){
     pitDone = 0; wheels.forEach(function(w){ w.disabled = false; w.classList.remove("done"); w.classList.add("armed"); });
     $("pit-go").hidden = true; $("pit-reset").hidden = true; $("pit-verdict").textContent = "Changez les quatre roues !";
-    pitStart = performance.now(); pitTick(); beep(1180, 0.15, 0.2);
+    pitStart = performance.now(); pitTick(); unlockAudio(); beep(1180, 0.15, 0.2);
   });
   wheels.forEach(function(w){
     w.addEventListener("click", function(){
