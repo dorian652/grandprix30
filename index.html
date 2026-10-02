@@ -90,6 +90,10 @@ section{padding-block:56px;border-top:1px solid var(--line)}
 .brand span span{color:var(--muted)}
 .chip{font-family:var(--display);font-weight:700;letter-spacing:.14em;font-size:.85rem;text-transform:uppercase;border:1px solid var(--line);padding:6px 12px;border-radius:999px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .chip i{color:var(--red);font-style:normal;margin-inline:6px}
+.topright{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.chip-link{display:inline-flex;align-items:center;gap:8px;text-decoration:none;border-color:var(--red);color:#fff;background:rgba(200,16,46,.16)}
+.chip-link:hover{background:rgba(200,16,46,.3)}
+.chip-link svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
 /* Procédure de départ */
 .hero{padding-block:44px 8px;text-align:center;border-top:0}
@@ -567,7 +571,10 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
 <div class="wrap">
   <header class="topbar">
     <div class="brand"><svg id="crest-btn" role="img" aria-label="Écusson L&L Racing"><use href="#crest"/></svg><span>L&amp;L Racing <span>· Écurie n°30</span></span></div>
-    <div class="chip">20<i>·</i>03<i>·</i>2027 <span style="color:var(--muted);margin-inline:8px">|</span> 19:30</div>
+    <div class="topright">
+      <a class="chip chip-link" href="galerie.html"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7l1.5-3h5L16 7"/><circle cx="12" cy="13.5" r="3.5"/></svg>Le jour de la course</a>
+      <div class="chip">20<i>·</i>03<i>·</i>2027 <span style="color:var(--muted);margin-inline:8px">|</span> 19:30</div>
+    </div>
   </header>
 
   <section class="hero">
@@ -775,12 +782,12 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     <div class="sec-head">
       <div>
         <p class="eyebrow">Paddock photo</p>
-        <h2 class="sec-title">Les photos de la soirée</h2>
+        <h2 class="sec-title">Le jour de la course</h2>
       </div>
-      <p class="lap">Ouvert <b>le soir même</b> · et après</p>
+      <p class="lap">Ouvert <b>le 20 mars</b> · et après</p>
     </div>
     <div class="photo-teaser">
-      <p class="lead">Pendant et après le Grand Prix, déposez vos photos sur la page dédiée : elles apparaissent pour tous les pilotes, classées par écurie, et le site devient l'album souvenir officiel.</p>
+      <p class="lead">Le soir du Grand Prix, tout se passe sur le paddock photo : vous y déposez vos photos en deux touches, elles s'affichent pour tous les pilotes, classées par écurie, et le site devient l'album souvenir officiel.</p>
       <div class="btn-row">
         <a class="btn primary" href="galerie.html">
           <svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7l1.5-3h5L16 7"/><circle cx="12" cy="13.5" r="3.5"/></svg>Ouvrir le paddock photo
@@ -952,7 +959,8 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
   <span class="mark" style="left:30%">Billet</span>
   <span class="mark" style="left:50%">Programme</span>
   <span class="mark" style="left:70%">Écuries</span>
-  <span class="mark" style="left:88%">Circuit</span>
+  <span class="mark" style="left:86%">Circuit</span>
+  <span class="mark" style="left:96%">Photos</span>
   <span class="speed" id="speed">Vitesse <b>0</b> km/h</span>
   <span class="road"></span>
   <span class="finish"></span>
