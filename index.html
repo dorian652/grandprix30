@@ -105,6 +105,7 @@ section{padding-block:56px;border-top:1px solid var(--line)}
 .hero h1{font-family:var(--display);font-weight:800;text-transform:uppercase;line-height:.9;font-size:clamp(2.6rem,8vw,5.4rem);letter-spacing:.01em}
 .hero h1 span{display:block;font-family:var(--script);text-transform:none;font-weight:400;font-size:.52em;letter-spacing:0;color:var(--red);line-height:1.1;margin-block:6px 2px}
 .hero p{color:var(--muted);max-width:60ch;margin:16px auto 0}
+.hero .hint{font-family:var(--mono);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;margin-top:10px;color:var(--muted)}
 
 /* Billet */
 .ticket-stage{padding-block:34px 10px;perspective:1600px}
@@ -140,7 +141,8 @@ section{padding-block:56px;border-top:1px solid var(--line)}
 .t-stripe{position:absolute;right:-6px;bottom:0;width:70px;height:110px;pointer-events:none;
   background:linear-gradient(135deg,transparent 48%,var(--red) 48% 54%,transparent 54%),conic-gradient(var(--ink) 25%,var(--paper) 0 50%,var(--ink) 0 75%,var(--paper) 0);
   background-size:100% 100%,16px 16px;clip-path:polygon(100% 0,100% 100%,0 100%);opacity:.95}
-.t-stub{background:var(--ink);color:var(--paper);padding:26px 22px 22px;border-radius:0 14px 14px 0;border-left:2px dashed rgba(236,227,207,.55);display:flex;flex-direction:column;gap:14px;min-width:0}
+.t-stub{background:var(--ink);color:var(--paper);padding:26px 22px 22px;border-radius:0 14px 14px 0;border-left:2px dashed rgba(236,227,207,.55);display:flex;flex-direction:column;justify-content:space-between;gap:16px;min-width:0}
+.t-stub .s-mid{display:grid;gap:14px}
 .t-stub .s-title{font-family:var(--display);font-weight:700;letter-spacing:.24em;text-transform:uppercase;font-size:1.05rem;line-height:1.2;text-align:center;padding-bottom:10px;border-bottom:1px solid rgba(236,227,207,.35)}
 .t-stub .s-row{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;padding-bottom:10px;border-bottom:1px solid rgba(236,227,207,.2)}
 .t-stub .s-row svg{width:18px;height:18px;grid-row:span 2;align-self:start;margin-top:2px;fill:none;stroke:var(--paper);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
@@ -210,6 +212,13 @@ section{padding-block:56px;border-top:1px solid var(--line)}
 .members .empty{color:var(--muted);font-size:.88rem;font-style:italic;padding:4px 0}
 .team-foot{display:flex;justify-content:space-between;align-items:center;padding-left:8px;font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
 .team-foot b{color:var(--fg)}
+.standings{margin-top:22px;background:#0a0908;border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.standings ol{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:7px}
+.standings li{display:grid;grid-template-columns:28px 150px minmax(0,1fr) 36px;gap:10px;align-items:center;font-family:var(--mono);font-size:.82rem;letter-spacing:.06em;text-transform:uppercase}
+.standings li .pos{color:var(--muted)}
+.standings li .bar{height:10px;border-radius:5px;background:#1e1a17;overflow:hidden}
+.standings li .bar i{display:block;height:100%;width:var(--w,0%);background:var(--tc);transition:width .6s}
+.standings li .n{text-align:right;font-variant-numeric:tabular-nums}
 .reg{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:22px;margin-top:26px;align-items:start}
 .reg form{display:grid;gap:14px}
 .field{display:grid;gap:6px}
@@ -247,6 +256,18 @@ textarea{min-height:72px;resize:vertical}
 .radio p b{font-family:var(--display);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:.8rem;color:var(--muted);display:block;margin-bottom:2px}
 .radio p + p{padding-top:8px;border-top:1px solid var(--line)}
 
+/* Pit stop */
+.pit-wrap{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);gap:22px;margin-top:26px;align-items:center}
+.pit{position:relative;width:100%;max-width:560px;aspect-ratio:160/60;color:var(--red);margin-inline:auto}
+.pit-car{position:absolute;inset:0;width:100%;height:100%}
+.wheel{position:absolute;width:clamp(36px,9vw,52px);height:clamp(36px,9vw,52px);transform:translate(-50%,-50%);border-radius:50%;border:3px solid var(--fg);background:rgba(239,231,216,.08);cursor:pointer;padding:0;transition:background .1s,border-color .1s,transform .1s}
+.wheel:disabled{opacity:.45;cursor:default}
+.wheel.armed{border-color:var(--yellow);box-shadow:0 0 0 4px rgba(245,197,24,.25);animation:pulse 1s infinite}
+.wheel.done{background:var(--green);border-color:var(--green);box-shadow:0 0 18px rgba(47,210,122,.6);animation:none}
+@keyframes pulse{50%{transform:translate(-50%,-50%) scale(1.08)}}
+.pit-side{text-align:center;display:grid;gap:12px;justify-items:center}
+.pit-clock{font-family:var(--mono);font-weight:700;font-size:clamp(3rem,10vw,4.6rem);line-height:1;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.pit-verdict{color:var(--muted);min-height:1.5em}
 /* Circuit */
 .circuit{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:22px;margin-top:28px;align-items:stretch}
 .track-card{background:#0a0908;border:1px solid var(--line);border-radius:12px;padding:12px 12px 6px;position:relative}
@@ -267,7 +288,10 @@ textarea{min-height:72px;resize:vertical}
 .fl::before{content:"";position:absolute;left:-4px;top:-6px;bottom:-6px;width:3px;background:var(--muted);border-radius:2px}
 .fl.green{background:#1ec760}
 .fl.red{background:#e0141c}
-.marshal{display:inline-block;width:14px;height:14px;border-radius:50%;background:#ff7a00;box-shadow:0 0 0 3px rgba(255,122,0,.25);vertical-align:-1px;margin-right:10px}
+.marshals{display:flex;justify-content:center;align-items:flex-end;gap:clamp(10px,5vw,56px);margin-top:28px;padding:18px 10px 0;border-top:1px solid var(--line)}
+.mshl{display:flex;flex-direction:column;align-items:center;gap:6px;width:clamp(72px,18vw,124px)}
+.mshl svg{width:100%;height:auto;display:block;filter:drop-shadow(0 10px 14px rgba(0,0,0,.5))}
+.mshl span{font-family:var(--mono);font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
 .fl.yellow{background:#f5c518}
 .fl.checker{background:conic-gradient(#efe7d8 25%,#151210 0 50%,#efe7d8 0 75%,#151210 0);background-size:16px 16px}
 .flagcard h3{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:1.3rem;letter-spacing:.03em;line-height:1}
@@ -290,7 +314,9 @@ footer .tag b{color:var(--fg)}
 .pitwall .mark{position:absolute;bottom:calc(40px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);font-family:var(--mono);font-size:.6rem;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;white-space:nowrap}
 .pitwall .finish{position:absolute;right:0;bottom:calc(10px + env(safe-area-inset-bottom,0px));width:14px;height:26px;background:conic-gradient(#efe7d8 25%,#151210 0 50%,#efe7d8 0 75%,#151210 0);background-size:7px 7px}
 .pitwall .car{position:absolute;left:0;bottom:calc(11px + env(safe-area-inset-bottom,0px));width:64px;height:24px;color:var(--red);will-change:transform;filter:drop-shadow(0 2px 2px rgba(0,0,0,.6))}
+.flame{opacity:0}
 .pitwall .car .flame{opacity:0;transition:opacity .15s}
+.pitwall .car.fast .flame{opacity:1}
 .pitwall .car.fast .flame{opacity:1}
 .pitwall .car.boost{animation:boost .9s ease-out}
 @keyframes boost{0%{transform:translateX(0)}40%{transform:translateX(90px)}100%{transform:translateX(0)}}
@@ -300,7 +326,8 @@ footer .tag b{color:var(--fg)}
 @media (max-width:900px){
   .radios{grid-template-columns:1fr}
   .flags{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .circuit,.reg{grid-template-columns:1fr}
+  .circuit,.reg,.pit-wrap{grid-template-columns:1fr}
+  .standings li{grid-template-columns:24px 96px minmax(0,1fr) 30px;font-size:.72rem}
 }
 @media (max-width:760px){
   .ticket{grid-template-columns:1fr;transform:none}
@@ -344,6 +371,32 @@ footer .tag b{color:var(--fg)}
     <text x="50" y="76" text-anchor="middle" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="700" font-size="10.5" letter-spacing="2.5" fill="#efe7d8">RACING</text>
     <text x="50" y="87" text-anchor="middle" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="700" font-size="7.5" letter-spacing="1.5" fill="#a1978a">EST. 1997</text>
   </symbol>
+  <pattern id="chkflag" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#151210"/><rect width="3" height="3" fill="#efe7d8"/><rect x="3" y="3" width="3" height="3" fill="#efe7d8"/></pattern>
+  <!-- Commissaire de course, dessin original. Le drapeau est ajouté par chaque instance. -->
+  <symbol id="marshal" viewBox="0 0 120 210">
+    <rect x="87" y="14" width="3.5" height="112" rx="1.5" fill="#d9d2c5"/>
+    <rect x="38" y="146" width="18" height="46" rx="6" fill="#ff7a00"/>
+    <rect x="62" y="146" width="18" height="46" rx="6" fill="#ff7a00"/>
+    <rect x="38" y="172" width="18" height="6" fill="#e9e9e9"/>
+    <rect x="62" y="172" width="18" height="6" fill="#e9e9e9"/>
+    <rect x="34" y="190" width="24" height="13" rx="4" fill="#1a1512"/>
+    <rect x="60" y="190" width="24" height="13" rx="4" fill="#1a1512"/>
+    <path d="M30 84 Q30 74 42 74 L76 74 Q88 74 88 84 L86 148 L32 148 Z" fill="#ff7a00"/>
+    <rect x="32" y="104" width="54" height="7" fill="#e9e9e9"/>
+    <rect x="58" y="76" width="2" height="70" fill="#c45a00"/>
+    <path d="M31 84 L17 128 Q15 137 23 137 L33 135 L41 92 Z" fill="#ff7a00"/>
+    <circle cx="24" cy="141" r="7" fill="#1a1512"/>
+    <path d="M84 82 L95 46 Q98 38 91 36 L85 38 L75 80 Z" fill="#ff7a00"/>
+    <circle cx="90" cy="37" r="7" fill="#1a1512"/>
+    <rect x="52" y="66" width="14" height="10" fill="#e8b48d"/>
+    <circle cx="59" cy="50" r="17" fill="#e8b48d"/>
+    <path d="M42 50 A17 17 0 0 1 76 50 Z" fill="#f2efe8"/>
+    <rect x="42" y="46" width="34" height="5" fill="#ff7a00"/>
+    <path d="M40 51 L78 51 L82 56 L36 56 Z" fill="#f2efe8"/>
+    <circle cx="53" cy="60" r="1.8" fill="#1a1512"/>
+    <circle cx="65" cy="60" r="1.8" fill="#1a1512"/>
+    <path d="M53 64 Q59 69 65 64" fill="none" stroke="#1a1512" stroke-width="1.5" stroke-linecap="round"/>
+  </symbol>
   <!-- Monoplace vue de dessus, dessin original. Pointe vers la droite. fill="currentColor" pour la couleur d'écurie. -->
   <symbol id="f1car" viewBox="0 0 160 60">
     <g class="flame" fill="#ffb347"><polygon points="2,24 22,27 2,30"/><polygon points="6,27 26,30 6,33" fill="#ff5a2b"/></g>
@@ -384,7 +437,8 @@ footer .tag b{color:var(--fg)}
     </div>
     <p class="eyebrow">Lucie &amp; Lilian vous invitent au</p>
     <h1>Grand Prix <span>de nos</span> 30 ans</h1>
-    <p>Une seule manche, un seul soir, plus de cent pilotes sur la grille. Rendez-vous à La Palette Verte pour fêter nos deux fois trente ans. Cliquez sur les feux pour entendre le moteur.</p>
+    <p>Une seule manche, un seul soir, plus de 100 pilotes sur la grille. Rendez-vous à La Palette Verte pour fêter nos deux fois 30 ans.</p>
+    <p class="hint">Touchez les feux pour relancer la procédure de départ, avec le son.</p>
   </section>
 
   <div class="ticket-stage">
@@ -412,20 +466,20 @@ footer .tag b{color:var(--fg)}
       </div>
       <aside class="t-stub">
         <div class="s-title">Grand Prix<br>de nos 30 ans</div>
-        <div class="s-row">
-          <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
-          <span class="s-k">Date</span><span class="s-v">20 / 03 / 2027 · 19h30</span>
+        <div class="s-mid">
+          <div class="s-row">
+            <svg viewBox="0 0 24 24"><path d="M5 21V4M5 4h13l-2 4 2 4H5"/></svg>
+            <span class="s-k">Accès</span><span class="s-v vip">VIP</span>
+          </div>
+          <div class="s-row">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            <span class="s-k">Grille</span><span class="s-v">Plus de 100 pilotes<br>11 écuries</span>
+          </div>
         </div>
-        <div class="s-row">
-          <svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
-          <span class="s-k">Lieu</span><span class="s-v">La Palette Verte<br>Rue Jean Jaurès 5<br>Écaussinnes</span>
+        <div>
+          <svg class="barcode" id="barcode" viewBox="0 0 200 44" preserveAspectRatio="none" aria-hidden="true"></svg>
+          <div class="s-code">LL · 30 · 2027 · VIP</div>
         </div>
-        <div class="s-row">
-          <svg viewBox="0 0 24 24"><path d="M5 21V4M5 4h13l-2 4 2 4H5"/></svg>
-          <span class="s-k">Accès</span><span class="s-v vip">VIP</span>
-        </div>
-        <svg class="barcode" id="barcode" viewBox="0 0 200 44" preserveAspectRatio="none" aria-hidden="true"></svg>
-        <div class="s-code">LL · 30 · 2027 · VIP</div>
       </aside>
     </article>
   </div>
@@ -448,12 +502,13 @@ footer .tag b{color:var(--fg)}
       <div class="sector" id="sec3" style="--c:var(--yellow)"></div>
     </div>
     <div class="sector-labels" aria-hidden="true"><span>Octobre</span><span>Saison 2026-27 · <b id="season-pct">0 %</b></span><span>20 mars</span></div>
-    <div class="timing-foot">
-      <span>Piste : <b>sèche</b></span>
-      <span>Air : <b>30°</b></span>
-      <span>Piste : <b>30°</b></span>
-      <span>Vent : <b>attention aux bougies</b></span>
-      <span id="cd-note">Samedi 20 mars 2027, 19h30</span>
+    <div class="timing-foot" id="weather">
+      <span>Piste : <b id="w-track">…</b></span>
+      <span>Air : <b id="w-temp">…</b></span>
+      <span>Vent : <b id="w-wind">…</b></span>
+      <span>Ciel : <b id="w-sky">…</b></span>
+      <span id="w-note">Météo en direct à la Palette Verte</span>
+      <span id="cd-note" hidden></span>
     </div>
   </div>
 
@@ -470,7 +525,9 @@ footer .tag b{color:var(--fg)}
       <li><time>20:00</time><div><h3>Essais libres<small>Apéritif</small></h3><p>On règle la voiture, on teste les gommes et les bulles. Mise en grille progressive.</p></div></li>
       <li class="key"><time>21:00</time><div><h3>Extinction des feux<small>Dîner</small></h3><p>Le départ est donné. Personne ne cale, tout le monde passe le premier virage.</p></div></li>
       <li class="key"><time>23:00</time><div><h3>Podium<small>Gâteau</small></h3><p>Champagne secoué, bougies soufflées, hymne à la gloire des deux vainqueurs du jour.</p></div></li>
-      <li><time>23:30</time><div><h3>Course de nuit<small>Piste de danse</small></h3><p>Feux verts jusqu'au drapeau à damier. Les arrêts aux stands sont autorisés au bar.</p></div></li>
+      <li><time>23:30</time><div><h3>Course de nuit<small>Piste de danse</small></h3><p>Feux verts, DRS ouvert, les arrêts aux stands sont autorisés au bar. Les commissaires veillent, drapeaux en main.</p></div></li>
+      <li><time>01:00</time><div><h3>Safety car<small>Deuxième souffle</small></h3><p>On ralentit, on se regroupe, on reprend de l'eau ou pas. Relance au premier riff.</p></div></li>
+      <li class="key"><time>∞</time><div><h3>Drapeau à damier<small>Pas d'heure de fin</small></h3><p>La course s'arrête quand le dernier pilote quitte la piste. Aucune limite de tours n'est prévue par le règlement.</p></div></li>
     </ol>
   </section>
 
@@ -489,6 +546,10 @@ footer .tag b{color:var(--fg)}
       <span class="pill">En tête du championnat : <b id="n-lead">—</b></span>
     </div>
     <div class="teams" id="teams" role="radiogroup" aria-label="Écuries"></div>
+    <div class="standings" id="standings" hidden>
+      <p class="eyebrow">Classement des constructeurs</p>
+      <ol id="standings-list"></ol>
+    </div>
 
     <div class="reg">
       <form id="reg-form" novalidate>
@@ -502,10 +563,6 @@ footer .tag b{color:var(--fg)}
             <input type="text" id="f-p2" name="pilot2" placeholder="Prénom de votre coéquipier(ère)" maxlength="40">
           </div>
         </div>
-        <div class="field">
-          <label for="f-note">Message radio <small>(facultatif)</small></label>
-          <textarea id="f-note" name="note" placeholder="Un mot pour l'équipe, une chanson à passer…" maxlength="200"></textarea>
-        </div>
         <div class="btn-row">
           <button class="btn primary" type="submit" id="submit-btn">
             <svg viewBox="0 0 24 24"><path d="M5 21V4M5 4h13l-2 4 2 4H5"/></svg><span id="submit-label">Rejoindre l'écurie</span>
@@ -513,7 +570,7 @@ footer .tag b{color:var(--fg)}
           <button class="linkbtn" type="button" id="leave-btn" hidden>Me retirer de la grille</button>
         </div>
         <p class="status" id="reg-status" aria-live="polite"></p>
-        <div class="notice" id="api-notice" hidden>La grille ouvre très bientôt : les inscriptions ne sont pas encore activées.</div>
+        <div class="notice" id="api-notice" hidden>Mode essai : votre engagement s'affiche sur cet appareil uniquement, le temps que l'enregistrement commun soit activé.</div>
       </form>
       <div class="reg-side" aria-live="polite">
         <div class="ph"><span>Fiche d'engagement</span><em style="font-style:normal" id="side-no">N° —</em></div>
@@ -540,22 +597,50 @@ footer .tag b{color:var(--fg)}
     </div>
     <div class="radios">
       <div class="radio">
-        <div class="rh"><span>Tour 29 → 30</span><b>Lilian</b></div>
+        <div class="rh"><span>Briefing</span><b>Lilian → Lucie</b></div>
         <div class="wave" aria-hidden="true"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i><i style="--i:4"></i><i style="--i:5"></i><i style="--i:6"></i><i style="--i:7"></i><i style="--i:8"></i><i style="--i:9"></i><i style="--i:10"></i><i style="--i:11"></i></div>
-        <p><b>Lilian → Stand</b>Confirmation : on fait les 30 ans ensemble ?</p>
-        <p><b>Stand → Lilian</b>Affirmatif. Même grille, même podium, même gâteau.</p>
+        <p><b>Lilian</b>Confirmation : on fait nos 30 ans ensemble ?</p>
+        <p><b>Lucie</b>Affirmatif.</p>
       </div>
       <div class="radio">
-        <div class="rh"><span>Briefing</span><b>Ingénieur</b></div>
+        <div class="rh"><span>Tour 15</span><b>Lucie → Lilian</b></div>
         <div class="wave" aria-hidden="true"><i style="--i:3"></i><i style="--i:5"></i><i style="--i:1"></i><i style="--i:7"></i><i style="--i:2"></i><i style="--i:9"></i><i style="--i:4"></i><i style="--i:0"></i><i style="--i:8"></i><i style="--i:6"></i><i style="--i:10"></i><i style="--i:11"></i></div>
-        <p><b>Ingénieur → Tous les pilotes</b>Box, box, box. Rendez-vous au paddock de la Palette Verte, 19h30. Plan A : on fait la fête.</p>
-        <p><b>Tous les pilotes</b>Copy.</p>
+        <p><b>Lucie</b>Box, box, box.</p>
+        <p><b>Lilian</b>Négatif, je suis déjà au bar. C'est un arrêt stratégique.</p>
       </div>
       <div class="radio">
-        <div class="rh"><span>Dernier tour</span><b>Lucie</b></div>
+        <div class="rh"><span>Dernier tour</span><b>Lucie → Lilian</b></div>
         <div class="wave" aria-hidden="true"><i style="--i:6"></i><i style="--i:2"></i><i style="--i:9"></i><i style="--i:0"></i><i style="--i:4"></i><i style="--i:11"></i><i style="--i:1"></i><i style="--i:7"></i><i style="--i:3"></i><i style="--i:10"></i><i style="--i:5"></i><i style="--i:8"></i></div>
-        <p><b>Lucie → Stand</b>Il reste combien de tours ?</p>
-        <p><b>Stand → Lucie</b>Trente. Et ensuite on recommence.</p>
+        <p><b>Lucie</b>Il reste combien de tours ?</p>
+        <p><b>Lilian</b>Trente. Et après on recommence.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="pitstop">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow">Entraînement</p>
+        <h2 class="sec-title">Pit stop challenge</h2>
+      </div>
+      <p class="lap">Record du monde <b>1,80 s</b> · Votre record <b id="pit-best">—</b></p>
+    </div>
+    <p class="lead">Quatre roues à changer, le plus vite possible. Appuyez sur GO, puis touchez les quatre roues. Le chrono s'arrête à la dernière.</p>
+    <div class="pit-wrap">
+      <div class="pit" id="pit">
+        <svg viewBox="0 0 160 60" class="pit-car" aria-hidden="true"><use href="#f1car"/></svg>
+        <button type="button" class="wheel" data-w="0" style="left:24.4%;top:23%" aria-label="Roue arrière gauche"></button>
+        <button type="button" class="wheel" data-w="1" style="left:24.4%;top:77%" aria-label="Roue arrière droite"></button>
+        <button type="button" class="wheel" data-w="2" style="left:67.5%;top:24%" aria-label="Roue avant gauche"></button>
+        <button type="button" class="wheel" data-w="3" style="left:67.5%;top:76%" aria-label="Roue avant droite"></button>
+      </div>
+      <div class="pit-side">
+        <div class="pit-clock" id="pit-clock">0.00</div>
+        <div class="pit-verdict" id="pit-verdict">Prêt au stand.</div>
+        <div class="btn-row">
+          <button class="btn primary" type="button" id="pit-go">GO</button>
+          <button class="btn" type="button" id="pit-reset" hidden>Nouvel arrêt</button>
+        </div>
       </div>
     </div>
   </section>
@@ -566,33 +651,38 @@ footer .tag b{color:var(--fg)}
         <p class="eyebrow">Le circuit</p>
         <h2 class="sec-title">Circuit de la Palette Verte</h2>
       </div>
-      <p class="lap">Longueur <b>1 soirée</b> · Virages <b>5</b></p>
+      <p class="lap">Longueur <b>1 soirée</b> · Virages <b>12</b></p>
     </div>
     <div class="circuit">
       <div class="track-card">
-        <span class="tn">Tracé officiel · sens horaire</span>
-        <svg viewBox="0 0 640 360" aria-label="Tracé imaginaire du circuit de la Palette Verte">
+        <span class="tn">Tracé officiel · sens antihoraire</span>
+        <svg viewBox="0 0 640 420" aria-label="Tracé imaginaire du circuit de la Palette Verte">
           <defs>
-            <path id="trk" d="M 80 280 L 420 280 C 500 280 510 200 450 190 C 400 182 380 150 410 120 C 440 90 520 100 560 80 C 600 60 590 30 540 36 C 470 46 420 40 360 60 C 300 80 280 60 220 70 C 150 82 110 70 60 110 C 20 150 30 230 80 280 Z"/>
+            <path id="trk" d="M 150 372 L 430 372 C 480 372 492 342 470 318 C 452 298 418 300 404 278 C 388 254 420 232 456 230 C 512 227 556 212 560 170 C 563 136 540 104 500 100 C 468 97 452 122 420 118 C 384 113 372 78 332 70 C 290 62 262 92 236 72 C 214 55 176 48 144 60 C 104 75 96 118 120 146 C 140 170 110 188 92 212 C 72 238 108 256 100 286 C 93 314 60 326 72 350 C 84 374 120 372 150 372 Z"/>
+            <pattern id="chk" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="2" height="2" fill="#efe7d8"/><rect x="2" y="2" width="2" height="2" fill="#efe7d8"/></pattern>
           </defs>
           <use href="#trk" fill="none" stroke="#2a2420" stroke-width="26" stroke-linejoin="round"/>
           <use href="#trk" fill="none" stroke="#3a322d" stroke-width="18" stroke-linejoin="round"/>
           <use href="#trk" fill="none" stroke="#efe7d8" stroke-width="1.5" stroke-dasharray="6 10" opacity=".45"/>
-          <rect x="246" y="266" width="8" height="28" fill="url(#chk)"/>
-          <pattern id="chk" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="2" height="2" fill="#efe7d8"/><rect x="2" y="2" width="2" height="2" fill="#efe7d8"/><rect width="4" height="4" fill="none"/></pattern>
-          <g font-family="Chakra Petch,Barlow Condensed,sans-serif" font-size="11" letter-spacing="1.5" fill="#a1978a">
-            <text x="250" y="318" text-anchor="middle">LIGNE DES STANDS · DÉPART 19H30</text>
-            <text x="505" y="228">T1 VIRAGE JEAN JAURÈS</text>
-            <text x="300" y="118" text-anchor="end">T2 CHICANE DU GÂTEAU</text>
-            <text x="548" y="22" text-anchor="end">T3 ÉPINGLE DU PODIUM</text>
-            <text x="222" y="54" text-anchor="middle">T4 COURBE DU BAR</text>
-            <text x="34" y="200" text-anchor="start">T5 DESCENTE</text>
-            <text x="34" y="214" text-anchor="start">VERS LA GRILLE</text>
+          <rect x="286" y="358" width="8" height="28" fill="url(#chk)"/>
+          <g font-family="Chakra Petch,Barlow Condensed,sans-serif" font-size="10.5" letter-spacing="1.4" fill="#a1978a">
+            <text x="290" y="406" text-anchor="middle">LIGNE DES STANDS · DÉPART 19H30</text>
+            <text x="500" y="332">T1 ÉPINGLE DU BAR</text>
+            <text x="470" y="258">T2 LE RAIDILLON</text>
+            <text x="546" y="168" text-anchor="end">T4 DOUBLE</text>
+            <text x="546" y="182" text-anchor="end">DROITE</text>
+            <text x="520" y="88" text-anchor="end">T5 ÉPINGLE DU PODIUM</text>
+            <text x="332" y="54" text-anchor="middle">T7 COURBE DU GÂTEAU</text>
+            <text x="150" y="36" text-anchor="middle">T8 ARRÊT DE BUS</text>
+            <text x="128" y="214">T10 CHICANE</text>
+            <text x="128" y="228">DES BULLES</text>
+            <text x="134" y="318">T12 DERNIER</text>
+            <text x="134" y="332">VIRAGE</text>
           </g>
-          <g fill="#c8102e"><circle cx="455" cy="190" r="4"/><circle cx="410" cy="120" r="4"/><circle cx="540" cy="36" r="4"/><circle cx="220" cy="70" r="4"/><circle cx="60" cy="110" r="4"/></g>
+          <g fill="#c8102e"><circle cx="476" cy="326" r="4"/><circle cx="410" cy="282" r="4"/><circle cx="560" cy="170" r="4"/><circle cx="500" cy="100" r="4"/><circle cx="332" cy="70" r="4"/><circle cx="144" cy="60" r="4"/><circle cx="92" cy="212" r="4"/><circle cx="72" cy="350" r="4"/></g>
           <g id="lapcar" color="#c8102e">
             <g transform="translate(-14,-5) scale(.175)"><use href="#f1car" width="160" height="60"/></g>
-            <animateMotion dur="16s" repeatCount="indefinite" rotate="auto"><mpath href="#trk"/></animateMotion>
+            <animateMotion dur="18s" repeatCount="indefinite" rotate="auto"><mpath href="#trk"/></animateMotion>
           </g>
         </svg>
       </div>
@@ -609,9 +699,7 @@ footer .tag b{color:var(--fg)}
         <p class="status" id="addr-status"></p>
         <dl class="facts">
           <div><dt>Arrivée</dt><dd><b>19h30</b> · la grille se forme avant l'extinction des feux à 21h.</dd></div>
-          <div><dt>Tenue</dt><dd>Élégant et prêt pour le podium. Les couleurs de votre écurie sont les bienvenues.</dd></div>
-          <div><dt>Trophées</dt><dd>Votre présence est le seul laissez-passer exigé. Pour marquer le coup, une cagnotte commune sera ouverte au paddock.</dd></div>
-          <div><dt>Retour</dt><dd>Pensez au pilote désigné ou à un taxi : les stands ferment tard.</dd></div>
+          <div><dt>Tenue</dt><dd>Aux couleurs de l'écurie que vous avez choisie. Élégant, et prêt pour le podium.</dd></div>
         </dl>
       </div>
     </div>
@@ -625,7 +713,13 @@ footer .tag b{color:var(--fg)}
       </div>
       <p class="lap">Commissaires <b>4</b> · Drapeaux <b>4</b></p>
     </div>
-    <p class="lead"><span class="marshal" aria-hidden="true"></span>Quatre commissaires de course, reconnaissables à leur tenue orange, circulent toute la soirée drapeaux en main. Un drapeau levé devant vous, c'est une pénitence immédiate, sans appel ni enquête des stewards. Les pilotes désignés roulent à l'eau : pour eux, le drapeau à damier est permanent.</p>
+    <p class="lead">Quatre commissaires de course, reconnaissables à leur tenue orange, circulent toute la soirée drapeaux en main. Un drapeau levé devant vous, c'est une pénitence immédiate, sans appel ni enquête des stewards. Les pilotes désignés roulent à l'eau : pour eux, le drapeau à damier est permanent.</p>
+    <div class="marshals" aria-hidden="true">
+      <div class="mshl"><svg viewBox="0 0 120 210"><use href="#marshal"/><path d="M91 16 L118 20 L118 38 L91 42 Z" fill="#1ec760"/></svg><span>Vert</span></div>
+      <div class="mshl"><svg viewBox="0 0 120 210"><use href="#marshal"/><path d="M91 16 L118 20 L118 38 L91 42 Z" fill="#f5c518"/></svg><span>Jaune</span></div>
+      <div class="mshl"><svg viewBox="0 0 120 210"><use href="#marshal"/><path d="M91 16 L118 20 L118 38 L91 42 Z" fill="#e0141c"/></svg><span>Rouge</span></div>
+      <div class="mshl"><svg viewBox="0 0 120 210"><use href="#marshal"/><path d="M91 16 L118 20 L118 38 L91 42 Z" fill="url(#chkflag)"/></svg><span>Damier</span></div>
+    </div>
     <div class="flags">
       <div class="flagcard">
         <span class="fl green" aria-hidden="true"></span>
@@ -714,13 +808,14 @@ footer .tag b{color:var(--fg)}
       seqTimer.push(setTimeout(function(){
         c.querySelectorAll(".light").forEach(function(l){ l.classList.add("red"); });
         label.textContent = (i + 1) + " / 5";
+        if (withSound) beep(740, 0.11, 0.25);
       }, t + i * 900));
     });
     var hold = t + 5 * 900 + 600 + Math.random() * 1400;
     seqTimer.push(setTimeout(function(){
       setAll("green");
       label.textContent = "C'est parti !"; label.classList.add("go");
-      if (withSound) engineRev();
+      if (withSound) beep(1180, 0.7, 0.3);
       var car = $("scrollcar"); car.classList.remove("boost"); void car.offsetWidth; car.classList.add("boost");
     }, hold));
     seqTimer.push(setTimeout(function(){ setAll(""); label.textContent = "Rejouer la procédure"; label.classList.remove("go"); running = false; }, hold + 2600));
@@ -730,28 +825,17 @@ footer .tag b{color:var(--fg)}
   panel.addEventListener("keydown", function(e){ if (e.key === "Enter" || e.key === " ") { e.preventDefault(); startSequence(true); } });
   setTimeout(function(){ startSequence(false); }, 500);
 
-  /* Son moteur synthétisé (uniquement après un clic) */
+  /* Bips des feux (uniquement après un toucher : règle des navigateurs) */
   var actx = null;
-  function engineRev(){
+  function beep(freq, dur, vol){
     try {
       actx = actx || new (window.AudioContext || window.webkitAudioContext)();
       if (actx.state === "suspended") actx.resume();
-      var t = actx.currentTime;
-      var master = actx.createGain(); master.gain.setValueAtTime(0.0001, t);
-      master.gain.exponentialRampToValueAtTime(0.35, t + 0.12);
-      master.gain.setValueAtTime(0.35, t + 1.3);
-      master.gain.exponentialRampToValueAtTime(0.0001, t + 2.6);
-      var filt = actx.createBiquadFilter(); filt.type = "lowpass"; filt.Q.value = 4;
-      filt.frequency.setValueAtTime(500, t); filt.frequency.exponentialRampToValueAtTime(3200, t + 1.3); filt.frequency.exponentialRampToValueAtTime(700, t + 2.6);
-      [[1,"sawtooth",0.5],[0.5,"square",0.35],[2,"sawtooth",0.18]].forEach(function(v){
-        var o = actx.createOscillator(); o.type = v[1];
-        var g = actx.createGain(); g.gain.value = v[2];
-        o.frequency.setValueAtTime(55 * v[0], t);
-        o.frequency.exponentialRampToValueAtTime(560 * v[0], t + 1.3);
-        o.frequency.exponentialRampToValueAtTime(120 * v[0], t + 2.6);
-        o.connect(g); g.connect(filt); o.start(t); o.stop(t + 2.7);
-      });
-      filt.connect(master); master.connect(actx.destination);
+      var t = actx.currentTime, o = actx.createOscillator(), g = actx.createGain();
+      o.type = "square"; o.frequency.value = freq;
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.01);
+      g.gain.setValueAtTime(vol, t + dur - 0.03); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + dur + 0.02);
     } catch(e) {}
   }
 
@@ -790,6 +874,31 @@ footer .tag b{color:var(--fg)}
   }
   tick(); setInterval(tick, 1000);
 
+  /* ============ MÉTÉO EN DIRECT (Open-Meteo, La Palette Verte, Écaussinnes) ============ */
+  function skyLabel(code){
+    if (code === 0) return "dégagé"; if (code <= 2) return "peu nuageux"; if (code === 3) return "couvert";
+    if (code === 45 || code === 48) return "brouillard"; if (code <= 57) return "bruine"; if (code <= 67) return "pluie";
+    if (code <= 77) return "neige"; if (code <= 82) return "averses"; if (code <= 86) return "averses de neige"; return "orage";
+  }
+  function loadWeather(){
+    var u = "https://api.open-meteo.com/v1/forecast?latitude=50.567&longitude=4.170&current=temperature_2m,precipitation,weather_code,wind_speed_10m&timezone=Europe%2FBrussels";
+    fetch(u).then(function(r){ return r.json(); }).then(function(d){
+      var c = d.current; if (!c) throw new Error("vide");
+      var code = c.weather_code, wet = c.precipitation > 0 || (code >= 51 && code <= 67) || (code >= 80 && code <= 82) || code >= 95;
+      var track = (code >= 71 && code <= 77) || (code >= 85 && code <= 86) ? "enneigée" : (wet ? "mouillée" : (code === 45 || code === 48 ? "brouillard" : "sèche"));
+      $("w-track").textContent = track;
+      $("w-temp").textContent = Math.round(c.temperature_2m) + "°";
+      $("w-wind").textContent = Math.round(c.wind_speed_10m) + " km/h";
+      $("w-sky").textContent = skyLabel(code);
+      var now = new Date();
+      $("w-note").textContent = "Météo en direct à la Palette Verte · " + pad(now.getHours()) + ":" + pad(now.getMinutes());
+    }).catch(function(){
+      $("w-track").textContent = "inconnue"; $("w-temp").textContent = "—"; $("w-wind").textContent = "—"; $("w-sky").textContent = "—";
+      $("w-note").textContent = "Météo indisponible pour le moment";
+    });
+  }
+  loadWeather(); setInterval(loadWeather, 15 * 60 * 1000);
+
   /* ============ ENCOCHE DE PERFORATION (mobile) ============ */
   function placePerf(){
     var t = $("ticket"), stub = t.querySelector(".t-stub");
@@ -817,7 +926,8 @@ footer .tag b{color:var(--fg)}
   function layoutCar(){
     var max = document.documentElement.scrollHeight - window.innerHeight;
     var p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
-    goalX = p * (window.innerWidth - car.offsetWidth - 16);
+    var cw = car.getBoundingClientRect().width || 64;
+    goalX = p * (window.innerWidth - cw - 16);
   }
   function animateCar(){
     curX += (goalX - curX) * (reduced ? 1 : 0.18);
@@ -879,6 +989,11 @@ footer .tag b{color:var(--fg)}
     $("n-pilots").textContent = totalPilots;
     $("n-teams").textContent = teamsUsed;
     $("n-lead").textContent = lead ? lead.name + " (" + lead.n + ")" : "—";
+    var ranked = TEAMS.map(function(t){ return {t:t, n:seatsOf(t.name, null).length}; }).filter(function(r){ return r.n > 0; }).sort(function(a, b){ return b.n - a.n; });
+    $("standings").hidden = !ranked.length;
+    $("standings-list").innerHTML = ranked.map(function(r, i){
+      return '<li style="--tc:' + r.t.color + '"><span class="pos">' + (i + 1) + '</span><span>' + esc(r.t.name) + '</span><span class="bar"><i style="--w:' + Math.round(r.n / ranked[0].n * 100) + '%"></i></span><span class="n">' + r.n + '</span></li>';
+    }).join("");
     wrap.querySelectorAll(".team").forEach(function(b){
       b.addEventListener("click", function(){
         if (b.classList.contains("full")) { setStatus("Cette écurie affiche complet (" + MAX_SEATS + " pilotes) : choisissez-en une autre.", "err"); return; }
@@ -904,24 +1019,31 @@ footer .tag b{color:var(--fg)}
     if (mine) {
       if (!$("f-p1").value) $("f-p1").value = mine.pilot1 || "";
       if (!$("f-p2").value) $("f-p2").value = mine.pilot2 || "";
-      if (!$("f-note").value) $("f-note").value = mine.note || "";
       if (!selectedTeam) selectedTeam = mine.team;
     }
   }
+  function demoLoad(){ try { return JSON.parse(localStorage.getItem("gp30-demo") || "[]"); } catch(e){ return []; } }
+  function demoSave(list){ try { localStorage.setItem("gp30-demo", JSON.stringify(list)); } catch(e){} }
   function loadEntries(){
-    if (!API_URL) { $("api-notice").hidden = false; $("submit-btn").disabled = true; renderTeams(); applyMine(); renderSide(); return; }
+    if (!API_URL) { $("api-notice").hidden = false; entries = demoLoad(); renderTeams(); applyMine(); renderTeams(); renderSide(); return; }
     fetch(API_URL, {method:"GET", cache:"no-store"}).then(function(r){ return r.json(); }).then(function(data){
       if (data && data.entries) entries = data.entries;
       renderTeams(); applyMine(); renderTeams(); renderSide();
     }).catch(function(){ setStatus("Impossible de charger la grille pour le moment. Réessayez dans un instant.", "err"); renderTeams(); renderSide(); });
   }
   function postEntry(payload){
+    if (!API_URL) {
+      var list = demoLoad().filter(function(e){ return e.id !== payload.id; });
+      if (payload.action !== "delete") list.push(payload);
+      demoSave(list);
+      return Promise.resolve({ok:true, entries:list});
+    }
     return fetch(API_URL, {method:"POST", body: JSON.stringify(payload), redirect:"follow"}).then(function(r){ return r.json(); });
   }
   $("reg-form").addEventListener("input", renderSide);
   $("reg-form").addEventListener("submit", function(e){
     e.preventDefault();
-    var p1 = $("f-p1").value.trim(), p2 = $("f-p2").value.trim(), note = $("f-note").value.trim();
+    var p1 = $("f-p1").value.trim(), p2 = $("f-p2").value.trim(), note = "";
     if (!selectedTeam) { setStatus("Choisissez d'abord une écurie dans la grille.", "err"); return; }
     if (!p1) { setStatus("Indiquez au moins le prénom du pilote 1.", "err"); $("f-p1").focus(); return; }
     var others = seatsOf(selectedTeam, myId).length, need = p2 ? 2 : 1;
@@ -943,20 +1065,57 @@ footer .tag b{color:var(--fg)}
     }).catch(function(){ btn.disabled = false; setStatus("Le stand n'a pas reçu le message. Vérifiez votre connexion et réessayez.", "err"); });
   });
   $("leave-btn").addEventListener("click", function(){
-    if (!API_URL) return;
     var btn = $("leave-btn"); btn.disabled = true; setStatus("Retrait en cours…");
     postEntry({id: myId, action: "delete"}).then(function(res){
       btn.disabled = false;
       if (res && res.ok) {
         if (res.entries) entries = res.entries;
         try { localStorage.removeItem("gp30-entry"); } catch(err){}
-        saved = null; selectedTeam = null; $("f-p1").value = ""; $("f-p2").value = ""; $("f-note").value = "";
+        saved = null; selectedTeam = null; $("f-p1").value = ""; $("f-p2").value = "";
         renderTeams(); renderSide(); setStatus("Vous avez quitté la grille. Vous pouvez rejoindre une écurie quand vous voulez.", "ok");
       } else setStatus("Le retrait n'a pas abouti. Réessayez.", "err");
     }).catch(function(){ btn.disabled = false; setStatus("Le retrait n'a pas abouti. Réessayez.", "err"); });
   });
   loadEntries();
   if (API_URL) setInterval(loadEntries, 45000);
+
+  /* ============ PIT STOP CHALLENGE ============ */
+  var wheels = Array.prototype.slice.call(document.querySelectorAll("#pit .wheel"));
+  var pitStart = 0, pitRaf = null, pitDone = 0, pitBest = null;
+  try { pitBest = parseFloat(localStorage.getItem("gp30-pit")) || null; } catch(e){}
+  function fmt(ms){ return (ms / 1000).toFixed(2).replace(".", ","); }
+  if (pitBest) $("pit-best").textContent = fmt(pitBest) + " s";
+  wheels.forEach(function(w){ w.disabled = true; });
+  function pitTick(){ $("pit-clock").textContent = fmt(performance.now() - pitStart); pitRaf = requestAnimationFrame(pitTick); }
+  $("pit-go").addEventListener("click", function(){
+    pitDone = 0; wheels.forEach(function(w){ w.disabled = false; w.classList.remove("done"); w.classList.add("armed"); });
+    $("pit-go").hidden = true; $("pit-reset").hidden = true; $("pit-verdict").textContent = "Changez les quatre roues !";
+    pitStart = performance.now(); pitTick(); beep(1180, 0.15, 0.2);
+  });
+  wheels.forEach(function(w){
+    w.addEventListener("click", function(){
+      if (w.classList.contains("done")) return;
+      w.classList.remove("armed"); w.classList.add("done"); pitDone++; beep(600, 0.06, 0.15);
+      if (pitDone === 4) {
+        cancelAnimationFrame(pitRaf);
+        var ms = performance.now() - pitStart; $("pit-clock").textContent = fmt(ms);
+        var v;
+        if (ms < 1800) v = "Nouveau record du monde. Les mécaniciens de Red Bull vous recrutent.";
+        else if (ms < 2500) v = "Arrêt de champion : digne d'un dimanche de Grand Prix.";
+        else if (ms < 4000) v = "Bon arrêt, propre. Vous repartez dans la course.";
+        else if (ms < 7000) v = "Les mécaniciens avaient pris l'apéro. Drapeau jaune.";
+        else v = "Une roue est partie seule dans la voie des stands. Drapeau rouge.";
+        $("pit-verdict").textContent = v;
+        if (!pitBest || ms < pitBest) { pitBest = ms; $("pit-best").textContent = fmt(ms) + " s"; try { localStorage.setItem("gp30-pit", String(ms)); } catch(e){} }
+        wheels.forEach(function(x){ x.disabled = true; });
+        $("pit-reset").hidden = false;
+      }
+    });
+  });
+  $("pit-reset").addEventListener("click", function(){
+    wheels.forEach(function(w){ w.classList.remove("done", "armed"); w.disabled = true; });
+    $("pit-clock").textContent = "0.00"; $("pit-verdict").textContent = "Prêt au stand."; $("pit-reset").hidden = true; $("pit-go").hidden = false;
+  });
 })();
 </script>
 </body>
