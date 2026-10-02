@@ -11,13 +11,17 @@
  *  4. Copier l'URL « Application Web » (elle se termine par /exec) et l'envoyer à Dorian :
  *     elle est collée dans index.html (constante API_URL).
  *
- * La feuille se remplit toute seule : une ligne par engagement (horodatage, identifiant, écurie,
- * pilote 1, pilote 2, message). On peut supprimer une ligne à la main pour retirer quelqu'un.
+ * La feuille se remplit toute seule :
+ *  - onglet « Engagements » : une ligne par engagement (horodatage, identifiant, écurie, pilote 1, pilote 2, message) ;
+ *  - onglet « PitStop » : une ligne par participant au concours (horodatage, identifiant, prénom, nom, temps en ms).
+ * On peut supprimer une ligne à la main pour retirer quelqu'un.
  */
 
 var SHEET_NAME = 'Engagements';
+var PIT_SHEET = 'PitStop';
 var MAX_SEATS = 30;
 var HEADERS = ['Horodatage', 'Identifiant', 'Écurie', 'Pilote 1', 'Pilote 2', 'Message'];
+var PIT_HEADERS = ['Horodatage', 'Identifiant', 'Prénom', 'Nom', 'Temps (ms)'];
 
 function doGet() {
   return json_(list_());
@@ -32,6 +36,19 @@ function doPost(e) {
     var lock = LockService.getScriptLock();
     lock.waitLock(8000);
     try {
+      if (body.action === 'pitstop') {
+        var first = clean_(body.first, 40), last = clean_(body.last, 40), ms = Math.round(Number(body.ms));
+        if (!first || !last || !(ms > 0) || ms > 600000) return json_({ ok: false, error: 'invalid' });
+        var ps = pitSheet_();
+        var prow = ps.getDataRange().getValues();
+        var pIndex = -1;
+        for (var k = 1; k < prow.length; k++) { if (String(prow[k][1]) === id) { pIndex = k + 1; break; } }
+        if (pIndex > 0 && Number(prow[pIndex - 1][4]) <= ms) return json_(list_());
+        var prowData = [new Date(), id, first, last, ms];
+        if (pIndex > 0) ps.getRange(pIndex, 1, 1, prowData.length).setValues([prowData]);
+        else ps.appendRow(prowData);
+        return json_(list_());
+      }
       var sh = sheet_();
       var rows = sh.getDataRange().getValues();
       var rowIndex = -1;
@@ -85,6 +102,30 @@ function sheet_() {
   return sh;
 }
 
+function pitSheet_() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName(PIT_SHEET);
+  if (!sh) sh = ss.insertSheet(PIT_SHEET);
+  if (sh.getLastRow() === 0) {
+    sh.appendRow(PIT_HEADERS);
+    sh.getRange(1, 1, 1, PIT_HEADERS.length).setFontWeight('bold');
+    sh.setFrozenRows(1);
+  }
+  return sh;
+}
+
+function pitList_() {
+  var rows = pitSheet_().getDataRange().getValues();
+  var out = [];
+  for (var i = 1; i < rows.length; i++) {
+    var r = rows[i];
+    if (!r[1] || !(Number(r[4]) > 0)) continue;
+    out.push({ id: String(r[1]), first: String(r[2]), last: String(r[3]), ms: Number(r[4]) });
+  }
+  out.sort(function (a, b) { return a.ms - b.ms; });
+  return out.slice(0, 50);
+}
+
 function list_() {
   var sh = sheet_();
   var rows = sh.getDataRange().getValues();
@@ -101,7 +142,7 @@ function list_() {
       at: r[0] instanceof Date ? r[0].toISOString() : String(r[0])
     });
   }
-  return { ok: true, entries: out };
+  return { ok: true, entries: out, pitstop: pitList_() };
 }
 
 function clean_(v, max) {

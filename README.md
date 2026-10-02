@@ -8,7 +8,7 @@ Publié avec GitHub Pages : https://dorian652.github.io/grandprix30/
 - `index.html` : la page complète (billet, procédure de départ, chrono, programme, grille des écuries, radio, circuit, drapeaux). Aucune dépendance en dehors des polices Google.
 - `og.jpg` : image d'aperçu pour WhatsApp, Messenger et Facebook.
 - `icon-*.png`, `apple-touch-icon.png`, `manifest.webmanifest` : icône et installation sur l'écran d'accueil.
-- `apps-script/Code.gs` : script Google Apps Script qui enregistre les engagements dans une feuille Google Sheets.
+- `apps-script/Code.gs` : script Google Apps Script qui enregistre les engagements par écurie et les chronos du concours de pit stop dans une feuille Google Sheets (onglets « Engagements » et « PitStop »).
 
 ## Activer les inscriptions par écurie
 
@@ -19,7 +19,7 @@ Les invités (plus de 100) choisissent l'écurie pour laquelle ils roulent, seul
 3. Déployer > Nouveau déploiement > Application Web, « Exécuter en tant que : Moi », « Qui a accès : Tout le monde », Déployer, puis autoriser.
 4. Copier l'URL de l'application Web (terminée par `/exec`) et la coller dans `index.html`, constante `API_URL`.
 
-Tant que `API_URL` est vide, la grille s'affiche en lecture seule.
+Tant que `API_URL` est vide, la grille et le classement du pit stop fonctionnent en mode essai : les données restent sur l'appareil du visiteur.
 
 ## Règles de la grille
 
