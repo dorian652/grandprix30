@@ -611,7 +611,7 @@ footer .tag b{color:var(--fg)}
         <div class="notice" id="api-notice" hidden>Mode essai : votre engagement s'affiche sur cet appareil uniquement, le temps que l'enregistrement commun soit activé.</div>
       </form>
       <div class="reg-side" aria-live="polite">
-        <div class="ph"><span>Fiche d'engagement</span><em style="font-style:normal" id="side-no">N° —</em></div>
+        <div class="ph"><span>Fiche d'engagement</span><em style="font-style:normal">20 · 03 · 2027</em></div>
         <div class="pb">
           <div class="who" id="side-who">Votre nom</div>
           <div class="tm" id="side-team"><i></i>Aucune écurie choisie</div>
@@ -1120,7 +1120,6 @@ footer .tag b{color:var(--fg)}
     var tm = $("side-team");
     tm.innerHTML = '<i></i>' + (t ? esc(t.name) : "Aucune écurie choisie");
     tm.style.setProperty("--tc", t ? t.color : "");
-    $("side-no").textContent = "N° " + (myId || "—");
     var mine = entries.filter(function(e){ return e.id === myId; })[0];
     $("submit-label").textContent = mine ? "Mettre à jour mon engagement" : "Rejoindre l'écurie";
     $("leave-btn").hidden = !mine;
