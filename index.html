@@ -331,6 +331,20 @@ footer .tag{font-family:var(--display);font-weight:700;letter-spacing:.26em;text
 footer .tag b{color:var(--fg)}
 .chq{height:10px;width:160px;background:conic-gradient(var(--fg) 25%,transparent 0 50%,var(--fg) 0 75%,transparent 0);background-size:10px 10px;opacity:.7}
 
+/* Easter egg Orange Army */
+#crest-btn{cursor:pointer}
+html.orange{--red:#ff7a00;--bg:#120c05;--bg-2:#1d1309;--bg-3:#2a1b0c;--line:rgba(255,160,80,.22);--purple:#ff9a3c}
+html.orange body::before{background:radial-gradient(1200px 600px at 50% -10%,rgba(255,122,0,.35),transparent 60%),repeating-linear-gradient(0deg,rgba(255,255,255,.012) 0 1px,transparent 1px 3px)}
+html.orange .pitwall .car{color:#ff7a00}
+html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)}
+.orange-banner{position:fixed;inset:0;z-index:80;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;pointer-events:none;background:radial-gradient(circle at 50% 50%,rgba(255,122,0,.55),rgba(18,12,5,.85) 70%);animation:obIn .4s ease-out}
+.orange-banner .ob-line{font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:.3em;font-size:clamp(1rem,4vw,1.6rem);color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+.orange-banner .ob-big{font-family:var(--mono);font-weight:700;font-size:clamp(6rem,30vw,16rem);line-height:.9;color:#ff7a00;text-shadow:0 0 40px rgba(255,122,0,.8),0 6px 0 #7a3a00;animation:obPulse .6s ease-in-out infinite alternate}
+@keyframes obIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
+@keyframes obPulse{from{transform:scale(1)}to{transform:scale(1.06)}}
+.confetti{position:fixed;inset:0;z-index:70;pointer-events:none;display:none}
+.confetti.on{display:block}
+@media (prefers-reduced-motion:reduce){.orange-banner,.orange-banner .ob-big{animation:none}}
 /* Muret des stands : la monoplace suit le défilement */
 .pitwall{position:fixed;left:0;right:0;bottom:0;z-index:50;height:54px;padding-bottom:env(safe-area-inset-bottom,0px);background:linear-gradient(180deg,rgba(15,13,12,0),rgba(15,13,12,.92) 30%,#0a0908);pointer-events:none}
 .pitwall .road{position:absolute;left:0;right:0;bottom:calc(10px + env(safe-area-inset-bottom,0px));height:26px;background:#1a1613;border-top:2px solid #2a2420;border-bottom:2px solid #2a2420}
@@ -541,7 +555,7 @@ footer .tag b{color:var(--fg)}
 
 <div class="wrap">
   <header class="topbar">
-    <div class="brand"><svg><use href="#crest"/></svg><span>L&amp;L Racing <span>· Écurie n°30</span></span></div>
+    <div class="brand"><svg id="crest-btn" role="img" aria-label="Écusson L&L Racing"><use href="#crest"/></svg><span>L&amp;L Racing <span>· Écurie n°30</span></span></div>
     <div class="chip">20<i>·</i>03<i>·</i>2027 <span style="color:var(--muted);margin-inline:8px">|</span> 19:30</div>
   </header>
 
@@ -896,6 +910,12 @@ footer .tag b{color:var(--fg)}
   </footer>
 </div>
 
+<div class="orange-banner" id="orange-banner" aria-live="polite" hidden>
+  <span class="ob-line">Orange Army</span>
+  <span class="ob-big">33</span>
+  <span class="ob-line">Mode Verstappen activé · tribune en feu</span>
+</div>
+<canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
 <div class="pitwall" aria-hidden="true">
   <span class="kerb"></span>
   <span class="mark" style="left:8%">Grille</span>
@@ -1282,6 +1302,78 @@ footer .tag b{color:var(--fg)}
   });
   loadEntries();
   if (API_URL) setInterval(loadEntries, 45000);
+
+  /* ============ EASTER EGG : ORANGE ARMY ============ */
+  (function(){
+    var crest = $("crest-btn"), taps = 0, tapTimer = null, active = false;
+    if (!crest) return;
+    crest.addEventListener("click", function(){
+      taps++; clearTimeout(tapTimer); tapTimer = setTimeout(function(){ taps = 0; }, 1600);
+      if (taps >= 5) { taps = 0; orangeArmy(); }
+    });
+    function orangeArmy(){
+      if (active) return; active = true;
+      document.documentElement.classList.add("orange");
+      var banner = $("orange-banner"); banner.hidden = false;
+      unlockAudio(); stadiumJingle();
+      boostStart = performance.now();
+      startConfetti(7000);
+      setTimeout(function(){ banner.hidden = true; }, 4200);
+      setTimeout(function(){ document.documentElement.classList.remove("orange"); active = false; }, 12000);
+    }
+    /* Jingle original synthétisé : klaxons de tribune + fanfare */
+    function stadiumJingle(){
+      try {
+        actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+        var t0 = actx.currentTime + 0.05, master = actx.createGain(); master.gain.value = 0.9; master.connect(actx.destination);
+        function horn(t, dur, f){
+          [1, 1.5, 2.01].forEach(function(m, i){
+            var o = actx.createOscillator(), g = actx.createGain(); o.type = i ? "square" : "sawtooth";
+            o.frequency.setValueAtTime(f * m, t); o.frequency.linearRampToValueAtTime(f * m * 0.97, t + dur);
+            g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.16 / (i + 1), t + 0.03);
+            g.gain.setValueAtTime(0.16 / (i + 1), t + dur - 0.08); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+            o.connect(g); g.connect(master); o.start(t); o.stop(t + dur + 0.05);
+          });
+        }
+        function note(t, dur, f){
+          var o = actx.createOscillator(), g = actx.createGain(); o.type = "square"; o.frequency.value = f;
+          g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.12, t + 0.02);
+          g.gain.setValueAtTime(0.12, t + dur - 0.04); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+          o.connect(g); g.connect(master); o.start(t); o.stop(t + dur + 0.02);
+        }
+        function clap(t){
+          var len = Math.floor(actx.sampleRate * 0.08), buf = actx.createBuffer(1, len, actx.sampleRate), d = buf.getChannelData(0);
+          for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2);
+          var src = actx.createBufferSource(); src.buffer = buf; var g = actx.createGain(); g.gain.value = 0.5;
+          src.connect(g); g.connect(master); src.start(t);
+        }
+        horn(t0, 0.9, 220); horn(t0 + 0.45, 0.9, 277);
+        var beat = 0.42, tc = t0 + 1.6;
+        for (var k = 0; k < 8; k++) clap(tc + k * beat);
+        var mel = [[0,330],[1,330],[2,392],[3,440],[4,392],[5,330],[6,294],[7,330]];
+        mel.forEach(function(m){ note(tc + m[0] * beat, beat * 0.55, m[1]); });
+        horn(tc + 8 * beat, 1.4, 330); horn(tc + 8 * beat + 0.2, 1.2, 415);
+      } catch(e) {}
+    }
+    /* Confettis orange sur canvas */
+    function startConfetti(ms){
+      var c = $("confetti"), ctx = c.getContext("2d"); c.classList.add("on");
+      var W = c.width = window.innerWidth, H = c.height = window.innerHeight, parts = [], end = performance.now() + ms;
+      var colors = ["#ff7a00", "#ffa040", "#ffffff", "#c8102e", "#1e3a8a"];
+      for (var i = 0; i < 220; i++) parts.push({x: Math.random() * W, y: -Math.random() * H, w: 6 + Math.random() * 6, h: 10 + Math.random() * 8, c: colors[i % colors.length], v: 2 + Math.random() * 3.5, r: Math.random() * Math.PI, vr: (Math.random() - .5) * .2, sx: (Math.random() - .5) * 1.2});
+      function frame(){
+        ctx.clearRect(0, 0, W, H);
+        var now = performance.now();
+        parts.forEach(function(p){
+          p.y += p.v; p.x += p.sx + Math.sin(p.y / 30); p.r += p.vr;
+          if (p.y > H + 20 && now < end - 1500) { p.y = -20; p.x = Math.random() * W; }
+          ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.fillStyle = p.c; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); ctx.restore();
+        });
+        if (now < end + 2500) requestAnimationFrame(frame); else { ctx.clearRect(0, 0, W, H); c.classList.remove("on"); }
+      }
+      if (!reduced) frame(); else c.classList.remove("on");
+    }
+  })();
 
   /* ============ PIT STOP CHALLENGE ============ */
   var wheels = Array.prototype.slice.call(document.querySelectorAll("#pit .wheel"));
