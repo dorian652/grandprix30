@@ -26,4 +26,5 @@ Tant que `API_URL` est vide, la grille et le classement du pit stop fonctionnent
 - 11 écuries, 30 pilotes maximum par écurie.
 - Une inscription couvre une personne ou un duo.
 - Chaque visiteur peut modifier ou retirer son propre engagement depuis le même navigateur.
+- Mode organisateur : ajouter `#admin` à l'adresse du site, saisir le code `ADMIN_PIN` défini dans le script ; une croix apparaît sur chaque inscription et chaque chrono pour les retirer.
 - La feuille Google Sheets reste la référence : supprimer une ligne retire l'engagement du site.

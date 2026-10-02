@@ -11,12 +11,16 @@
  *  4. Copier l'URL « Application Web » (elle se termine par /exec) et l'envoyer à Dorian :
  *     elle est collée dans index.html (constante API_URL).
  *
+ * Mode organisateur : sur le site, ajouter #admin à l'adresse, saisir le code ADMIN_PIN ci-dessous,
+ * et une croix apparaît sur chaque inscription et chaque chrono pour les retirer.
+ *
  * La feuille se remplit toute seule :
  *  - onglet « Engagements » : une ligne par engagement (horodatage, identifiant, écurie, pilote 1, pilote 2, message) ;
  *  - onglet « PitStop » : une ligne par participant au concours (horodatage, identifiant, prénom, nom, temps en ms).
  * On peut supprimer une ligne à la main pour retirer quelqu'un.
  */
 
+var ADMIN_PIN = '2027';   // code organisateur : à changer avant de déployer
 var SHEET_NAME = 'Engagements';
 var PIT_SHEET = 'PitStop';
 var MAX_SEATS = 30;
@@ -32,6 +36,20 @@ function doPost(e) {
     var body = JSON.parse((e && e.postData && e.postData.contents) || '{}');
     var id = clean_(body.id, 64);
     if (!id) return json_({ ok: false, error: 'invalid' });
+
+    if (body.action === 'admin_check') {
+      return json_({ ok: String(body.pin) === ADMIN_PIN, error: String(body.pin) === ADMIN_PIN ? undefined : 'pin' });
+    }
+    if (body.action === 'admin_delete' || body.action === 'admin_delete_pit') {
+      if (String(body.pin) !== ADMIN_PIN) return json_({ ok: false, error: 'pin' });
+      var target = clean_(body.target, 64);
+      var tsh = body.action === 'admin_delete' ? sheet_() : pitSheet_();
+      var trows = tsh.getDataRange().getValues();
+      for (var t = trows.length - 1; t >= 1; t--) {
+        if (String(trows[t][1]) === target) tsh.deleteRow(t + 1);
+      }
+      return json_(list_());
+    }
 
     var lock = LockService.getScriptLock();
     lock.waitLock(8000);

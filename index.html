@@ -213,6 +213,11 @@ section{padding-block:56px;border-top:1px solid var(--line)}
 .members .empty{color:var(--muted);font-size:.88rem;font-style:italic;padding:4px 0}
 .team-foot{display:flex;justify-content:space-between;align-items:center;padding-left:8px;font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
 .team-foot b{color:var(--fg)}
+.adminbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:18px;padding:12px 14px;border:1px dashed var(--yellow);border-radius:10px;background:rgba(245,197,24,.06)}
+.adminbar input{width:120px}
+.adminbar.on{border-style:solid}
+.member .x,.leader li .x,.seat .x{margin-left:6px;border:0;background:none;color:#ff6b7a;font-weight:700;cursor:pointer;font-size:1rem;line-height:1;padding:0 2px}
+.member .x:hover,.leader li .x:hover{color:#fff}
 .standings{margin-top:22px;background:#0a0908;border:1px solid var(--line);border-radius:12px;padding:16px 18px}
 .standings ol{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:7px}
 .standings li{display:grid;grid-template-columns:28px 150px minmax(0,1fr) 36px;gap:10px;align-items:center;font-family:var(--mono);font-size:.82rem;letter-spacing:.06em;text-transform:uppercase}
@@ -572,6 +577,12 @@ footer .tag b{color:var(--fg)}
       <span class="pill">Écuries représentées : <b id="n-teams">0</b> / 11</span>
       <span class="pill">En tête du championnat : <b id="n-lead">—</b></span>
     </div>
+    <form class="adminbar" id="adminbar" hidden novalidate>
+      <span class="eyebrow">Mode organisateur</span>
+      <input type="password" id="admin-pin" inputmode="numeric" placeholder="Code" autocomplete="off" maxlength="12">
+      <button class="btn" type="submit" id="admin-ok">Activer</button>
+      <span class="status" id="admin-status"></span>
+    </form>
     <div class="teams" id="teams" role="radiogroup" aria-label="Écuries"></div>
     <div class="standings" id="standings" hidden>
       <p class="eyebrow">Classement des constructeurs</p>
@@ -1019,6 +1030,37 @@ footer .tag b{color:var(--fg)}
   if (!myId) { myId = "LL-" + Math.random().toString(36).slice(2, 8).toUpperCase(); try { localStorage.setItem("gp30-id", myId); } catch(e){} }
   var saved = null; try { saved = JSON.parse(localStorage.getItem("gp30-entry") || "null"); } catch(e){}
 
+  /* Mode organisateur : #admin dans l'adresse, puis code */
+  var adminPin = null;
+  try { adminPin = sessionStorage.getItem("gp30-admin") || null; } catch(e){}
+  function adminStatus(msg, cls){ var a = $("admin-status"); a.textContent = msg; a.className = "status" + (cls ? " " + cls : ""); }
+  function showAdminBar(){ $("adminbar").hidden = false; if (adminPin) { $("adminbar").classList.add("on"); adminStatus("Mode organisateur actif : une croix permet de retirer une inscription ou un chrono.", "ok"); } }
+  if (location.hash === "#admin") showAdminBar();
+  window.addEventListener("hashchange", function(){ if (location.hash === "#admin") showAdminBar(); });
+  $("adminbar").addEventListener("submit", function(e){
+    e.preventDefault();
+    var pin = $("admin-pin").value.trim(); if (!pin) return;
+    if (!API_URL) { adminPin = pin; try { sessionStorage.setItem("gp30-admin", pin); } catch(err){} $("adminbar").classList.add("on"); adminStatus("Mode essai : organisateur actif sur cet appareil.", "ok"); renderTeams(); renderPitBoard(); return; }
+    adminStatus("Vérification…");
+    fetch(API_URL, {method:"POST", body: JSON.stringify({id:"admin", action:"admin_check", pin:pin}), redirect:"follow"}).then(function(r){ return r.json(); }).then(function(res){
+      if (res && res.ok) { adminPin = pin; try { sessionStorage.setItem("gp30-admin", pin); } catch(err){} $("adminbar").classList.add("on"); adminStatus("Mode organisateur actif : une croix permet de retirer une inscription ou un chrono.", "ok"); renderTeams(); renderPitBoard(); }
+      else adminStatus("Code incorrect.", "err");
+    }).catch(function(){ adminStatus("Vérification impossible pour le moment.", "err"); });
+  });
+  function adminDelete(action, target){
+    if (!adminPin) return;
+    if (!API_URL) {
+      if (action === "admin_delete") { var l = demoLoad().filter(function(e){ return e.id !== target; }); demoSave(l); entries = l; renderTeams(); renderSide(); }
+      else { var pl = pitDemoLoad().filter(function(e){ return e.id !== target; }); try { localStorage.setItem("gp30-pit-demo", JSON.stringify(pl)); } catch(e){} setPitEntries(pl); }
+      adminStatus("Retiré (mode essai).", "ok"); return;
+    }
+    adminStatus("Retrait en cours…");
+    fetch(API_URL, {method:"POST", body: JSON.stringify({id:"admin", action:action, pin:adminPin, target:target}), redirect:"follow"}).then(function(r){ return r.json(); }).then(function(res){
+      if (res && res.ok) { if (res.entries) entries = res.entries; if (res.pitstop) setPitEntries(res.pitstop); renderTeams(); renderSide(); adminStatus("Retiré.", "ok"); }
+      else if (res && res.error === "pin") { adminPin = null; try { sessionStorage.removeItem("gp30-admin"); } catch(e){} $("adminbar").classList.remove("on"); adminStatus("Code refusé : réactivez le mode organisateur.", "err"); renderTeams(); renderPitBoard(); }
+      else adminStatus("Le retrait n'a pas abouti.", "err");
+    }).catch(function(){ adminStatus("Le retrait n'a pas abouti. Vérifiez la connexion.", "err"); });
+  }
   function teamByName(n){ for (var i = 0; i < TEAMS.length; i++) if (TEAMS[i].name === n) return TEAMS[i]; return null; }
   function seatsOf(teamName, excludeId){
     var out = [];
@@ -1043,7 +1085,7 @@ footer .tag b{color:var(--fg)}
       html += '<div class="team-count">' + seats.length + '<small>' + (seats.length > 1 ? "pilotes" : "pilote") + '</small></div>';
       html += '<div class="members">';
       if (!seats.length) html += '<span class="empty">Aucun pilote engagé pour l\'instant</span>';
-      seats.forEach(function(sx){ html += '<span class="member' + (sx.id === myId ? ' mine' : '') + '">' + esc(sx.name) + '</span>'; });
+      seats.forEach(function(sx){ html += '<span class="member' + (sx.id === myId ? ' mine' : '') + '">' + esc(sx.name) + (adminPin ? '<i class="x" data-del="' + esc(sx.id) + '" title="Retirer cette inscription">✕</i>' : '') + '</span>'; });
       html += '</div>';
       html += '<div class="team-foot"><span>' + (full ? "Écurie complète" : (mine ? "Cliquez pour modifier" : "Cliquez pour rejoindre")) + '</span>' + (mine ? '<b>Votre écurie</b>' : '') + '</div>';
       html += '</button>';
@@ -1057,6 +1099,12 @@ footer .tag b{color:var(--fg)}
     $("standings-list").innerHTML = ranked.map(function(r, i){
       return '<li style="--tc:' + r.t.color + '"><span class="pos">' + (i + 1) + '</span><span>' + esc(r.t.name) + '</span><span class="bar"><i style="--w:' + Math.round(r.n / ranked[0].n * 100) + '%"></i></span><span class="n">' + r.n + '</span></li>';
     }).join("");
+    wrap.querySelectorAll(".x[data-del]").forEach(function(x){
+      x.addEventListener("click", function(ev){
+        ev.stopPropagation(); ev.preventDefault();
+        adminDelete("admin_delete", x.getAttribute("data-del"));
+      });
+    });
     wrap.querySelectorAll(".team").forEach(function(b){
       b.addEventListener("click", function(){
         if (b.classList.contains("full")) { setStatus("Cette écurie affiche complet (" + MAX_SEATS + " pilotes) : choisissez-en une autre.", "err"); return; }
@@ -1194,8 +1242,9 @@ footer .tag b{color:var(--fg)}
     var ol = $("pit-list");
     if (!list.length) { ol.innerHTML = '<li class="empty">Aucun temps enregistré pour l\'instant. Soyez le premier sur la grille.</li>'; return; }
     ol.innerHTML = list.map(function(e, i){
-      return '<li' + (e.id === myId ? ' class="mine"' : '') + '><span class="pos">P' + (i + 1) + '</span><span class="nm">' + esc(e.first) + ' ' + esc(e.last) + '</span><span class="tm">' + fmt(e.ms) + ' s</span></li>';
+      return '<li' + (e.id === myId ? ' class="mine"' : '') + '><span class="pos">P' + (i + 1) + '</span><span class="nm">' + esc(e.first) + ' ' + esc(e.last) + (adminPin ? '<button type="button" class="x" data-delpit="' + esc(e.id) + '" title="Retirer ce chrono">✕</button>' : '') + '</span><span class="tm">' + fmt(e.ms) + ' s</span></li>';
     }).join("");
+    ol.querySelectorAll(".x[data-delpit]").forEach(function(x){ x.addEventListener("click", function(){ adminDelete("admin_delete_pit", x.getAttribute("data-delpit")); }); });
   }
   function setPitEntries(list){ pitEntries = list || []; renderPitBoard(); }
   function postPit(payload){
