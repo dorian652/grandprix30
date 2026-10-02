@@ -789,8 +789,8 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     </div>
     <div class="contest">
       <form id="pit-form" class="pit-form" novalidate hidden>
-        <div class="field"><label for="pf-first">Prénom</label><input type="text" id="pf-first" maxlength="40" autocomplete="given-name"></div>
-        <div class="field"><label for="pf-last">Nom</label><input type="text" id="pf-last" maxlength="40" autocomplete="family-name"></div>
+        <div class="field"><label for="pf-first">Prénom complet</label><input type="text" id="pf-first" maxlength="40" autocomplete="given-name" placeholder="Ex. Valentine"></div>
+        <div class="field"><label for="pf-last">Nom de famille complet</label><input type="text" id="pf-last" maxlength="40" autocomplete="family-name" placeholder="Ex. Dupont"></div>
         <button class="btn primary" type="submit" id="pit-save"><span id="pit-save-label">Enregistrer mon temps</span></button>
         <p class="status" id="pit-status" style="grid-column:1/-1"></p>
       </form>
@@ -1422,6 +1422,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
         lastRun = ms; $("pit-form").hidden = false; $("pit-status").textContent = "";
         $("pit-save-label").textContent = "Enregistrer " + fmt(ms) + " s";
         if (!$("pf-first").value && savedPit) { $("pf-first").value = savedPit.first || ""; $("pf-last").value = savedPit.last || ""; }
+        if (!$("pf-first").value && $("f-p1").value.trim().split(/\s+/).length >= 2) { var parts = $("f-p1").value.trim().split(/\s+/); $("pf-first").value = parts[0]; $("pf-last").value = parts.slice(1).join(" "); }
       }
     });
   });
@@ -1457,8 +1458,10 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
   }
   $("pit-form").addEventListener("submit", function(e){
     e.preventDefault();
-    var first = $("pf-first").value.trim(), last = $("pf-last").value.trim();
-    if (!first || !last) { $("pit-status").textContent = "Indiquez votre prénom et votre nom pour le classement."; $("pit-status").className = "status err"; return; }
+    var cap = function(str){ return str.replace(/\s+/g, " ").trim().split(" ").map(function(w){ return w.charAt(0).toUpperCase() + w.slice(1); }).join(" "); };
+    var first = cap($("pf-first").value), last = cap($("pf-last").value);
+    if (first.length < 2 || last.length < 2) { $("pit-status").textContent = "Indiquez votre prénom et votre nom de famille complets pour le classement."; $("pit-status").className = "status err"; $("pf-first").focus(); return; }
+    $("pf-first").value = first; $("pf-last").value = last;
     if (!lastRun) return;
     var pk = keyOf(first + " " + last);
     var mine = pitEntries.filter(function(x){ return keyOf(x.first + " " + x.last) === pk; }).sort(function(a, b){ return a.ms - b.ms; })[0];
