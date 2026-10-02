@@ -133,3 +133,75 @@
     track.addEventListener("pointerleave", function(){ track.classList.remove("tilt"); track.style.transform = ""; });
   }
 })();
+
+/* ===== Deuxième passe : pratique ===== */
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* Navigation du bas : défilement doux et section active */
+  var links = document.querySelectorAll(".pitnav a");
+  links.forEach(function(a){ a.addEventListener("click", function(e){ var t = document.querySelector(a.getAttribute("href")); if (t) { e.preventDefault(); t.scrollIntoView({behavior: reduced ? "auto" : "smooth", block: "start"}); } }); });
+  if ("IntersectionObserver" in window && links.length) {
+    var map = {}; links.forEach(function(a){ map[a.getAttribute("href").slice(1)] = a; });
+    var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { links.forEach(function(a){ a.classList.remove("on"); }); var a = map[e.target.id]; if (a) a.classList.add("on"); } }); }, {rootMargin: "-40% 0px -50% 0px"});
+    Object.keys(map).forEach(function(id){ var el = $(id); if (el) io.observe(el); });
+  }
+
+  /* Partager l'invitation */
+  var share = $("share-btn");
+  if (share) share.addEventListener("click", function(){
+    var url = "https://grandprix30ans.be/", text = "Grand Prix de nos 30 ans · Lucie & Lilian · samedi 20 mars 2027, 19h30, La Palette Verte, Écaussinnes. Choisis ton écurie !";
+    if (navigator.share) navigator.share({title: "Grand Prix de nos 30 ans", text: text, url: url}).catch(function(){});
+    else if (navigator.clipboard) navigator.clipboard.writeText(text + " " + url).then(function(){ share.querySelector("span").textContent = "Lien copié"; setTimeout(function(){ share.querySelector("span").textContent = "Partager"; }, 2000); });
+  });
+
+  /* Accueil personnalisé (d'après l'inscription mémorisée sur l'appareil) */
+  function welcome(){
+    var w = $("welcome"); if (!w) return;
+    var saved = null; try { saved = JSON.parse(localStorage.getItem("gp30-entry") || "null"); } catch(e){}
+    if (!saved || !saved.pilot1) { w.hidden = true; return; }
+    var teamBtn = document.querySelector('.team[data-team="' + saved.team + '"]');
+    var color = teamBtn ? getComputedStyle(teamBtn).getPropertyValue("--tc").trim() : "";
+    var code = teamBtn ? (teamBtn.querySelector(".tcode") ? teamBtn.querySelector(".tcode").textContent : saved.team.slice(0, 3).toUpperCase()) : "";
+    var first = saved.pilot1.split(" ")[0];
+    var best = null; try { best = parseFloat(localStorage.getItem("gp30-pit")) || null; } catch(e){}
+    w.style.setProperty("--wc", color || "var(--red)");
+    w.innerHTML = '<span class="w-badge">' + (code || "P") + '</span><div class="w-text"><b>Bonjour ' + first + '</b><span>Vous roulez pour ' + saved.team + (best ? ' · votre record pit stop : ' + (best / 1000).toFixed(2).replace(".", ",") + ' s' : ' · tentez le pit stop challenge') + '</span></div>' +
+      '<div class="w-links"><a href="#grille">Changer d\'écurie</a><a href="#pitstop">Pit stop</a><a href="test/galerie.html">Photos</a></div>';
+    w.hidden = false;
+  }
+  setTimeout(welcome, 1200); setInterval(welcome, 15000);
+  var regForm = $("reg-form"); if (regForm) regForm.addEventListener("submit", function(){ setTimeout(welcome, 1500); });
+
+  /* Recherche d'un pilote dans la grille */
+  var q = $("team-search");
+  if (q) {
+    var cnt = $("search-count");
+    function norm(s){ return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); }
+    function run(){
+      var v = norm(q.value.trim()); var hits = 0, firstTeam = null;
+      document.querySelectorAll(".team").forEach(function(t){
+        var any = false;
+        t.querySelectorAll(".member").forEach(function(m){ var h = v && norm(m.textContent).indexOf(v) >= 0; m.classList.toggle("hit", !!h); if (h) { any = true; hits++; } });
+        t.classList.toggle("dim", !!v && !any);
+        if (any && !firstTeam) firstTeam = t;
+      });
+      if (cnt) cnt.textContent = v ? (hits + (hits > 1 ? " pilotes trouvés" : " pilote trouvé")) : "";
+      if (firstTeam && v.length >= 3) firstTeam.scrollIntoView({behavior: reduced ? "auto" : "smooth", block: "nearest"});
+    }
+    q.addEventListener("input", run);
+    var teamsEl = $("teams"); if (teamsEl) new MutationObserver(function(){ if (q.value) run(); }).observe(teamsEl, {childList: true});
+  }
+
+  /* Cartes d'écurie en relief (souris) */
+  if (!coarse && !reduced) {
+    document.addEventListener("pointermove", function(e){
+      var t = e.target.closest && e.target.closest(".team"); if (!t) return;
+      var r = t.getBoundingClientRect(), px = (e.clientX - r.left) / r.width * 2 - 1, py = (e.clientY - r.top) / r.height * 2 - 1;
+      t.classList.add("tilt3d"); t.style.transform = "rotateX(" + (-py * 5).toFixed(2) + "deg) rotateY(" + (px * 6).toFixed(2) + "deg) translateY(-2px)";
+    });
+    document.addEventListener("pointerout", function(e){ var t = e.target.closest && e.target.closest(".team"); if (t && !t.contains(e.relatedTarget)) { t.classList.remove("tilt3d"); t.style.transform = ""; } });
+  }
+})();

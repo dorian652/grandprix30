@@ -582,6 +582,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     </div>
   </header>
   <div class="ticker" aria-label="Race control"><span class="tk-tag"><i></i>Race control</span><div class="tk-track"><div class="tk-run" id="tk-run"><span>Chargement du paddock…</span></div></div></div>
+  <div class="welcome" id="welcome" hidden></div>
 
   <section class="hero">
     <div class="light-panel" id="light-panel" role="button" tabindex="0" aria-label="Relancer la procédure de départ">
@@ -598,7 +599,17 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     <h1>Grand Prix <span>de nos</span> 30 ans</h1>
     <p>Une seule manche, un seul soir, plus de 100 pilotes sur la grille. Rendez-vous à La Palette Verte pour fêter nos deux fois 30 ans.</p>
     <div class="stage3d" id="stage3d"><span class="s3-label">Monoplace L&amp;L · n°30 · vue 3D</span><span class="s3-hint">Glissez pour tourner · défilez pour survoler</span></div>
-    <div class="btn-row hero-actions">
+    <div class="essentials">
+      <div><span class="k">Date</span><span class="v">Samedi 20 mars 2027</span><span class="s">Ouverture du paddock à 19h30</span></div>
+      <div><span class="k">Lieu</span><span class="v">La Palette Verte</span><span class="s">Rue Jean Jaurès 5, 7190 Écaussinnes</span></div>
+      <div><span class="k">Grille</span><span class="v">Plus de 100 pilotes</span><span class="s">11 écuries, choisissez la vôtre plus bas</span></div>
+    </div>
+    <div class="ess-actions">
+      <a class="btn primary" href="https://www.google.com/maps/dir/?api=1&destination=Rue+Jean+Jaur%C3%A8s+5%2C+%C3%89caussinnes" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg>Itinéraire</a>
+      <a class="btn" href="grandprix30ans.ics" download="grandprix30ans.ics"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M12 13v5M9.5 15.5h5"/></svg>Agenda</a>
+      <button type="button" class="btn" id="share-btn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg><span>Partager</span></button>
+    </div>
+    <div class="btn-row hero-actions" hidden>
       <a class="btn primary" href="grandprix30ans.ics" download="grandprix30ans.ics">
         <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M12 13v5M9.5 15.5h5"/></svg>Ajouter à mon agenda
       </a>
@@ -790,6 +801,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
       <button class="btn" type="submit" id="admin-ok">Activer</button>
       <span class="status" id="admin-status"></span>
     </form>
+    <div class="search"><input type="search" id="team-search" placeholder="Chercher un pilote (prénom ou nom)…" aria-label="Chercher un pilote"><span class="count" id="search-count"></span></div>
     <div class="teams" id="teams" role="radiogroup" aria-label="Écuries"></div>
     <div class="standings" id="standings" hidden>
       <p class="eyebrow">Classement des constructeurs</p>
@@ -887,6 +899,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     <p class="lead">Quatre roues à changer, le plus vite possible. Appuyez sur GO, puis touchez les quatre roues. Le chrono s'arrête à la dernière. Enregistrez votre temps : le meilleur chrono de la grille au 20 mars reçoit un cadeau sur le podium.</p>
     <div class="pit-wrap">
       <div class="pit" id="pit">
+        <div class="pit3d" id="pit3d"></div>
         <svg viewBox="0 0 400 160" class="pit-car" aria-hidden="true"><use href="#f1car-detail"/></svg>
         <button type="button" class="wheel" data-w="0" style="left:17.5%;top:13.75%" aria-label="Roue arrière gauche"></button>
         <button type="button" class="wheel" data-w="1" style="left:17.5%;top:86.25%" aria-label="Roue arrière droite"></button>
@@ -1020,6 +1033,24 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     </div>
   </section>
 
+  <section id="faq">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow">Briefing des pilotes</p>
+        <h2 class="sec-title">Questions fréquentes</h2>
+      </div>
+    </div>
+    <div class="faq">
+      <details><summary>Comment je m'inscris ?</summary><p>Dans « Choisissez votre écurie » : touchez une écurie, indiquez votre prénom et votre nom, validez. Une seule inscription par personne. Pour changer d'écurie, retapez votre nom, choisissez-en une autre et validez : l'ancien choix est remplacé.</p></details>
+      <details><summary>Je viens en couple ou avec des amis, on doit être dans la même écurie ?</summary><p>Non. Chacun s'inscrit individuellement et choisit librement. Rejoignez vos amis ou allez défier l'écurie d'en face, c'est tout l'intérêt.</p></details>
+      <details><summary>Comment je m'habille ?</summary><p>Aux couleurs de l'écurie que vous avez choisie, version élégante : vous pourriez monter sur le podium.</p></details>
+      <details><summary>C'est quoi les drapeaux ?</summary><p>Quatre commissaires de course en orange circulent toute la soirée. Drapeau vert : une gorgée à offrir. Jaune : trois gorgées. Rouge : affond. Damier : un verre d'eau. Les pilotes désignés roulent à l'eau toute la soirée.</p></details>
+      <details><summary>Et le pit stop challenge ?</summary><p>Changez les quatre roues le plus vite possible et enregistrez votre temps avec votre prénom et votre nom complets. Le meilleur chrono au 20 mars reçoit un cadeau sur le podium.</p></details>
+      <details><summary>Où vont mes photos ?</summary><p>Sur le paddock photo (bouton « Le jour de la course » en haut). Elles s'affichent pour tous les pilotes et le site devient l'album souvenir après la fête.</p></details>
+      <details><summary>Je ne peux pas me connecter / ça ne marche pas</summary><p>Rechargez la page, parfois deux fois, pour forcer la dernière version. Si le problème persiste, un message à Lucie ou Lilian et on règle ça.</p></details>
+    </div>
+  </section>
+
   <footer>
     <p class="tag"><b>Grand Prix</b> de nos 30 ans · 20 · 03 · 2027</p>
     <span class="chq" aria-hidden="true"></span>
@@ -1035,12 +1066,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
 <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
 <div class="pitwall" aria-hidden="true">
   <span class="kerb"></span>
-  <span class="mark" style="left:8%">Grille</span>
-  <span class="mark" style="left:30%">Billet</span>
-  <span class="mark" style="left:50%">Programme</span>
-  <span class="mark" style="left:70%">Écuries</span>
-  <span class="mark" style="left:86%">Circuit</span>
-  <span class="mark" style="left:96%">Photos</span>
+  <nav class="pitnav" aria-label="Sections"><a href="#ticket">Billet</a><a href="#programme">Programme</a><a href="#grille">Écuries</a><a href="#pitstop">Pit stop</a><a href="#photos">Photos</a><a href="#faq">Infos</a></nav>
   <span class="speed" id="speed">Vitesse <b>0</b> km/h</span>
   <span class="drs" id="drs">DRS activé</span>
   <span class="road"></span>
