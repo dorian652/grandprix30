@@ -220,6 +220,7 @@ section{padding-block:56px;border-top:1px solid var(--line)}
 .adminbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:18px;padding:12px 14px;border:1px dashed var(--yellow);border-radius:10px;background:rgba(245,197,24,.06)}
 .adminbar input{width:120px}
 .adminbar.on{border-style:solid}
+.member .x.ed,.leader li .x.ed{color:var(--yellow)}
 .member .x,.leader li .x,.seat .x{margin-left:6px;border:0;background:none;color:#ff6b7a;font-weight:700;cursor:pointer;font-size:1rem;line-height:1;padding:0 2px}
 .member .x:hover,.leader li .x:hover{color:#fff}
 .standings{margin-top:22px;background:#0a0908;border:1px solid var(--line);border-radius:12px;padding:16px 18px}
@@ -1151,6 +1152,29 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
       else adminStatus("Code incorrect.", "err");
     }).catch(function(){ adminStatus("Vérification impossible pour le moment.", "err"); });
   });
+  function capName(str){ return String(str || "").replace(/\s+/g, " ").trim().split(" ").map(function(w){ return w.charAt(0).toUpperCase() + w.slice(1); }).join(" "); }
+  function adminRename(e, newName){
+    var nn = capName(newName);
+    if (norm(nn).split(" ").length < 2) { adminStatus("Il faut un prénom et un nom (deux mots).", "err"); return; }
+    var newId = keyOf(nn);
+    adminStatus("Correction en cours…");
+    postEntry({id: e.id, action: "delete"}).then(function(){ return postEntry({id: newId, team: e.team, pilot1: nn, pilot2: "", note: ""}); }).then(function(res){
+      if (res && res.ok) { if (res.entries) entries = res.entries; renderTeams(); renderSide(); adminStatus("Nom corrigé : " + nn + ".", "ok"); }
+      else adminStatus("La correction n'a pas abouti.", "err");
+    }).catch(function(){ adminStatus("La correction n'a pas abouti. Vérifiez la connexion.", "err"); });
+  }
+  function adminRenamePit(e, newName){
+    var nn = capName(newName), parts = nn.split(" ");
+    if (parts.length < 2) { adminStatus("Il faut un prénom et un nom (deux mots).", "err"); return; }
+    var first = parts[0], last = parts.slice(1).join(" "), pk = keyOf(nn);
+    adminStatus("Correction en cours…");
+    postPit({action:"pitstop", id: "p-" + pk.slice(2), first: first, last: last, ms: e.ms}).then(function(){
+      return fetch(API_URL, {method:"POST", body: JSON.stringify({id:"admin", action:"admin_delete_pit", pin:adminPin, target:e.id}), redirect:"follow"}).then(function(r){ return r.json(); });
+    }).then(function(res){
+      if (res && res.ok) { if (res.pitstop) setPitEntries(res.pitstop); adminStatus("Chrono réattribué à " + nn + ".", "ok"); }
+      else adminStatus("La correction n'a pas abouti.", "err");
+    }).catch(function(){ adminStatus("La correction n'a pas abouti. Vérifiez la connexion.", "err"); });
+  }
   function adminDelete(action, target){
     if (!adminPin) return;
     if (!API_URL) {
@@ -1195,7 +1219,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
       html += '<div class="team-bar" aria-hidden="true"><i style="width:' + Math.min(100, seats.length / MAX_SEATS * 100).toFixed(1) + '%"></i></div>';
       html += '<div class="members">';
       if (!seats.length) html += '<span class="empty">Aucun pilote engagé pour l\'instant</span>';
-      seats.forEach(function(sx){ html += '<span class="member' + (sx.mine ? ' mine' : '') + '">' + esc(sx.name) + (adminPin ? '<i class="x" data-del="' + esc(sx.id) + '" title="Retirer cette inscription">✕</i>' : '') + '</span>'; });
+      seats.forEach(function(sx){ html += '<span class="member' + (sx.mine ? ' mine' : '') + '">' + esc(sx.name) + (adminPin ? '<i class="x ed" data-edit="' + esc(sx.id) + '" title="Corriger le nom">✎</i><i class="x" data-del="' + esc(sx.id) + '" title="Retirer cette inscription">✕</i>' : '') + '</span>'; });
       html += '</div>';
       html += '<div class="team-foot"><span>' + (full ? "Écurie complète" : (mine ? "Cliquez pour modifier" : "Cliquez pour rejoindre")) + '</span>' + (mine ? '<b>Votre écurie</b>' : '') + '</div>';
       html += '</button>';
@@ -1209,6 +1233,15 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     $("standings-list").innerHTML = ranked.map(function(r, i){
       return '<li style="--tc:' + r.t.color + '"><span class="pos">' + (i + 1) + '</span><span>' + esc(r.t.name) + '</span><span class="bar"><i style="--w:' + Math.min(100, r.n / MAX_SEATS * 100).toFixed(1) + '%"></i></span><span class="n">' + r.n + '</span></li>';
     }).join("");
+    wrap.querySelectorAll(".x[data-edit]").forEach(function(x){
+      x.addEventListener("click", function(ev){
+        ev.stopPropagation(); ev.preventDefault();
+        var e = entries.filter(function(en){ return en.id === x.getAttribute("data-edit"); })[0]; if (!e) return;
+        var nn = window.prompt("Prénom et nom complets pour " + e.pilot1 + " :", e.pilot1);
+        if (nn === null) return;
+        adminRename(e, nn);
+      });
+    });
     wrap.querySelectorAll(".x[data-del]").forEach(function(x){
       x.addEventListener("click", function(ev){
         ev.stopPropagation(); ev.preventDefault();
@@ -1443,9 +1476,14 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     var ol = $("pit-list");
     if (!list.length) { ol.innerHTML = '<li class="empty">Aucun temps enregistré pour l\'instant. Soyez le premier sur la grille.</li>'; return; }
     ol.innerHTML = list.map(function(e, i){
-      return '<li' + (savedPit && keyOf(e.first + " " + e.last) === keyOf((savedPit.first || "") + " " + (savedPit.last || "")) ? ' class="mine"' : '') + '><span class="pos">P' + (i + 1) + '</span><span class="nm">' + esc(e.first) + ' ' + esc(e.last) + (adminPin ? '<button type="button" class="x" data-delpit="' + esc(e.id) + '" title="Retirer ce chrono">✕</button>' : '') + '</span><span class="tm">' + fmt(e.ms) + ' s</span></li>';
+      return '<li' + (savedPit && keyOf(e.first + " " + e.last) === keyOf((savedPit.first || "") + " " + (savedPit.last || "")) ? ' class="mine"' : '') + '><span class="pos">P' + (i + 1) + '</span><span class="nm">' + esc(e.first) + ' ' + esc(e.last) + (adminPin ? '<button type="button" class="x ed" data-editpit="' + esc(e.id) + '" title="Corriger le nom">✎</button><button type="button" class="x" data-delpit="' + esc(e.id) + '" title="Retirer ce chrono">✕</button>' : '') + '</span><span class="tm">' + fmt(e.ms) + ' s</span></li>';
     }).join("");
     ol.querySelectorAll(".x[data-delpit]").forEach(function(x){ x.addEventListener("click", function(){ adminDelete("admin_delete_pit", x.getAttribute("data-delpit")); }); });
+    ol.querySelectorAll(".x[data-editpit]").forEach(function(x){ x.addEventListener("click", function(){
+      var e = pitEntries.filter(function(pe){ return pe.id === x.getAttribute("data-editpit"); })[0]; if (!e) return;
+      var nn = window.prompt("Prénom et nom complets pour " + e.first + " " + e.last + " :", e.first + " " + e.last);
+      if (nn === null) return; adminRenamePit(e, nn);
+    }); });
   }
   function setPitEntries(list){ pitEntries = list || []; renderPitBoard(); }
   function postPit(payload){
