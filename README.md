@@ -1,7 +1,7 @@
 # Grand Prix de nos 30 ans
 
 Site d'invitation aux 30 ans de Lucie et Lilian (samedi 20 mars 2027, 19h30, La Palette Verte, Écaussinnes).
-Publié avec GitHub Pages : https://dorian652.github.io/grandprix30/
+Publié avec GitHub Pages sur https://grandprix30ans.be/ (adresse de secours : https://dorian652.github.io/grandprix30/)
 
 ## Contenu
 
