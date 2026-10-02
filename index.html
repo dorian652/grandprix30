@@ -701,8 +701,9 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     <div class="reg">
       <form id="reg-form" novalidate>
         <div class="field">
-          <label for="f-p1">Votre prénom</label>
-          <input type="text" id="f-p1" name="pilot1" placeholder="Prénom (et nom si vous voulez)" autocomplete="given-name" maxlength="40">
+          <label for="f-p1">Prénom et nom</label>
+          <input type="text" id="f-p1" name="pilot1" placeholder="Ex. Lucie Dupont" autocomplete="name" maxlength="40">
+          <small>Déjà inscrit ? Retapez votre nom, choisissez une autre écurie et validez : votre choix est remplacé.</small>
           <input type="hidden" id="f-p2" value="">
         </div>
         <div class="btn-row">
@@ -721,8 +722,8 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
           <div class="tm" id="side-team"><i></i>Aucune écurie choisie</div>
           <ul>
             <li>Cliquez sur une écurie dans la grille</li>
-            <li>Indiquez votre prénom</li>
-            <li>Validez : votre nom rejoint l'écurie</li>
+            <li>Indiquez votre prénom et votre nom</li>
+            <li>Validez : un seul choix par personne, modifiable à tout moment</li>
           </ul>
         </div>
       </div>
@@ -1164,12 +1165,17 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
       else adminStatus("Le retrait n'a pas abouti.", "err");
     }).catch(function(){ adminStatus("Le retrait n'a pas abouti. Vérifiez la connexion.", "err"); });
   }
+  function norm(str){ return String(str || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, " ").trim(); }
+  function keyOf(name){ return "n-" + norm(name).replace(/ /g, "-").slice(0, 60); }
+  function myKey(){ var n = norm($("f-p1").value); return n ? keyOf(n) : null; }
+  function isMine(e){ var k = myKey(); return (k && e.id === k) || (k && keyOf(e.pilot1) === k) || (!k && e.id === myId); }
+  function myEntry(){ return entries.filter(isMine)[0]; }
   function teamByName(n){ for (var i = 0; i < TEAMS.length; i++) if (TEAMS[i].name === n) return TEAMS[i]; return null; }
-  function seatsOf(teamName, excludeId){
+  function seatsOf(teamName, excludeMine){
     var out = [];
     entries.forEach(function(e){
-      if (e.team !== teamName || e.id === excludeId) return;
-      out.push({name:e.pilot1, id:e.id}); if (e.pilot2) out.push({name:e.pilot2, id:e.id});
+      if (e.team !== teamName || (excludeMine && isMine(e))) return;
+      out.push({name:e.pilot1, id:e.id, mine:isMine(e)}); if (e.pilot2) out.push({name:e.pilot2, id:e.id, mine:isMine(e)});
     });
     return out;
   }
@@ -1179,8 +1185,8 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
       var seats = seatsOf(t.name, null);
       totalPilots += seats.length; if (seats.length) teamsUsed++;
       if (seats.length && (!lead || seats.length > lead.n)) lead = {name:t.name, n:seats.length};
-      var mine = entries.filter(function(e){ return e.id === myId && e.team === t.name; }).length > 0;
-      var othersSeats = seatsOf(t.name, myId).length;
+      var mine = entries.filter(function(e){ return isMine(e) && e.team === t.name; }).length > 0;
+      var othersSeats = seatsOf(t.name, true).length;
       var full = othersSeats >= MAX_SEATS && !mine;
       var cls = "team" + (selectedTeam === t.name ? " selected" : "") + (full ? " full" : "");
       html += '<button type="button" class="' + cls + '" role="radio" aria-checked="' + (selectedTeam === t.name) + '" data-team="' + esc(t.name) + '" style="--tc:' + t.color + '"' + (full ? ' aria-disabled="true"' : '') + '>';
@@ -1189,7 +1195,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
       html += '<div class="team-bar" aria-hidden="true"><i style="width:' + Math.min(100, seats.length / MAX_SEATS * 100).toFixed(1) + '%"></i></div>';
       html += '<div class="members">';
       if (!seats.length) html += '<span class="empty">Aucun pilote engagé pour l\'instant</span>';
-      seats.forEach(function(sx){ html += '<span class="member' + (sx.id === myId ? ' mine' : '') + '">' + esc(sx.name) + (adminPin ? '<i class="x" data-del="' + esc(sx.id) + '" title="Retirer cette inscription">✕</i>' : '') + '</span>'; });
+      seats.forEach(function(sx){ html += '<span class="member' + (sx.mine ? ' mine' : '') + '">' + esc(sx.name) + (adminPin ? '<i class="x" data-del="' + esc(sx.id) + '" title="Retirer cette inscription">✕</i>' : '') + '</span>'; });
       html += '</div>';
       html += '<div class="team-foot"><span>' + (full ? "Écurie complète" : (mine ? "Cliquez pour modifier" : "Cliquez pour rejoindre")) + '</span>' + (mine ? '<b>Votre écurie</b>' : '') + '</div>';
       html += '</button>';
@@ -1234,16 +1240,15 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     var tm = $("side-team");
     tm.innerHTML = '<i></i>' + (t ? esc(t.name) : "Aucune écurie choisie");
     tm.style.setProperty("--tc", t ? t.color : "");
-    var mine = entries.filter(function(e){ return e.id === myId; })[0];
+    var mine = myEntry();
+    if (mine && !selectedTeam) selectedTeam = mine.team;
     $("submit-label").textContent = mine ? "Mettre à jour mon engagement" : "Rejoindre l'écurie";
     $("leave-btn").hidden = !mine;
   }
   function applyMine(){
-    var mine = entries.filter(function(e){ return e.id === myId; })[0] || saved;
-    if (mine) {
-      if (!$("f-p1").value) $("f-p1").value = mine.pilot1 || "";
-      if (!selectedTeam) selectedTeam = mine.team;
-    }
+    if (!$("f-p1").value && saved && saved.pilot1) $("f-p1").value = saved.pilot1;
+    var mine = myEntry();
+    if (mine && !selectedTeam) selectedTeam = mine.team;
   }
   function demoLoad(){ try { return JSON.parse(localStorage.getItem("gp30-demo") || "[]"); } catch(e){ return []; } }
   function demoSave(list){ try { localStorage.setItem("gp30-demo", JSON.stringify(list)); } catch(e){} }
@@ -1264,17 +1269,24 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     }
     return fetch(API_URL, {method:"POST", body: JSON.stringify(payload), redirect:"follow"}).then(function(r){ return r.json(); });
   }
-  $("reg-form").addEventListener("input", renderSide);
+  var nameTimer = null;
+  $("reg-form").addEventListener("input", function(){ renderSide(); clearTimeout(nameTimer); nameTimer = setTimeout(function(){ var m = myEntry(); if (m) selectedTeam = m.team; renderTeams(); renderSide(); }, 250); });
   $("reg-form").addEventListener("submit", function(e){
     e.preventDefault();
     var p1 = $("f-p1").value.trim(), p2 = "", note = "";
     if (!selectedTeam) { setStatus("Choisissez d'abord une écurie dans la grille.", "err"); return; }
-    if (!p1) { setStatus("Indiquez votre prénom.", "err"); $("f-p1").focus(); return; }
-    var others = seatsOf(selectedTeam, myId).length, need = p2 ? 2 : 1;
+    if (!p1) { setStatus("Indiquez votre prénom et votre nom.", "err"); $("f-p1").focus(); return; }
+    if (norm(p1).split(" ").length < 2) { setStatus("Indiquez votre prénom et votre nom (deux mots au moins), pour que personne ne vous confonde.", "err"); $("f-p1").focus(); return; }
+    var others = seatsOf(selectedTeam, true).length, need = p2 ? 2 : 1;
     if (others + need > MAX_SEATS) { setStatus(need === 2 ? "Il ne reste qu'une place dans cette écurie : inscrivez-vous séparément ou choisissez-en une autre." : "Cette écurie affiche complet.", "err"); return; }
     var btn = $("submit-btn"); btn.disabled = true; setStatus("Transmission au stand…");
-    var payload = {id: myId, team: selectedTeam, pilot1: p1, pilot2: p2, note: note};
-    postEntry(payload).then(function(res){
+    var key = keyOf(p1);
+    p1 = p1.replace(/\s+/g, " ").split(" ").map(function(w){ return w.charAt(0).toUpperCase() + w.slice(1); }).join(" ");
+    var payload = {id: key, team: selectedTeam, pilot1: p1, pilot2: p2, note: note};
+    var dupes = entries.filter(function(e){ return isMine(e) && e.id !== key; });
+    var cleanup = Promise.resolve();
+    dupes.forEach(function(d){ cleanup = cleanup.then(function(){ return postEntry({id: d.id, action: "delete"}); }); });
+    cleanup.then(function(){ return postEntry(payload); }).then(function(res){
       btn.disabled = false;
       if (res && res.ok) {
         if (res.entries) entries = res.entries;
@@ -1290,7 +1302,9 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
   });
   $("leave-btn").addEventListener("click", function(){
     var btn = $("leave-btn"); btn.disabled = true; setStatus("Retrait en cours…");
-    postEntry({id: myId, action: "delete"}).then(function(res){
+    var mineAll = entries.filter(isMine), chain = Promise.resolve({ok:true});
+    mineAll.forEach(function(d){ chain = chain.then(function(){ return postEntry({id: d.id, action: "delete"}); }); });
+    chain.then(function(res){
       btn.disabled = false;
       if (res && res.ok) {
         if (res.entries) entries = res.entries;
@@ -1422,11 +1436,13 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
   try { savedPit = JSON.parse(localStorage.getItem("gp30-pit-me") || "null"); } catch(e){}
   function pitDemoLoad(){ try { return JSON.parse(localStorage.getItem("gp30-pit-demo") || "[]"); } catch(e){ return []; } }
   function renderPitBoard(){
-    var list = pitEntries.slice().sort(function(a, b){ return a.ms - b.ms; }).slice(0, 10);
+    var best = {};
+    pitEntries.forEach(function(e){ var k = keyOf(e.first + " " + e.last); if (!best[k] || e.ms < best[k].ms) best[k] = e; });
+    var list = Object.keys(best).map(function(k){ return best[k]; }).sort(function(a, b){ return a.ms - b.ms; }).slice(0, 10);
     var ol = $("pit-list");
     if (!list.length) { ol.innerHTML = '<li class="empty">Aucun temps enregistré pour l\'instant. Soyez le premier sur la grille.</li>'; return; }
     ol.innerHTML = list.map(function(e, i){
-      return '<li' + (e.id === myId ? ' class="mine"' : '') + '><span class="pos">P' + (i + 1) + '</span><span class="nm">' + esc(e.first) + ' ' + esc(e.last) + (adminPin ? '<button type="button" class="x" data-delpit="' + esc(e.id) + '" title="Retirer ce chrono">✕</button>' : '') + '</span><span class="tm">' + fmt(e.ms) + ' s</span></li>';
+      return '<li' + (savedPit && keyOf(e.first + " " + e.last) === keyOf((savedPit.first || "") + " " + (savedPit.last || "")) ? ' class="mine"' : '') + '><span class="pos">P' + (i + 1) + '</span><span class="nm">' + esc(e.first) + ' ' + esc(e.last) + (adminPin ? '<button type="button" class="x" data-delpit="' + esc(e.id) + '" title="Retirer ce chrono">✕</button>' : '') + '</span><span class="tm">' + fmt(e.ms) + ' s</span></li>';
     }).join("");
     ol.querySelectorAll(".x[data-delpit]").forEach(function(x){ x.addEventListener("click", function(){ adminDelete("admin_delete_pit", x.getAttribute("data-delpit")); }); });
   }
@@ -1444,9 +1460,10 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     var first = $("pf-first").value.trim(), last = $("pf-last").value.trim();
     if (!first || !last) { $("pit-status").textContent = "Indiquez votre prénom et votre nom pour le classement."; $("pit-status").className = "status err"; return; }
     if (!lastRun) return;
-    var mine = pitEntries.filter(function(x){ return x.id === myId; })[0];
+    var pk = keyOf(first + " " + last);
+    var mine = pitEntries.filter(function(x){ return keyOf(x.first + " " + x.last) === pk; }).sort(function(a, b){ return a.ms - b.ms; })[0];
     if (mine && mine.ms <= lastRun) { $("pit-status").textContent = "Votre record reste " + fmt(mine.ms) + " s : ce temps n'est pas meilleur."; $("pit-status").className = "status"; return; }
-    var payload = {action:"pitstop", id: myId, first: first, last: last, ms: Math.round(lastRun)};
+    var payload = {action:"pitstop", id: "p-" + pk.slice(2), first: first, last: last, ms: Math.round(lastRun)};
     $("pit-save").disabled = true; $("pit-status").textContent = "Transmission au stand…"; $("pit-status").className = "status";
     postPit(payload).then(function(res){
       $("pit-save").disabled = false;
@@ -1454,7 +1471,8 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
         if (res.pitstop) setPitEntries(res.pitstop);
         try { localStorage.setItem("gp30-pit-me", JSON.stringify({first:first, last:last})); } catch(err){}
         savedPit = {first:first, last:last};
-        var rank = pitEntries.slice().sort(function(a, b){ return a.ms - b.ms; }).findIndex(function(x){ return x.id === myId; }) + 1;
+        var bestByKey = {}; pitEntries.forEach(function(e){ var k = keyOf(e.first + " " + e.last); if (!bestByKey[k] || e.ms < bestByKey[k].ms) bestByKey[k] = e; });
+        var rank = Object.keys(bestByKey).map(function(k){ return bestByKey[k]; }).sort(function(a, b){ return a.ms - b.ms; }).findIndex(function(x){ return keyOf(x.first + " " + x.last) === pk; }) + 1;
         $("pit-status").textContent = "Temps enregistré : " + fmt(lastRun) + " s, vous êtes P" + rank + ". Vous pouvez retenter pour l'améliorer."; $("pit-status").className = "status ok";
       } else { $("pit-status").textContent = "Le stand n'a pas reçu le temps. Réessayez."; $("pit-status").className = "status err"; }
     }).catch(function(){ $("pit-save").disabled = false; $("pit-status").textContent = "Le stand n'a pas reçu le temps. Vérifiez votre connexion."; $("pit-status").className = "status err"; });

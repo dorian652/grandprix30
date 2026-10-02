@@ -24,7 +24,7 @@ Tant que `API_URL` est vide, la grille et le classement du pit stop fonctionnent
 ## Règles de la grille
 
 - 11 écuries, 30 pilotes maximum par écurie.
-- Une inscription = un pilote ; chacun s'inscrit lui-même.
-- Chaque visiteur peut modifier ou retirer son propre engagement depuis le même navigateur.
+- Une inscription = un pilote, identifié par son prénom et son nom ; chacun s'inscrit lui-même.
+- Pour modifier : retaper son nom, choisir une autre écurie, valider (depuis n'importe quel appareil). « Me retirer de la grille » supprime l'inscription.
 - Mode organisateur : ajouter `#admin` à l'adresse du site, saisir le code `ADMIN_PIN` défini dans le script ; une croix apparaît sur chaque inscription et chaque chrono pour les retirer.
 - La feuille Google Sheets reste la référence : supprimer une ligne retire l'engagement du site.
