@@ -1,0 +1,43 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//L&L Racing//Grand Prix de nos 30 ans//FR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VTIMEZONE
+TZID:Europe/Brussels
+BEGIN:STANDARD
+DTSTART:19701025T030000
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+BEGIN:DAYLIGHT
+DTSTART:19700329T020000
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:grandprix30ans-20270320@grandprix30ans.be
+DTSTAMP:20261002T190000Z
+DTSTART;TZID=Europe/Brussels:20270320T193000
+DTEND;TZID=Europe/Brussels:20270321T030000
+SUMMARY:Grand Prix de nos 30 ans · Lucie & Lilian
+LOCATION:La Palette Verte\, Rue Jean Jaurès 5\, 7190 Écaussinnes\, Belgique
+DESCRIPTION:Ouverture du paddock à 19h30. Essais libres (apéritif) à 20h\, extinction des feux (dîner) à 21h\, podium (gâteau) à 23h\, course de nuit ensuite\, pas d'heure de fin.\nToutes les infos et le choix de votre écurie : https://grandprix30ans.be
+URL:https://grandprix30ans.be/
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+BEGIN:VALARM
+TRIGGER:-P7D
+ACTION:DISPLAY
+DESCRIPTION:Grand Prix de nos 30 ans dans une semaine : choisissez votre écurie sur grandprix30ans.be
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:Demain 19h30 : Grand Prix de nos 30 ans à la Palette Verte
+END:VALARM
+END:VEVENT
+END:VCALENDAR
