@@ -147,6 +147,9 @@ section{padding-block:56px;border-top:1px solid var(--line)}
   background:linear-gradient(135deg,transparent 48%,var(--red) 48% 54%,transparent 54%),conic-gradient(var(--ink) 25%,var(--paper) 0 50%,var(--ink) 0 75%,var(--paper) 0);
   background-size:100% 100%,16px 16px;clip-path:polygon(100% 0,100% 100%,0 100%);opacity:.95}
 .t-stub{background:var(--ink);color:var(--paper);padding:26px 22px 22px;border-radius:0 14px 14px 0;border-left:2px dashed rgba(236,227,207,.55);display:flex;flex-direction:column;justify-content:space-between;gap:16px;min-width:0}
+.t-stub{position:relative;overflow:hidden}
+.t-stub > :not(.s-mark){position:relative}
+.t-stub .s-mark{position:absolute;right:-38px;top:50%;width:176px;height:194px;opacity:.12;pointer-events:none;filter:grayscale(1) brightness(1.7);transform:translateY(-50%) rotate(-10deg)}
 .t-stub .s-mid{display:grid;gap:14px}
 .t-stub .s-title{font-family:var(--display);font-weight:700;letter-spacing:.24em;text-transform:uppercase;font-size:1.05rem;line-height:1.2;text-align:center;padding-bottom:10px;border-bottom:1px solid rgba(236,227,207,.35)}
 .t-stub .s-row{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;padding-bottom:10px;border-bottom:1px solid rgba(236,227,207,.2)}
@@ -641,6 +644,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
         </div>
       </div>
       <aside class="t-stub">
+        <svg class="s-mark" viewBox="0 0 120 132" aria-hidden="true"><use href="#crest"/></svg>
         <div class="s-title">Grand Prix<br>de nos 30 ans</div>
         <div class="s-mid">
           <div class="s-row">
