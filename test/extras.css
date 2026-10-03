@@ -292,3 +292,26 @@
 /* Muret : la navigation laisse le coin droit au compteur de vitesse et au DRS (écrans larges) */
 @media (min-width:761px){.pitwall .pitnav{right:170px;justify-content:center;gap:clamp(8px,2.5vw,36px)}}
 .mshl span{white-space:nowrap;font-size:.62rem;letter-spacing:.16em}
+
+/* ===== Lot 4 : super licence, radio animée ===== */
+.lic-btn{margin-top:14px;width:100%;justify-content:center}
+.lic-modal{position:fixed;inset:0;z-index:80;background:rgba(10,9,8,.86);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:18px}
+.lic-modal[hidden]{display:none}
+.lic-box{position:relative;width:min(100%,440px);max-height:100%;overflow:auto;background:var(--bg-2);border:1px solid var(--line);border-radius:16px;padding:18px;display:grid;gap:12px;box-shadow:0 30px 80px rgba(0,0,0,.7)}
+.lic-box .eyebrow{margin:0}
+.lic-close{position:absolute;right:10px;top:10px;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--fg);cursor:pointer;font-size:.95rem}
+.lic-preview{position:relative;aspect-ratio:1080/1350;background:#0a0908;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.lic-preview img{display:block;width:100%;height:100%;object-fit:contain}
+.lic-preview img:not([src]){visibility:hidden}
+.lic-wait{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);animation:blink 1s infinite}
+.lic-wait[hidden]{display:none}
+.lic-box .btn-row{justify-content:center}
+.lic-box .btn.off{pointer-events:none;opacity:.5}
+.lic-note{margin:0;color:var(--muted);font-size:.88rem;text-align:center}
+body.lic-open{overflow:hidden}
+
+/* Radio : texte tapé */
+.radio p .typed::after{content:"";display:inline-block;width:.55em;height:1em;margin-left:2px;vertical-align:-2px;background:var(--green);opacity:0}
+.radio p.typing .typed::after{opacity:1;animation:blink .7s steps(1) infinite}
+.radio p.pending{min-height:1.4em}
+.radio.tx .rh b{animation:blink 1s infinite}

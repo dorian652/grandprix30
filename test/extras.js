@@ -588,3 +588,136 @@
     window.addEventListener("appinstalled", function(){ box.hidden = true; try { localStorage.setItem("gp30-a2hs", "1"); } catch(e){} });
   })();
 })();
+
+/* ===== Cinquième passe : super licence partageable et radio animée ===== */
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var beep = function(f, d, v){ if (window.GP30X) window.GP30X.beep(f, d, v); };
+
+  /* ---------- Super licence ---------- */
+  var licBtn = $("lic-btn"), modal = $("lic-modal"), img = $("lic-img"), wait = $("lic-wait"), shareBtn = $("lic-share"), dl = $("lic-dl"), closeBtn = $("lic-close");
+  var lastBlob = null, lastKey = "";
+  function savedEntry(){ try { var e = JSON.parse(localStorage.getItem("gp30-entry") || "null"); return e && e.pilot1 && e.team && e.team !== "Forfait" ? e : null; } catch(err){ return null; } }
+  function teamOf(name){ var T = window.GP30 ? window.GP30.teams : []; for (var i = 0; i < T.length; i++) if (T[i].name === name) return T[i]; return null; }
+  function numberOf(name){ var h = 0, s = String(name).toLowerCase(); for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; var n = 2 + (h % 97); if (n === 30) n = 77; return n; }
+  function hexA(hex, a){ var m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex); if (!m) return "rgba(200,16,46," + a + ")"; return "rgba(" + parseInt(m[1], 16) + "," + parseInt(m[2], 16) + "," + parseInt(m[3], 16) + "," + a + ")"; }
+  function spaced(x, text, px, py, sp){
+    if ("letterSpacing" in x) { x.letterSpacing = sp + "px"; x.fillText(text, px, py); x.letterSpacing = "0px"; return; }
+    var cx = px; for (var i = 0; i < text.length; i++) { x.fillText(text[i], cx, py); cx += x.measureText(text[i]).width + sp; }
+  }
+  function loadImg(src){ return new Promise(function(res){ if (!src) return res(null); var im = new Image(); im.onload = function(){ res(im); }; im.onerror = function(){ res(null); }; im.src = src; }); }
+  function roundRect(x, px, py, w, h, r){ x.beginPath(); x.moveTo(px + r, py); x.arcTo(px + w, py, px + w, py + h, r); x.arcTo(px + w, py + h, px, py + h, r); x.arcTo(px, py + h, px, py, r); x.arcTo(px, py, px + w, py, r); x.closePath(); }
+  function draw(entry){
+    var team = teamOf(entry.team), tc = team ? team.color : "#c8102e", num = numberOf(entry.pilot1);
+    var W = 1080, H = 1350, c = document.createElement("canvas"); c.width = W; c.height = H; var x = c.getContext("2d");
+    var fonts = ["800 118px \"Barlow Condensed\"", "800 300px \"Barlow Condensed\"", "800 96px \"Barlow Condensed\"", "600 28px \"Chakra Petch\"", "500 34px Barlow", "400 60px Allura"];
+    var ready = document.fonts && document.fonts.load ? Promise.all(fonts.map(function(f){ return document.fonts.load(f).catch(function(){}); })) : Promise.resolve();
+    return Promise.all([ready, loadImg(team && team.logo ? team.logo : null), loadImg("test/qr.png")]).then(function(r){
+      var logo = r[1], qr = r[2];
+      // fond
+      x.fillStyle = "#151210"; x.fillRect(0, 0, W, H);
+      var g = x.createRadialGradient(W * 0.82, H * 0.3, 0, W * 0.82, H * 0.3, 700); g.addColorStop(0, hexA(tc, 0.38)); g.addColorStop(1, "rgba(0,0,0,0)"); x.fillStyle = g; x.fillRect(0, 0, W, H);
+      x.save(); x.globalAlpha = 0.07; x.strokeStyle = "#efe7d8"; x.lineWidth = 2; for (var i = -H; i < W + H; i += 44) { x.beginPath(); x.moveTo(i, H); x.lineTo(i + H * 0.55, 0); x.stroke(); } x.restore();
+      // vibreur en haut et en bas
+      for (i = 0; i < W; i += 60) { x.fillStyle = (i / 60) % 2 ? "#efe7d8" : tc; x.fillRect(i, 0, 60, 20); x.fillRect(i, H - 20, 60, 20); }
+      // en-tête
+      x.textBaseline = "alphabetic";
+      x.fillStyle = "#a1978a"; x.font = "600 28px \"Chakra Petch\", monospace"; spaced(x, "GRAND PRIX DE NOS 30 ANS · LUCIE & LILIAN", 72, 112, 6);
+      x.fillStyle = "#efe7d8"; x.font = "800 118px \"Barlow Condensed\", \"Arial Narrow\", sans-serif"; x.fillText("SUPER LICENCE", 66, 224);
+      x.fillStyle = tc; x.fillRect(72, 248, 160, 8);
+      // numéro
+      x.save(); x.textAlign = "right"; x.fillStyle = tc; x.shadowColor = hexA(tc, 0.6); x.shadowBlur = 40; x.font = "800 300px \"Barlow Condensed\", \"Arial Narrow\", sans-serif"; x.fillText(String(num), W - 64, 540); x.restore();
+      x.fillStyle = "#a1978a"; x.font = "600 26px \"Chakra Petch\", monospace"; spaced(x, "PILOTE", 72, 336, 6);
+      // nom (deux lignes si besoin)
+      x.fillStyle = "#efe7d8"; x.font = "800 96px \"Barlow Condensed\", \"Arial Narrow\", sans-serif";
+      var words = entry.pilot1.toUpperCase().split(" "), lines = [], cur = "";
+      words.forEach(function(w){ var t = cur ? cur + " " + w : w; if (x.measureText(t).width > 600 && cur) { lines.push(cur); cur = w; } else cur = t; }); if (cur) lines.push(cur);
+      if (lines.length > 2) lines = [lines[0], lines.slice(1).join(" ")];
+      lines.forEach(function(l, k){ var size = 96; while (x.measureText(l).width > 640 && size > 48) { size -= 4; x.font = "800 " + size + "px \"Barlow Condensed\", \"Arial Narrow\", sans-serif"; } x.fillText(l, 68, 440 + k * 96); x.font = "800 96px \"Barlow Condensed\", \"Arial Narrow\", sans-serif"; });
+      // écurie
+      var ty = 640;
+      x.fillStyle = "#a1978a"; x.font = "600 26px \"Chakra Petch\", monospace"; spaced(x, "ÉCURIE", 72, ty, 6);
+      x.fillStyle = "#fff"; roundRect(x, 72, ty + 22, 200, 96, 12); x.fill();
+      if (logo) { var sc = Math.min(168 / logo.width, 70 / logo.height), lw = logo.width * sc, lh = logo.height * sc; x.drawImage(logo, 72 + (200 - lw) / 2, ty + 22 + (96 - lh) / 2, lw, lh); }
+      else { x.fillStyle = tc; x.font = "800 56px \"Barlow Condensed\""; x.textAlign = "center"; x.fillText(team ? team.code : "L&L", 172, ty + 90); x.textAlign = "left"; }
+      x.fillStyle = "#efe7d8"; x.font = "800 64px \"Barlow Condensed\", \"Arial Narrow\", sans-serif"; x.fillText(entry.team.toUpperCase(), 300, ty + 92);
+      x.fillStyle = tc; x.fillRect(300, ty + 104, Math.min(600, x.measureText(entry.team.toUpperCase()).width), 6);
+      // détails
+      var dy = 820, rows = [["DATE", "Samedi 20 mars 2027 · 19h30"], ["LIEU", "La Palette Verte · Écaussinnes"], ["STATUT", "Engagé · titulaire"], ["VALIDITÉ", "Jusqu'au drapeau à damier"]];
+      rows.forEach(function(r2, k){
+        var yy = dy + k * 66;
+        x.fillStyle = "rgba(239,231,216,.12)"; x.fillRect(72, yy + 22, 600, 1);
+        x.fillStyle = "#a1978a"; x.font = "600 22px \"Chakra Petch\", monospace"; spaced(x, r2[0], 72, yy, 4);
+        x.fillStyle = "#efe7d8"; x.font = "500 34px Barlow, sans-serif"; x.fillText(r2[1], 250, yy + 2);
+      });
+      // QR + adresse
+      if (qr) { x.fillStyle = "#0a0908"; roundRect(x, W - 72 - 300, 790, 300, 300, 16); x.fill(); x.drawImage(qr, W - 72 - 286, 804, 272, 272); }
+      x.fillStyle = "#a1978a"; x.font = "600 24px \"Chakra Petch\", monospace"; x.textAlign = "center"; spaced(x, "GRANDPRIX30ANS.BE", W - 72 - 150, 1130, 4); x.textAlign = "left";
+      // bande holographique
+      var hg = x.createLinearGradient(72, 0, 672, 0); hg.addColorStop(0, "rgba(255,120,120,.55)"); hg.addColorStop(0.3, "rgba(120,255,200,.55)"); hg.addColorStop(0.6, "rgba(120,160,255,.55)"); hg.addColorStop(1, "rgba(255,220,120,.55)");
+      x.fillStyle = hg; roundRect(x, 72, 1110, 600, 44, 8); x.fill();
+      x.fillStyle = "#151210"; x.font = "600 20px \"Chakra Petch\", monospace"; spaced(x, "L&L RACING · LICENCE N° LL-2027-" + (100 + num), 92, 1140, 4);
+      // signature et tampon
+      x.fillStyle = "#efe7d8"; x.font = "400 60px Allura, cursive"; x.fillText("Lucie & Lilian", 72, 1250);
+      x.fillStyle = "#a1978a"; x.font = "600 20px \"Chakra Petch\", monospace"; spaced(x, "DIRECTION DE COURSE", 72, 1285, 4);
+      x.save(); x.translate(W - 230, 1230); x.rotate(-0.16); x.strokeStyle = tc; x.lineWidth = 6; x.globalAlpha = 0.9; roundRect(x, -170, -46, 340, 92, 10); x.stroke();
+      x.fillStyle = tc; x.font = "800 42px \"Barlow Condensed\", \"Arial Narrow\", sans-serif"; x.textAlign = "center"; x.fillText("VALIDE · 20·03·2027", 0, 15); x.restore(); x.textAlign = "left";
+      return new Promise(function(res){ c.toBlob(function(b){ res(b); }, "image/png"); });
+    });
+  }
+  function open(){
+    var e = savedEntry(); if (!e || !modal) return;
+    modal.hidden = false; document.body.classList.add("lic-open");
+    var key = e.pilot1 + "|" + e.team;
+    if (lastBlob && key === lastKey) return;
+    img.removeAttribute("src"); wait.hidden = false; shareBtn.disabled = true; dl.classList.add("off");
+    draw(e).then(function(b){
+      lastBlob = b; lastKey = key; var url = URL.createObjectURL(b); img.src = url; dl.href = url; wait.hidden = true; shareBtn.disabled = false; dl.classList.remove("off");
+    }).catch(function(){ wait.textContent = "L'impression a échoué. Réessayez."; });
+  }
+  function close(){ if (modal) { modal.hidden = true; document.body.classList.remove("lic-open"); } }
+  function refresh(){ if (licBtn) licBtn.hidden = !savedEntry(); }
+  if (licBtn && modal) {
+    refresh(); setInterval(refresh, 4000);
+    var reg = $("reg-form"); if (reg) reg.addEventListener("submit", function(){ setTimeout(refresh, 1500); });
+    licBtn.addEventListener("click", open);
+    closeBtn.addEventListener("click", close);
+    modal.addEventListener("click", function(ev){ if (ev.target === modal) close(); });
+    document.addEventListener("keydown", function(ev){ if (ev.key === "Escape" && !modal.hidden) close(); });
+    shareBtn.addEventListener("click", function(){
+      if (!lastBlob) return;
+      var file = new File([lastBlob], "super-licence-grandprix30.png", {type: "image/png"});
+      var e = savedEntry(), text = "Ma super licence pour le Grand Prix de nos 30 ans : je roule pour " + (e ? e.team : "L&L Racing") + " le 20 mars 2027. Choisis ton écurie sur https://grandprix30ans.be/";
+      if (navigator.canShare && navigator.canShare({files: [file]})) navigator.share({files: [file], title: "Super licence", text: text}).catch(function(){});
+      else if (navigator.share) navigator.share({title: "Super licence", text: text, url: "https://grandprix30ans.be/"}).catch(function(){});
+      else { dl.click(); }
+    });
+    // raccourci depuis le bandeau d'accueil
+    var w = $("welcome");
+    if (w) new MutationObserver(function(){ var links = w.querySelector(".w-links"); if (links && !links.querySelector("[data-lic]") && savedEntry()) { var a = document.createElement("a"); a.href = "#grille"; a.setAttribute("data-lic", "1"); a.textContent = "Ma super licence"; a.addEventListener("click", function(ev){ ev.preventDefault(); open(); }); links.appendChild(a); } }).observe(w, {childList: true, subtree: true});
+  }
+
+  /* ---------- Radio : messages tapés en direct ---------- */
+  (function(){
+    var radios = Array.prototype.slice.call(document.querySelectorAll(".radio")); if (!radios.length || reduced || !("IntersectionObserver" in window)) return;
+    radios.forEach(function(r){ r.querySelectorAll("p").forEach(function(p){ var b = p.querySelector("b"); var full = p.childNodes[p.childNodes.length - 1].textContent; p.setAttribute("data-full", full); p.setAttribute("aria-label", (b ? b.textContent + " : " : "") + full); var span = document.createElement("span"); span.className = "typed"; p.childNodes[p.childNodes.length - 1].textContent = ""; p.appendChild(span); p.classList.add("pending"); }); });
+    function typeRadio(r){
+      var ps = Array.prototype.slice.call(r.querySelectorAll("p")), k = 0;
+      r.classList.add("tx");
+      function next(){
+        if (k >= ps.length) { r.classList.remove("tx"); return; }
+        var p = ps[k++], span = p.querySelector(".typed"), full = p.getAttribute("data-full"), i = 0;
+        p.classList.remove("pending"); p.classList.add("typing"); beep(1200, 0.05, 0.08);
+        (function step(){
+          span.textContent = full.slice(0, ++i);
+          if (i < full.length) setTimeout(step, 28 + Math.random() * 30);
+          else { p.classList.remove("typing"); beep(900, 0.04, 0.06); setTimeout(next, 550); }
+        })();
+      }
+      next();
+    }
+    var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { io.unobserve(e.target); setTimeout(function(){ typeRadio(e.target); }, 200); } }); }, {rootMargin: "0px 0px -15% 0px"});
+    radios.forEach(function(r){ io.observe(r); });
+  })();
+})();

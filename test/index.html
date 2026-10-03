@@ -416,7 +416,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
 }
 .testband{position:sticky;top:0;z-index:100;background:#f5c518;color:#151210;text-align:center;font-family:"Barlow Condensed",sans-serif;font-weight:800;letter-spacing:.2em;text-transform:uppercase;font-size:.8rem;padding:6px 10px}.testband a{color:#151210}
 </style>
-<link rel="stylesheet" href="test/extras.css?v=fe9346f5">
+<link rel="stylesheet" href="test/extras.css?v=9d54b875">
 </head>
 <body>
 <div class="testband">Version test · rien n'est enregistré ici · <a href="./">site officiel</a></div>
@@ -842,6 +842,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
             <li>Indiquez votre prénom et votre nom</li>
             <li>Validez : un seul choix par personne, modifiable à tout moment</li>
           </ul>
+          <button type="button" class="btn lic-btn" id="lic-btn" hidden><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="11" r="2.2"/><path d="M13 9h5M13 13h5M5.5 16.5h6"/></svg><span>Ma super licence</span></button>
         </div>
       </div>
     </div>
@@ -1099,6 +1100,18 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
 </div>
 <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<div class="lic-modal" id="lic-modal" hidden role="dialog" aria-modal="true" aria-label="Votre super licence">
+  <div class="lic-box">
+    <button type="button" class="lic-close" id="lic-close" aria-label="Fermer">✕</button>
+    <p class="eyebrow">Votre super licence</p>
+    <div class="lic-preview"><img id="lic-img" alt="Super licence du pilote"><div class="lic-wait" id="lic-wait">Impression en cours…</div></div>
+    <div class="btn-row">
+      <button type="button" class="btn primary" id="lic-share"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>Partager</button>
+      <a class="btn" id="lic-dl" href="#" download="super-licence-grandprix30.png"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Télécharger</a>
+    </div>
+    <p class="lic-note">À envoyer à votre écurie ou à poster en story. Votre numéro vous suit jusqu'au 20 mars.</p>
+  </div>
+</div>
 <div class="pitwall" aria-hidden="true">
   <span class="kerb"></span>
   <nav class="pitnav" aria-label="Sections"><a href="#ticket">Billet</a><a href="#programme">Programme</a><a href="#grille">Écuries</a><a href="#pitstop">Pit stop</a><a href="#photos">Photos</a><a href="#faq">Infos</a></nav>
@@ -1704,6 +1717,6 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     team: function(t){ if (t !== undefined) selectedTeam = t; return selectedTeam; }, admin: function(){ return adminPin; }, adminDelete: adminDelete};
 })();
 </script>
-<script src="test/extras.js?v=a549d96a" defer></script>
+<script src="test/extras.js?v=110e2587" defer></script>
 </body>
 </html>
