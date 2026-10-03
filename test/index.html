@@ -416,7 +416,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
 }
 .testband{position:sticky;top:0;z-index:100;background:#f5c518;color:#151210;text-align:center;font-family:"Barlow Condensed",sans-serif;font-weight:800;letter-spacing:.2em;text-transform:uppercase;font-size:.8rem;padding:6px 10px}.testband a{color:#151210}
 </style>
-<link rel="stylesheet" href="test/extras.css?v=d67c63b0">
+<link rel="stylesheet" href="test/extras.css?v=89beaba1">
 </head>
 <body>
 <div class="testband">Version test · rien n'est enregistré ici · <a href="./">site officiel</a></div>
@@ -794,6 +794,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
       <span class="pill">Pilotes engagés : <b id="n-pilots">0</b></span>
       <span class="pill">Écuries représentées : <b id="n-teams">0</b> / 11</span>
       <span class="pill">En tête du championnat : <b id="n-lead">—</b></span>
+      <span class="pill pill-ff" id="pill-forfaits" hidden>Forfaits : <b id="n-forfaits">0</b></span>
     </div>
     <form class="adminbar" id="adminbar" hidden novalidate>
       <span class="eyebrow">Mode organisateur</span>
@@ -806,6 +807,10 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     <div class="standings" id="standings" hidden>
       <p class="eyebrow">Classement des constructeurs</p>
       <ol id="standings-list"></ol>
+    </div>
+    <div class="podium" id="podium" hidden>
+      <div class="podium-head"><p class="eyebrow">Podium provisoire des constructeurs</p><p class="lap">Mis à jour <b>en direct</b></p></div>
+      <div class="podium-stage" id="podium-stage"></div>
     </div>
 
     <div class="reg">
@@ -837,6 +842,16 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
           </ul>
         </div>
       </div>
+    </div>
+    <div class="forfait" id="forfait">
+      <button type="button" class="linkbtn" id="forfait-toggle" aria-expanded="false">Vous ne pourrez pas venir le 20 mars ? Déclarez forfait</button>
+      <form id="forfait-form" class="forfait-form" novalidate hidden>
+        <div class="field"><label for="ff-name">Prénom et nom</label><input type="text" id="ff-name" maxlength="40" autocomplete="name" placeholder="Ex. Lucie Dupont"></div>
+        <button class="btn" type="submit" id="ff-btn"><svg viewBox="0 0 24 24"><path d="M5 21V4M5 4h13l-2 4 2 4H5"/></svg><span>Déclarer forfait</span></button>
+        <p class="status" id="ff-status" aria-live="polite"></p>
+        <p class="ff-note">Vous changez d'avis ? Inscrivez-vous dans une écurie : le forfait est remplacé.</p>
+      </form>
+      <div class="ff-list" id="ff-list" hidden></div>
     </div>
   </section>
 
@@ -905,11 +920,14 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
         <button type="button" class="wheel" data-w="1" style="left:17.5%;top:86.25%" aria-label="Roue arrière droite"></button>
         <button type="button" class="wheel" data-w="2" style="left:82.25%;top:14.4%" aria-label="Roue avant gauche"></button>
         <button type="button" class="wheel" data-w="3" style="left:82.25%;top:85.6%" aria-label="Roue avant droite"></button>
+        <div class="pit-cd" id="pit-cd" aria-live="assertive"><div class="cd-lights"><i></i><i></i><i></i></div><div class="cd-word" id="cd-word">Prêt</div><div class="cd-hint">Ne touchez pas les roues avant le vert</div></div>
       </div>
       <div class="pit-side">
         <div class="pit-clock" id="pit-clock">0.00</div>
         <div class="pit-team" id="pit-team"><i></i>Stand L&amp;L Racing</div>
         <div class="pit-verdict" id="pit-verdict">Prêt au stand.</div>
+        <div class="pit-splits" id="pit-splits" aria-label="Temps intermédiaires"><span data-s="0"><small>AR G</small><b>–</b></span><span data-s="1"><small>AR D</small><b>–</b></span><span data-s="2"><small>AV G</small><b>–</b></span><span data-s="3"><small>AV D</small><b>–</b></span></div>
+        <div class="pit-delta" id="pit-delta" hidden></div>
         <div class="btn-row">
           <button class="btn primary" type="button" id="pit-go">GO</button>
           <button class="btn" type="button" id="pit-reset" hidden>Nouvel arrêt</button>
@@ -1663,8 +1681,12 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     }).catch(function(){ $("pit-save").disabled = false; $("pit-status").textContent = "Le stand n'a pas reçu le temps. Vérifiez votre connexion."; $("pit-status").className = "status err"; });
   });
   if (!API_URL) setPitEntries(pitDemoLoad());
+  window.GP30 = {teams: TEAMS, keyOf: keyOf, norm: norm, esc: esc, fmt: fmt, maxSeats: MAX_SEATS,
+    entries: function(){ return entries; }, pitEntries: function(){ return pitEntries; },
+    postEntry: postEntry, loadEntries: loadEntries, renderTeams: renderTeams, renderSide: renderSide, setStatus: setStatus,
+    team: function(t){ if (t !== undefined) selectedTeam = t; return selectedTeam; }, admin: function(){ return adminPin; }, adminDelete: adminDelete};
 })();
 </script>
-<script src="test/extras.js?v=8e2bdafe" defer></script>
+<script src="test/extras.js?v=6279abcb" defer></script>
 </body>
 </html>

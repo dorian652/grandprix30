@@ -21,6 +21,7 @@
     } catch(e) {}
   }
   function paintSound(){ if (!sbtn) return; sbtn.classList.toggle("on", soundOn); sbtn.querySelector("span").textContent = soundOn ? "Son activé" : "Son coupé"; }
+  window.GP30X = {beep: beep, soundOn: function(){ return soundOn; }};
   if (sbtn) {
     paintSound();
     sbtn.addEventListener("click", function(){
@@ -224,4 +225,149 @@
       .catch(function(){ stage.classList.add("no3d"); });
   }
   if (document.readyState === "complete") setTimeout(go, 200); else window.addEventListener("load", function(){ setTimeout(go, 200); });
+})();
+
+/* ===== Troisième passe : jeu et grille ===== */
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var beep = function(f, d, v){ if (window.GP30X) window.GP30X.beep(f, d, v); };
+  var fmt = function(ms){ return (ms / 1000).toFixed(2).replace(".", ","); };
+  var sfmt = function(ms){ return (ms >= 0 ? "+" : "−") + fmt(Math.abs(ms)); };
+  var esc = function(str){ return String(str).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); };
+
+  /* ---------- Pit stop : feux 3-2-1, faux départ, intermédiaires, écarts ---------- */
+  var go = $("pit-go"), cd = $("pit-cd"), word = $("cd-word"), pit = $("pit"), reset = $("pit-reset");
+  var wheels = Array.prototype.slice.call(document.querySelectorAll("#pit .wheel"));
+  var splits = $("pit-splits"), delta = $("pit-delta");
+  if (go && cd) {
+    var armed = false, timers = [], counting = false, t0 = 0, bestBefore = null, done = 0;
+    function lights(n){ var li = cd.querySelectorAll(".cd-lights i"); li.forEach(function(el, i){ el.classList.toggle("red", i < n); el.classList.remove("green"); }); }
+    function allGreen(){ cd.querySelectorAll(".cd-lights i").forEach(function(el){ el.classList.remove("red"); el.classList.add("green"); }); }
+    function clearTimers(){ timers.forEach(clearTimeout); timers = []; }
+    function resetSplits(){ if (!splits) return; splits.querySelectorAll("span").forEach(function(sp){ sp.className = ""; sp.querySelector("b").textContent = "–"; }); done = 0; }
+    function startCountdown(){
+      counting = true; go.hidden = true; if (reset) reset.hidden = true;
+      try { bestBefore = parseFloat(localStorage.getItem("gp30-pit")) || null; } catch(e){ bestBefore = null; }
+      resetSplits(); if (delta) delta.hidden = true;
+      cd.classList.remove("jump", "go"); cd.classList.add("on"); lights(0); word.textContent = "Prêt";
+      $("pit-verdict").textContent = "Les mécaniciens se mettent en place…";
+      [1, 2, 3].forEach(function(n){ timers.push(setTimeout(function(){ lights(n); word.textContent = String(4 - n); beep(740, 0.11, 0.22); }, 500 + n * 600)); });
+      var hold = 2300 + 500 + Math.random() * 1200;
+      timers.push(setTimeout(function(){
+        counting = false; allGreen(); word.textContent = "GO"; cd.classList.add("go"); beep(1180, 0.5, 0.26);
+        armed = true; t0 = performance.now(); go.hidden = false; go.click(); go.hidden = true; armed = false;
+        timers.push(setTimeout(function(){ cd.classList.remove("on", "go"); }, 220));
+      }, hold));
+    }
+    function jumpStart(){
+      if (!counting) return;
+      clearTimers(); counting = false;
+      cd.classList.add("jump"); word.textContent = "Faux départ"; beep(220, 0.35, 0.25);
+      $("pit-verdict").textContent = "Faux départ : les commissaires vous renvoient en grille. Attendez le vert.";
+      timers.push(setTimeout(function(){ cd.classList.remove("on", "jump"); go.hidden = false; }, 1300));
+    }
+    // intercepté en phase de capture sur le parent : passe avant le gestionnaire de la page dans tous les navigateurs
+    go.parentNode.addEventListener("click", function(e){
+      if (e.target !== go || armed) return;   // armé = vrai départ, le gestionnaire de la page prend le relais
+      e.stopImmediatePropagation(); e.preventDefault();
+      startCountdown();
+    }, true);
+    cd.addEventListener("pointerdown", function(e){ e.preventDefault(); jumpStart(); });
+    if (pit) pit.addEventListener("pointerdown", function(e){ if (counting && e.target !== cd && !cd.contains(e.target)) jumpStart(); }, true);
+    if (reset) reset.addEventListener("click", function(){ clearTimers(); counting = false; cd.classList.remove("on", "jump", "go"); resetSplits(); if (delta) delta.hidden = true; });
+    // intermédiaires : un par roue, code couleur à la F1 (violet = très rapide, vert = rapide, jaune = à améliorer)
+    wheels.forEach(function(w){
+      w.addEventListener("click", function(){
+        if (!splits || !t0 || !w.classList.contains("done") || w.getAttribute("data-split")) return;
+        var ms = performance.now() - t0; done++;
+        var seg = splits.querySelector('span[data-s="' + (done - 1) + '"]'); if (!seg) return;
+        seg.querySelector("b").textContent = fmt(ms); seg.querySelector("small").textContent = w.getAttribute("aria-label").replace("Roue ", "").replace("arrière", "AR").replace("avant", "AV").replace("gauche", "G").replace("droite", "D");
+        var per = ms / done; seg.className = per < 450 ? "purple" : (per < 900 ? "green" : "yellow");
+        w.setAttribute("data-split", "1");
+        if (done === 4) setTimeout(showDelta, 30, ms);
+      });
+    });
+    function showDelta(ms){
+      if (!delta) return;
+      var lines = [];
+      var wr = ms - 1800;
+      if (bestBefore) { var d = ms - bestBefore; lines.push('<span class="' + (d < 0 ? "good" : "bad") + '"><small>Votre record</small><b>' + (d < 0 ? "Battu de " + fmt(-d) + " s" : sfmt(d) + " s") + '</b></span>'); }
+      else lines.push('<span class="neutral"><small>Votre record</small><b>Temps de référence</b></span>');
+      var p1 = document.querySelector("#pit-list li:not(.empty)");
+      if (p1) { var p1ms = parseFloat(p1.querySelector(".tm").textContent.replace(",", ".")) * 1000, dp = ms - p1ms; lines.push('<span class="' + (dp < 0 ? "good" : "bad") + '"><small>Meilleur temps de la grille</small><b>' + (dp < 0 ? "Vous passez P1" : sfmt(dp) + " s") + '</b></span>'); }
+      lines.push('<span class="' + (wr < 0 ? "good" : "neutral") + '"><small>Record du monde (1,80 s)</small><b>' + (wr < 0 ? "Battu !" : sfmt(wr) + " s") + '</b></span>');
+      delta.innerHTML = lines.join(""); delta.hidden = false;
+      wheels.forEach(function(w){ w.removeAttribute("data-split"); }); t0 = 0;
+    }
+  }
+
+  /* ---------- Podium 3D des constructeurs ---------- */
+  var podium = $("podium"), stageP = $("podium-stage"), standings = $("standings-list"), riseTimer = null;
+  function renderPodium(){
+    if (!podium || !standings) return;
+    var rows = Array.prototype.slice.call(standings.querySelectorAll("li")).slice(0, 3);
+    if (rows.length < 1) { podium.hidden = true; return; }
+    var order = [1, 0, 2]; // P2 à gauche, P1 au centre, P3 à droite
+    var html = "";
+    order.forEach(function(idx){
+      var r = rows[idx];
+      if (!r) { html += '<div class="pstep p' + (idx + 1) + ' empty"><div class="pteam"><span class="pname">Place libre</span><span class="pcount">Votre écurie ?</span></div><div class="pbox"><div class="ptop"></div><div class="pside l"></div><div class="pside r"></div><div class="pfront"><span>' + (idx + 1) + '</span></div></div></div>'; return; }
+      var color = r.style.getPropertyValue("--tc").trim() || "var(--red)";
+      var id = r.querySelector(".team-id"), n = r.querySelector(".n").textContent.trim();
+      var badge = id ? (id.querySelector(".tlogo") ? id.querySelector(".tlogo").outerHTML : (id.querySelector(".tcode") ? id.querySelector(".tcode").outerHTML : "")) : "";
+      var name = id ? id.textContent.replace(/^[A-Z]{3}/, "").trim() : "";
+      html += '<div class="pstep p' + (idx + 1) + '" style="--tc:' + color + '"><div class="pteam">' + badge + '<span class="pname">' + esc(name) + '</span><span class="pcount">' + n + (n === "1" ? " pilote" : " pilotes") + '</span></div><div class="pbox"><div class="ptop"></div><div class="pside l"></div><div class="pside r"></div><div class="pfront"><span>' + (idx + 1) + '</span></div></div></div>';
+    });
+    if (stageP.innerHTML !== html) {
+      stageP.innerHTML = html;
+      if (!podium.querySelector(".podium-floor")) { var fl = document.createElement("div"); fl.className = "podium-floor"; stageP.after(fl); }
+      // l'animation d'apparition est retirée une fois jouée : une animation persistante aplatit la 3D dans Chrome
+      if (!reduced) { clearTimeout(riseTimer); stageP.classList.remove("rise"); void stageP.offsetWidth; stageP.classList.add("rise"); riseTimer = setTimeout(function(){ stageP.classList.remove("rise"); }, 1300); }
+    }
+    podium.hidden = false;
+  }
+  if (standings) { new MutationObserver(renderPodium).observe(standings, {childList: true}); setTimeout(renderPodium, 800); }
+
+  /* ---------- Forfaits ---------- */
+  var FF = "Forfait";
+  var ffToggle = $("forfait-toggle"), ffForm = $("forfait-form"), ffName = $("ff-name"), ffStatus = $("ff-status"), ffList = $("ff-list"), ffPill = $("pill-forfaits"), ffN = $("n-forfaits");
+  function ffEntries(){ return window.GP30 ? window.GP30.entries().filter(function(e){ return e.team === FF; }) : []; }
+  function renderForfaits(){
+    if (!ffPill || !window.GP30) return;
+    var list = ffEntries();
+    ffPill.hidden = !list.length; ffN.textContent = list.length;
+    if (ffList) {
+      if (window.GP30.admin() && list.length) {
+        ffList.hidden = false;
+        ffList.innerHTML = '<span class="eyebrow">Forfaits déclarés (visible par les organisateurs)</span><div class="members">' + list.map(function(e){ return '<span class="member">' + esc(e.pilot1) + '<i class="x" data-ffdel="' + esc(e.id) + '" title="Retirer ce forfait">✕</i></span>'; }).join("") + '</div>';
+        ffList.querySelectorAll("[data-ffdel]").forEach(function(x){ x.addEventListener("click", function(){ window.GP30.adminDelete("admin_delete", x.getAttribute("data-ffdel")); }); });
+      } else ffList.hidden = true;
+    }
+  }
+  if (ffToggle && ffForm) {
+    ffToggle.addEventListener("click", function(){ var open = ffForm.hidden; ffForm.hidden = !open; ffToggle.setAttribute("aria-expanded", String(open)); if (open) { var n = $("f-p1"); if (n && n.value && !ffName.value) ffName.value = n.value; ffName.focus(); } });
+    ffForm.addEventListener("submit", function(e){
+      e.preventDefault(); if (!window.GP30) return;
+      var G = window.GP30, raw = ffName.value.trim();
+      if (G.norm(raw).split(" ").length < 2) { ffStatus.textContent = "Indiquez votre prénom et votre nom, pour qu'on sache qui ne vient pas."; ffStatus.className = "status err"; ffName.focus(); return; }
+      var name = raw.replace(/\s+/g, " ").split(" ").map(function(w){ return w.charAt(0).toUpperCase() + w.slice(1); }).join(" ");
+      var key = G.keyOf(name), btn = $("ff-btn"); btn.disabled = true; ffStatus.textContent = "Transmission au stand…"; ffStatus.className = "status";
+      var dupes = G.entries().filter(function(en){ return en.id !== key && G.keyOf(en.pilot1) === key; }), chain = Promise.resolve();
+      dupes.forEach(function(d){ chain = chain.then(function(){ return G.postEntry({id: d.id, action: "delete"}); }); });
+      chain.then(function(){ return G.postEntry({id: key, team: FF, pilot1: name, pilot2: "", note: "forfait"}); }).then(function(res){
+        btn.disabled = false;
+        if (res && res.ok) {
+          if (res.entries) { G.entries().splice(0, G.entries().length); res.entries.forEach(function(x){ G.entries().push(x); }); }
+          try { localStorage.removeItem("gp30-entry"); } catch(err){}
+          if (G.team() && G.team() !== FF) G.team(null);
+          G.renderTeams(); G.renderSide(); renderForfaits();
+          ffStatus.textContent = "Forfait enregistré pour " + name + ". Vous nous manquerez sur la grille."; ffStatus.className = "status ok";
+          var w = $("welcome"); if (w) w.hidden = true;
+        } else { ffStatus.textContent = "Le stand n'a pas reçu le message. Réessayez."; ffStatus.className = "status err"; }
+      }).catch(function(){ btn.disabled = false; ffStatus.textContent = "Le stand n'a pas reçu le message. Vérifiez votre connexion."; ffStatus.className = "status err"; });
+    });
+  }
+  var teamsEl = $("teams"); if (teamsEl) new MutationObserver(renderForfaits).observe(teamsEl, {childList: true});
+  setTimeout(renderForfaits, 900);
 })();
