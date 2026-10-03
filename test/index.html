@@ -7,7 +7,6 @@
 <meta name="description" content="Lucie et Lilian vous invitent au Grand Prix de leurs 30 ans : samedi 20 mars 2027, 19h30, La Palette Verte, Écaussinnes.">
 <meta name="robots" content="noindex, nofollow">
 <base href="../">
-<link rel="stylesheet" href="test/extras.css">
 <meta name="theme-color" content="#0f0d0c">
 <link rel="canonical" href="https://grandprix30ans.be/">
 <meta property="og:type" content="website">
@@ -417,6 +416,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
 }
 .testband{position:sticky;top:0;z-index:100;background:#f5c518;color:#151210;text-align:center;font-family:"Barlow Condensed",sans-serif;font-weight:800;letter-spacing:.2em;text-transform:uppercase;font-size:.8rem;padding:6px 10px}.testband a{color:#151210}
 </style>
+<link rel="stylesheet" href="test/extras.css?v=d67c63b0">
 </head>
 <body>
 <div class="testband">Version test · rien n'est enregistré ici · <a href="./">site officiel</a></div>
@@ -598,7 +598,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     <p class="eyebrow">Lucie &amp; Lilian vous invitent au</p>
     <h1>Grand Prix <span>de nos</span> 30 ans</h1>
     <p>Une seule manche, un seul soir, plus de 100 pilotes sur la grille. Rendez-vous à La Palette Verte pour fêter nos deux fois 30 ans.</p>
-    <div class="stage3d" id="stage3d"><span class="s3-label">Monoplace L&amp;L · n°30 · vue 3D</span><span class="s3-hint">Glissez pour tourner · défilez pour survoler</span></div>
+    <div class="stage3d" id="stage3d" data-engine="test/gp3d.js?v=3a1e1500"><span class="s3-label">Monoplace L&amp;L · n°30 · vue 3D</span><span class="s3-hint">Glissez pour tourner · défilez pour survoler</span></div>
     <div class="essentials">
       <div><span class="k">Date</span><span class="v">Samedi 20 mars 2027</span><span class="s">Ouverture du paddock à 19h30</span></div>
       <div><span class="k">Lieu</span><span class="v">La Palette Verte</span><span class="s">Rue Jean Jaurès 5, 7190 Écaussinnes</span></div>
@@ -1337,7 +1337,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
   function myKey(){ var n = norm($("f-p1").value); return n ? keyOf(n) : null; }
   function isMine(e){ var k = myKey(); return (k && e.id === k) || (k && keyOf(e.pilot1) === k) || (!k && e.id === myId); }
   function myEntry(){ return entries.filter(isMine)[0]; }
-  function badge(t){ return t.logo ? '<img class="tlogo" src="' + t.logo + '" alt="' + esc(t.name) + '">' : '<b class="tcode">' + esc(t.code) + '</b>'; }
+  function badge(t){ return t.logo ? '<img class="tlogo" loading="lazy" src="' + t.logo + '" alt="' + esc(t.name) + '">' : '<b class="tcode">' + esc(t.code) + '</b>'; }
   function teamByName(n){ for (var i = 0; i < TEAMS.length; i++) if (TEAMS[i].name === n) return TEAMS[i]; return null; }
   function seatsOf(teamName, excludeMine){
     var out = [];
@@ -1415,7 +1415,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     $("side-who").textContent = p1 || "Votre nom";
     var t = teamByName(selectedTeam);
     var tm = $("side-team");
-    tm.innerHTML = '<i></i>' + (t ? (t.logo ? '<img class="tlogo" src="' + t.logo + '" alt="">' : '<b class="tcode" style="--tc:' + t.color + '">' + esc(t.code) + '</b>') + ' ' + esc(t.name) : "Aucune écurie choisie");
+    tm.innerHTML = '<i></i>' + (t ? (t.logo ? '<img class="tlogo" loading="lazy" src="' + t.logo + '" alt="">' : '<b class="tcode" style="--tc:' + t.color + '">' + esc(t.code) + '</b>') + ' ' + esc(t.name) : "Aucune écurie choisie");
     tm.style.setProperty("--tc", t ? t.color : "");
     var mine = myEntry();
     if (mine && !selectedTeam) selectedTeam = mine.team;
@@ -1665,8 +1665,6 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
   if (!API_URL) setPitEntries(pitDemoLoad());
 })();
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
-<script src="test/gp3d.js" defer></script>
-<script src="test/extras.js" defer></script>
+<script src="test/extras.js?v=8e2bdafe" defer></script>
 </body>
 </html>

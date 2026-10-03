@@ -205,3 +205,23 @@
     document.addEventListener("pointerout", function(e){ var t = e.target.closest && e.target.closest(".team"); if (t && !t.contains(e.relatedTarget)) { t.classList.remove("tilt3d"); t.style.transform = ""; } });
   }
 })();
+
+
+/* ===== Chargement différé de la 3D ===== */
+(function(){
+  var stage = document.getElementById("stage3d"); if (!stage) return;
+  var conn = navigator.connection || {};
+  if (conn.saveData) { stage.classList.add("no3d"); return; }
+  function loadScript(src){ return new Promise(function(res, rej){ var sc = document.createElement("script"); sc.src = src; sc.onload = res; sc.onerror = rej; document.head.appendChild(sc); }); }
+  function go(){
+    loadScript("https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js")
+      .then(function(){ return loadScript(stage.getAttribute("data-engine")); })
+      .then(function(){
+        // le panneau des feux devient un HUD dans la scène
+        var panel = document.getElementById("light-panel");
+        if (panel && stage.classList.contains("ready")) { stage.appendChild(panel); panel.classList.add("hud"); }
+      })
+      .catch(function(){ stage.classList.add("no3d"); });
+  }
+  if (document.readyState === "complete") setTimeout(go, 200); else window.addEventListener("load", function(){ setTimeout(go, 200); });
+})();

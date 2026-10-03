@@ -105,7 +105,8 @@
     var gl = canvas.getContext("webgl2") || canvas.getContext("webgl");
     if (!gl) return null;
     var renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: true, alpha: true, powerPreference: "high-performance"});
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+    var lowEnd = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) || (navigator.deviceMemory && navigator.deviceMemory <= 3);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, lowEnd ? 1.25 : 1.75));
     renderer.outputEncoding = THREE.sRGBEncoding; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.95;
     renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     host.appendChild(canvas);
@@ -168,7 +169,7 @@
 
     function frame(now){
       requestAnimationFrame(frame);
-      if (!state.visible) return;
+      if (!state.visible || document.hidden) { state.last = now; return; }
       var dt = Math.min(0.05, (now - state.last) / 1000); state.last = now;
       if (opts.orbit) {
         if (!reduced) state.targetAngle += dt * 0.18;

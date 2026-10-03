@@ -132,11 +132,23 @@
 .faq details p{margin:0 0 16px;color:var(--muted)}
 
 /* Hero : lignes de vitesse */
-.hero{position:relative}
-.hero::before{content:"";position:absolute;inset:0 -40px;pointer-events:none;background:repeating-linear-gradient(90deg,transparent 0 120px,rgba(239,231,216,.03) 120px 121px);mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent);-webkit-mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent);animation:speedlines 6s linear infinite;z-index:-1}
+.hero{position:relative;overflow:hidden;isolation:isolate}
+.hero::before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(90deg,transparent 0 120px,rgba(239,231,216,.03) 120px 121px);mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent);-webkit-mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent);animation:speedlines 6s linear infinite;z-index:-1}
 @keyframes speedlines{to{transform:translateX(-120px)}}
 @media (prefers-reduced-motion:reduce){.hero::before{animation:none}}
 
 /* Panneau de stand : vernis */
 .pitboard::before{content:"";position:absolute;inset:0;border-radius:6px;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.08),transparent 40%,transparent 60%,rgba(255,255,255,.04))}
 @media (max-width:760px){.pit-wrap .pit{aspect-ratio:4/3}.pitwall .speed,.pitwall .drs{display:none}}
+
+/* HUD des feux dans la scène 3D */
+.stage3d .light-panel.hud{position:absolute;left:14px;bottom:14px;margin:0;z-index:3;transform:scale(.82);transform-origin:left bottom;background:rgba(10,9,8,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-color:rgba(239,231,216,.2)}
+.stage3d .light-panel.hud .light-label{color:var(--fg)}
+@media (max-width:640px){.stage3d .light-panel.hud{transform:scale(.68)}}
+
+/* Petits écrans : les commissaires passent sur deux rangées */
+@media (max-width:430px){
+  .marshals{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));justify-items:center;gap:22px 12px;padding-left:0;padding-right:0}
+  .mshl{width:min(118px,100%)}
+  .mshl span{font-size:.58rem;letter-spacing:.14em;white-space:nowrap}
+}
