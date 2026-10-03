@@ -723,3 +723,27 @@
     setInterval(function(){ radios.forEach(function(r){ if (r.querySelector("p.pending") && !r.classList.contains("tx") && r.getBoundingClientRect().bottom < 0) { io.unobserve(r); r.querySelectorAll("p").forEach(function(p){ p.classList.remove("pending"); p.querySelector(".typed").textContent = p.getAttribute("data-full"); }); } }); }, 4000);
   })();
 })();
+
+/* ===== Bandeau de test : grille fictive pour visualiser podium, classement, recherche et chronos ===== */
+(function(){
+  var fill = document.getElementById("demo-fill"), clear = document.getElementById("demo-clear"); if (!fill || !clear) return;
+  var NATO = ["Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", "Juliett", "Kilo", "Lima", "Mike", "November", "Oscar", "Papa", "Quebec", "Romeo", "Sierra", "Tango", "Uniform", "Victor", "Whiskey", "Xray", "Yankee", "Zulu"];
+  fill.addEventListener("click", function(e){
+    e.preventDefault();
+    var teams = (window.GP30 ? window.GP30.teams : []).map(function(t){ return t.name; }); if (!teams.length) return;
+    var entries = [], pits = [];
+    NATO.forEach(function(n, i){
+      var name = "Pilote " + n, team = teams[Math.floor(Math.pow(Math.random(), 1.6) * teams.length)];
+      entries.push({id: "n-pilote-" + n.toLowerCase(), team: team, pilot1: name, pilot2: "", note: ""});
+      if (i % 3 === 0) pits.push({action: "pitstop", id: "p-pilote-" + n.toLowerCase(), first: "Pilote", last: n, ms: 1900 + Math.floor(Math.random() * 4000)});
+    });
+    entries.push({id: "n-pilote-absent", team: "Forfait", pilot1: "Pilote Absent", pilot2: "", note: "forfait"});
+    try { localStorage.setItem("gp30-demo", JSON.stringify(entries)); localStorage.setItem("gp30-pit-demo", JSON.stringify(pits)); } catch(err){}
+    location.reload();
+  });
+  clear.addEventListener("click", function(e){
+    e.preventDefault();
+    try { ["gp30-demo", "gp30-pit-demo", "gp30-entry", "gp30-pit", "gp30-pit-me"].forEach(function(k){ localStorage.removeItem(k); }); } catch(err){}
+    location.reload();
+  });
+})();
