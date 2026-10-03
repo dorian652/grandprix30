@@ -63,8 +63,8 @@
 .sound-btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
 /* Apparitions au défilement (transformation seule : le contenu reste lisible) */
-.rv{transform:translateY(22px);transition:transform .7s cubic-bezier(.2,.8,.2,1)}
-.rv.in{transform:none}
+.rv{opacity:0;transform:translateY(16px);transition:opacity .55s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;transform:none}
 
 /* Circuit en relief */
 .track-card.tilt{transition:transform .12s linear;transform-style:preserve-3d;will-change:transform}
@@ -315,3 +315,9 @@ body.lic-open{overflow:hidden}
 .radio p.typing .typed::after{opacity:1;animation:blink .7s steps(1) infinite}
 .radio p.pending{min-height:1.4em}
 .radio.tx .rh b{animation:blink 1s infinite}
+
+/* Finitions QA */
+.search input[type=search]{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px;min-width:0;-webkit-appearance:none;appearance:none}
+.search input[type=search]:focus{outline:2px solid var(--red);outline-offset:1px;border-color:var(--red)}
+.sector-labels span{white-space:nowrap}
+@media (max-width:420px){.sector-labels{font-size:.56rem;letter-spacing:.1em}}

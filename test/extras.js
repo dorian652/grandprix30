@@ -719,5 +719,7 @@
     }
     var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { io.unobserve(e.target); setTimeout(function(){ typeRadio(e.target); }, 200); } }); }, {rootMargin: "0px 0px -15% 0px"});
     radios.forEach(function(r){ io.observe(r); });
+    // filet de sécurité : une radio déjà dépassée sans avoir été tapée reçoit son texte tel quel
+    setInterval(function(){ radios.forEach(function(r){ if (r.querySelector("p.pending") && !r.classList.contains("tx") && r.getBoundingClientRect().bottom < 0) { io.unobserve(r); r.querySelectorAll("p").forEach(function(p){ p.classList.remove("pending"); p.querySelector(".typed").textContent = p.getAttribute("data-full"); }); } }); }, 4000);
   })();
 })();

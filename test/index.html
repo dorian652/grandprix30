@@ -416,7 +416,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
 }
 .testband{position:sticky;top:0;z-index:100;background:#f5c518;color:#151210;text-align:center;font-family:"Barlow Condensed",sans-serif;font-weight:800;letter-spacing:.2em;text-transform:uppercase;font-size:.8rem;padding:6px 10px}.testband a{color:#151210}
 </style>
-<link rel="stylesheet" href="test/extras.css?v=9d54b875">
+<link rel="stylesheet" href="test/extras.css?v=564fbff5">
 </head>
 <body>
 <div class="testband">Version test · rien n'est enregistré ici · <a href="./">site officiel</a></div>
@@ -1701,9 +1701,9 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     postPit(payload).then(function(res){
       $("pit-save").disabled = false;
       if (res && res.ok) {
-        if (res.pitstop) setPitEntries(res.pitstop);
         try { localStorage.setItem("gp30-pit-me", JSON.stringify({first:first, last:last})); } catch(err){}
         savedPit = {first:first, last:last};
+        if (res.pitstop) setPitEntries(res.pitstop); else renderPitBoard();
         var bestByKey = {}; pitEntries.forEach(function(e){ var k = keyOf(e.first + " " + e.last); if (!bestByKey[k] || e.ms < bestByKey[k].ms) bestByKey[k] = e; });
         var rank = Object.keys(bestByKey).map(function(k){ return bestByKey[k]; }).sort(function(a, b){ return a.ms - b.ms; }).findIndex(function(x){ return keyOf(x.first + " " + x.last) === pk; }) + 1;
         $("pit-status").textContent = "Temps enregistré : " + fmt(lastRun) + " s, vous êtes P" + rank + ". Vous pouvez retenter pour l'améliorer."; $("pit-status").className = "status ok";
@@ -1717,6 +1717,6 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     team: function(t){ if (t !== undefined) selectedTeam = t; return selectedTeam; }, admin: function(){ return adminPin; }, adminDelete: adminDelete};
 })();
 </script>
-<script src="test/extras.js?v=110e2587" defer></script>
+<script src="test/extras.js?v=f763f887" defer></script>
 </body>
 </html>
