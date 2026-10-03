@@ -845,7 +845,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
       </div>
       <p class="lap">Record du monde <b>1,80 s</b> · Votre record <b id="pit-best">—</b></p>
     </div>
-    <p class="lead">Quatre roues à changer, le plus vite possible. Appuyez sur GO, puis touchez les quatre roues. Le chrono s'arrête à la dernière. Enregistrez votre temps : le meilleur chrono de la grille au 20 mars reçoit un cadeau sur le podium.</p>
+    <p class="lead">Quatre roues à changer, le plus vite possible. Appuyez sur GO, puis touchez la roue qui s'allume, quatre fois de suite. Le chrono s'arrête à la dernière. Enregistrez votre temps : le meilleur chrono de la grille au 20 mars reçoit un cadeau sur le podium.</p>
     <div class="pit-wrap">
       <div class="pit" id="pit">
         <svg viewBox="0 0 400 160" class="pit-car" aria-hidden="true"><use href="#f1car-detail"/></svg>
@@ -1509,15 +1509,19 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
   if (pitBest) $("pit-best").textContent = fmt(pitBest) + " s";
   wheels.forEach(function(w){ w.disabled = true; });
   function pitTick(){ $("pit-clock").textContent = fmt(performance.now() - pitStart); pitRaf = requestAnimationFrame(pitTick); }
+  var pitOrder = [];
+  function armNext(){ var i = pitOrder[pitDone]; wheels.forEach(function(w){ var on = parseInt(w.getAttribute("data-w"), 10) === i; w.disabled = !on; w.classList.toggle("armed", on); }); }
   $("pit-go").addEventListener("click", function(){
-    pitDone = 0; wheels.forEach(function(w){ w.disabled = false; w.classList.remove("done"); w.classList.add("armed"); });
-    $("pit-go").hidden = true; $("pit-reset").hidden = true; $("pit-verdict").textContent = "Changez les quatre roues !";
+    pitDone = 0; pitOrder = [0, 1, 2, 3].sort(function(){ return Math.random() - 0.5; });
+    wheels.forEach(function(w){ w.classList.remove("done", "armed"); w.disabled = true; }); armNext();
+    $("pit-go").hidden = true; $("pit-reset").hidden = true; $("pit-verdict").textContent = "Touchez la roue qui s'allume !";
     pitStart = performance.now(); pitTick(); unlockAudio(); beep(1180, 0.15, 0.2);
   });
   wheels.forEach(function(w){
     w.addEventListener("click", function(){
-      if (w.classList.contains("done")) return;
+      if (w.disabled || w.classList.contains("done") || !w.classList.contains("armed")) return;
       w.classList.remove("armed"); w.classList.add("done"); pitDone++; beep(600, 0.06, 0.15);
+      if (pitDone < 4) armNext();
       if (pitDone === 4) {
         cancelAnimationFrame(pitRaf);
         var ms = performance.now() - pitStart; $("pit-clock").textContent = fmt(ms);
