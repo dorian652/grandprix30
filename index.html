@@ -276,6 +276,10 @@ textarea{min-height:72px;resize:vertical}
 .radio p{margin:0;font-size:1rem}
 .radio p b{font-family:var(--display);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:.8rem;color:var(--muted);display:block;margin-bottom:2px}
 .radio p + p{padding-top:8px;border-top:1px solid var(--line)}
+.radio p .typed::after{content:"";display:inline-block;width:.55em;height:1em;margin-left:2px;vertical-align:-2px;background:var(--green);opacity:0}
+.radio p.typing .typed::after{opacity:1;animation:blink .7s steps(1) infinite}
+.radio p.pending{min-height:1.4em}
+.radio.tx .rh b{animation:blink 1s infinite}
 
 /* Photos */
 .photo-teaser{display:flex;align-items:center;justify-content:space-between;gap:22px;flex-wrap:wrap;margin-top:8px}
@@ -1546,9 +1550,9 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     postPit(payload).then(function(res){
       $("pit-save").disabled = false;
       if (res && res.ok) {
-        if (res.pitstop) setPitEntries(res.pitstop);
         try { localStorage.setItem("gp30-pit-me", JSON.stringify({first:first, last:last})); } catch(err){}
         savedPit = {first:first, last:last};
+        if (res.pitstop) setPitEntries(res.pitstop); else renderPitBoard();
         var bestByKey = {}; pitEntries.forEach(function(e){ var k = keyOf(e.first + " " + e.last); if (!bestByKey[k] || e.ms < bestByKey[k].ms) bestByKey[k] = e; });
         var rank = Object.keys(bestByKey).map(function(k){ return bestByKey[k]; }).sort(function(a, b){ return a.ms - b.ms; }).findIndex(function(x){ return keyOf(x.first + " " + x.last) === pk; }) + 1;
         $("pit-status").textContent = "Temps enregistré : " + fmt(lastRun) + " s, vous êtes P" + rank + ". Vous pouvez retenter pour l'améliorer."; $("pit-status").className = "status ok";
@@ -1556,6 +1560,38 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     }).catch(function(){ $("pit-save").disabled = false; $("pit-status").textContent = "Le stand n'a pas reçu le temps. Vérifiez votre connexion."; $("pit-status").className = "status err"; });
   });
   if (!API_URL) setPitEntries(pitDemoLoad());
+
+  /* ============ RADIO : MESSAGES TAPÉS AU FUR ET À MESURE ============ */
+  (function(){
+    var radios = Array.prototype.slice.call(document.querySelectorAll(".radio"));
+    if (!radios.length || reduced || !("IntersectionObserver" in window)) return;
+    radios.forEach(function(r){
+      r.querySelectorAll("p").forEach(function(p){
+        var b = p.querySelector("b"), node = p.childNodes[p.childNodes.length - 1], full = node.textContent;
+        p.setAttribute("data-full", full); p.setAttribute("aria-label", (b ? b.textContent + " : " : "") + full);
+        var span = document.createElement("span"); span.className = "typed"; node.textContent = ""; p.appendChild(span); p.classList.add("pending");
+      });
+    });
+    function typeRadio(r){
+      var ps = Array.prototype.slice.call(r.querySelectorAll("p")), k = 0;
+      r.classList.add("tx");
+      function next(){
+        if (k >= ps.length) { r.classList.remove("tx"); return; }
+        var p = ps[k++], span = p.querySelector(".typed"), full = p.getAttribute("data-full"), i = 0;
+        p.classList.remove("pending"); p.classList.add("typing");
+        (function step(){
+          span.textContent = full.slice(0, ++i);
+          if (i < full.length) setTimeout(step, 28 + Math.random() * 30);
+          else { p.classList.remove("typing"); setTimeout(next, 550); }
+        })();
+      }
+      next();
+    }
+    var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { io.unobserve(e.target); setTimeout(function(){ typeRadio(e.target); }, 200); } }); }, {rootMargin: "0px 0px -15% 0px"});
+    radios.forEach(function(r){ io.observe(r); });
+    // filet de sécurité : une radio déjà dépassée sans avoir été tapée reçoit son texte tel quel
+    setInterval(function(){ radios.forEach(function(r){ if (r.querySelector("p.pending") && !r.classList.contains("tx") && r.getBoundingClientRect().bottom < 0) { io.unobserve(r); r.querySelectorAll("p").forEach(function(p){ p.classList.remove("pending"); p.querySelector(".typed").textContent = p.getAttribute("data-full"); }); } }); }, 4000);
+  })();
 })();
 </script>
 </body>

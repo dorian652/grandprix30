@@ -277,6 +277,10 @@ textarea{min-height:72px;resize:vertical}
 .radio p{margin:0;font-size:1rem}
 .radio p b{font-family:var(--display);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:.8rem;color:var(--muted);display:block;margin-bottom:2px}
 .radio p + p{padding-top:8px;border-top:1px solid var(--line)}
+.radio p .typed::after{content:"";display:inline-block;width:.55em;height:1em;margin-left:2px;vertical-align:-2px;background:var(--green);opacity:0}
+.radio p.typing .typed::after{opacity:1;animation:blink .7s steps(1) infinite}
+.radio p.pending{min-height:1.4em}
+.radio.tx .rh b{animation:blink 1s infinite}
 
 /* Photos */
 .photo-teaser{display:flex;align-items:center;justify-content:space-between;gap:22px;flex-wrap:wrap;margin-top:8px}
@@ -416,10 +420,9 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
 }
 .testband{position:sticky;top:0;z-index:100;background:#f5c518;color:#151210;text-align:center;font-family:"Barlow Condensed",sans-serif;font-weight:800;letter-spacing:.2em;text-transform:uppercase;font-size:.8rem;padding:6px 10px}.testband a{color:#151210}
 </style>
-<link rel="stylesheet" href="test/extras.css?v=564fbff5">
 </head>
 <body>
-<div class="testband">Version test · rien n'est enregistré ici · <a href="./">site officiel</a> · <a href="#" id="demo-fill">grille fictive</a> · <a href="#" id="demo-clear">vider</a></div>
+<div class="testband">Version test · rien n'est enregistré ici · <a href="./">site officiel</a></div>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="crest" viewBox="0 0 100 108">
@@ -576,13 +579,10 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
   <header class="topbar">
     <div class="brand"><svg id="crest-btn" role="img" aria-label="Écusson L&L Racing"><use href="#crest"/></svg><span>L&amp;L Racing <span>· Écurie n°30</span></span></div>
     <div class="topright">
-      <button type="button" class="sound-btn" id="sound-btn" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg><span>Son coupé</span></button>
       <a class="chip chip-link" href="test/galerie.html"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7l1.5-3h5L16 7"/><circle cx="12" cy="13.5" r="3.5"/></svg>Le jour de la course</a>
       <div class="chip">20<i>·</i>03<i>·</i>2027 <span style="color:var(--muted);margin-inline:8px">|</span> 19:30</div>
     </div>
   </header>
-  <div class="ticker" aria-label="Race control"><span class="tk-tag"><i></i>Race control</span><div class="tk-track"><div class="tk-run" id="tk-run"><span>Chargement du paddock…</span></div></div></div>
-  <div class="welcome" id="welcome" hidden></div>
 
   <section class="hero">
     <div class="light-panel" id="light-panel" role="button" tabindex="0" aria-label="Relancer la procédure de départ">
@@ -598,18 +598,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     <p class="eyebrow">Lucie &amp; Lilian vous invitent au</p>
     <h1>Grand Prix <span>de nos</span> 30 ans</h1>
     <p>Une seule manche, un seul soir, plus de 100 pilotes sur la grille. Rendez-vous à La Palette Verte pour fêter nos deux fois 30 ans.</p>
-    <div class="stage3d" id="stage3d" data-engine="test/gp3d.js?v=3a1e1500"><span class="s3-label">Monoplace L&amp;L · n°30 · vue 3D</span><span class="s3-hint">Glissez pour tourner · défilez pour survoler</span></div>
-    <div class="essentials">
-      <div><span class="k">Date</span><span class="v">Samedi 20 mars 2027</span><span class="s">Ouverture du paddock à 19h30</span></div>
-      <div><span class="k">Lieu</span><span class="v">La Palette Verte</span><span class="s">Rue Jean Jaurès 5, 7190 Écaussinnes</span></div>
-      <div><span class="k">Grille</span><span class="v">Plus de 100 pilotes</span><span class="s">11 écuries, choisissez la vôtre plus bas</span></div>
-    </div>
-    <div class="ess-actions">
-      <a class="btn primary" href="https://www.google.com/maps/dir/?api=1&destination=Rue+Jean+Jaur%C3%A8s+5%2C+%C3%89caussinnes" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg>Itinéraire</a>
-      <a class="btn" href="grandprix30ans.ics" download="grandprix30ans.ics"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M12 13v5M9.5 15.5h5"/></svg>Agenda</a>
-      <button type="button" class="btn" id="share-btn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg><span>Partager</span></button>
-    </div>
-    <div class="btn-row hero-actions" hidden>
+    <div class="btn-row hero-actions">
       <a class="btn primary" href="grandprix30ans.ics" download="grandprix30ans.ics">
         <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M12 13v5M9.5 15.5h5"/></svg>Ajouter à mon agenda
       </a>
@@ -658,7 +647,6 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
         </div>
       </aside>
     </article>
-    <div style="text-align:center"><button type="button" class="btn gyro-btn" id="gyro-btn">Activer l'effet 3D du billet</button></div>
   </div>
 
   <div class="timing" id="timing" aria-label="Compte à rebours">
@@ -684,85 +672,11 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
       <span>Piste : <b id="w-track">…</b></span>
       <span>Air : <b id="w-temp">…</b></span>
       <span>Vent : <b id="w-wind">…</b></span>
-      <span>Ciel : <i class="wi" id="w-icon" aria-hidden="true"></i><b id="w-sky">…</b></span>
-      <span>Pneus : <i class="tyre" id="w-tyre" aria-hidden="true"></i><b id="w-tyre-label">…</b></span>
+      <span>Ciel : <b id="w-sky">…</b></span>
       <span id="w-note">Météo en direct à la Palette Verte</span>
-      <span id="w-forecast" class="w-forecast" hidden></span>
       <span id="cd-note" hidden></span>
     </div>
   </div>
-
-  <section id="pilotes">
-    <div class="sec-head">
-      <div>
-        <p class="eyebrow">Écurie n°30</p>
-        <h2 class="sec-title">Les pilotes</h2>
-      </div>
-      <p class="lap">Touchez une carte <b>pour la retourner</b></p>
-    </div>
-    <div class="drivers">
-      <div class="dcard" tabindex="0" role="button" aria-label="Fiche pilote de Lucie">
-        <div class="dface dfront"><span class="dnum">30</span>
-          <div class="dhelmet"><svg viewBox="0 0 200 170" aria-hidden="true">
-            <defs><linearGradient id="hg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".35"/><stop offset=".5" stop-color="#ffffff" stop-opacity="0"/><stop offset="1" stop-color="#000000" stop-opacity=".35"/></linearGradient></defs>
-            <path d="M20 112 C20 52 60 20 105 20 C152 20 186 52 186 102 L186 132 C186 143 176 151 162 151 L52 151 C34 151 20 141 20 126 Z" fill="#efe7d8"/>
-            <path d="M44 62 C72 32 142 32 172 62 L160 76 C136 52 78 52 56 76 Z" fill="#c8102e"/>
-            <path d="M20 112 C20 52 60 20 105 20 C152 20 186 52 186 102 L186 132 C186 143 176 151 162 151 L52 151 C34 151 20 141 20 126 Z" fill="url(#hg1)"/>
-            <path d="M72 72 C104 62 152 64 184 86 L184 118 C150 112 104 108 72 112 Z" fill="#0e0f12"/>
-            <path d="M80 78 C110 70 150 72 178 88 L178 96 C150 84 112 82 80 88 Z" fill="#ffffff" opacity=".14"/>
-            <rect x="60" y="118" width="26" height="4" rx="2" fill="#15151a" opacity=".6"/><rect x="60" y="126" width="26" height="4" rx="2" fill="#15151a" opacity=".6"/>
-            <text x="38" y="104" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="800" font-size="22" fill="#c8102e">30</text>
-            <ellipse cx="103" cy="158" rx="70" ry="7" fill="rgba(0,0,0,.45)"/>
-          </svg></div>
-          <div class="dname"><p class="eyebrow">Pilote n°30 · Voiture 1</p><h3>Lucie</h3><div class="dteam">L&amp;L Racing · débuts en 1997</div></div>
-          <span class="flipme">Retourner la fiche →</span>
-        </div>
-        <div class="dface dback">
-          <h3>Palmarès · Lucie</h3>
-          <dl>
-            <dt>Débuts</dt><dd>1997, saison inaugurale</dd>
-            <dt>Saisons</dt><dd>30, sans abandon</dd>
-            <dt>Victoires</dt><dd>Toutes les soirées où elle était en grille</dd>
-            <dt>Meilleur tour</dt><dd>À venir, le 20 mars 2027</dd>
-            <dt>Pneus préférés</dt><dd>Les bulles</dd>
-            <dt>Coéquipier</dt><dd>Lilian, voiture 2</dd>
-            <dt>Objectif 2027</dt><dd>Le podium à deux</dd>
-          </dl>
-          <span class="stamp">Super licence</span>
-        </div>
-      </div>
-      <div class="dcard" tabindex="0" role="button" aria-label="Fiche pilote de Lilian">
-        <div class="dface dfront"><span class="dnum">30</span>
-          <div class="dhelmet"><svg viewBox="0 0 200 170" aria-hidden="true">
-            <defs><linearGradient id="hg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".35"/><stop offset=".5" stop-color="#ffffff" stop-opacity="0"/><stop offset="1" stop-color="#000000" stop-opacity=".35"/></linearGradient></defs>
-            <path d="M20 112 C20 52 60 20 105 20 C152 20 186 52 186 102 L186 132 C186 143 176 151 162 151 L52 151 C34 151 20 141 20 126 Z" fill="#c8102e"/>
-            <path d="M44 62 C72 32 142 32 172 62 L160 76 C136 52 78 52 56 76 Z" fill="#efe7d8"/>
-            <path d="M20 112 C20 52 60 20 105 20 C152 20 186 52 186 102 L186 132 C186 143 176 151 162 151 L52 151 C34 151 20 141 20 126 Z" fill="url(#hg2)"/>
-            <path d="M72 72 C104 62 152 64 184 86 L184 118 C150 112 104 108 72 112 Z" fill="#0e0f12"/>
-            <path d="M80 78 C110 70 150 72 178 88 L178 96 C150 84 112 82 80 88 Z" fill="#ffffff" opacity=".14"/>
-            <rect x="60" y="118" width="26" height="4" rx="2" fill="#15151a" opacity=".6"/><rect x="60" y="126" width="26" height="4" rx="2" fill="#15151a" opacity=".6"/>
-            <text x="38" y="104" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="800" font-size="22" fill="#efe7d8">30</text>
-            <ellipse cx="103" cy="158" rx="70" ry="7" fill="rgba(0,0,0,.45)"/>
-          </svg></div>
-          <div class="dname"><p class="eyebrow">Pilote n°30 · Voiture 2</p><h3>Lilian</h3><div class="dteam">L&amp;L Racing · débuts en 1997</div></div>
-          <span class="flipme">Retourner la fiche →</span>
-        </div>
-        <div class="dface dback">
-          <h3>Palmarès · Lilian</h3>
-          <dl>
-            <dt>Débuts</dt><dd>1997, saison inaugurale</dd>
-            <dt>Saisons</dt><dd>30, sans abandon</dd>
-            <dt>Arrêts aux stands</dt><dd>Stratégiques, de préférence au bar</dd>
-            <dt>Meilleur tour</dt><dd>À venir, le 20 mars 2027</dd>
-            <dt>Pneus préférés</dt><dd>Tendres</dd>
-            <dt>Coéquipière</dt><dd>Lucie, voiture 1</dd>
-            <dt>Objectif 2027</dt><dd>Le podium à deux</dd>
-          </dl>
-          <span class="stamp">Super licence</span>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <section id="programme">
     <div class="sec-head">
@@ -796,7 +710,6 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
       <span class="pill">Pilotes engagés : <b id="n-pilots">0</b></span>
       <span class="pill">Écuries représentées : <b id="n-teams">0</b> / 11</span>
       <span class="pill">En tête du championnat : <b id="n-lead">—</b></span>
-      <span class="pill pill-ff" id="pill-forfaits" hidden>Forfaits : <b id="n-forfaits">0</b></span>
     </div>
     <form class="adminbar" id="adminbar" hidden novalidate>
       <span class="eyebrow">Mode organisateur</span>
@@ -804,15 +717,10 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
       <button class="btn" type="submit" id="admin-ok">Activer</button>
       <span class="status" id="admin-status"></span>
     </form>
-    <div class="search"><input type="search" id="team-search" placeholder="Chercher un pilote (prénom ou nom)…" aria-label="Chercher un pilote"><span class="count" id="search-count"></span></div>
     <div class="teams" id="teams" role="radiogroup" aria-label="Écuries"></div>
     <div class="standings" id="standings" hidden>
       <p class="eyebrow">Classement des constructeurs</p>
       <ol id="standings-list"></ol>
-    </div>
-    <div class="podium" id="podium" hidden>
-      <div class="podium-head"><p class="eyebrow">Podium provisoire des constructeurs</p><p class="lap">Mis à jour <b>en direct</b></p></div>
-      <div class="podium-stage" id="podium-stage"></div>
     </div>
 
     <div class="reg">
@@ -842,19 +750,8 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
             <li>Indiquez votre prénom et votre nom</li>
             <li>Validez : un seul choix par personne, modifiable à tout moment</li>
           </ul>
-          <button type="button" class="btn lic-btn" id="lic-btn" hidden><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="11" r="2.2"/><path d="M13 9h5M13 13h5M5.5 16.5h6"/></svg><span>Ma super licence</span></button>
         </div>
       </div>
-    </div>
-    <div class="forfait" id="forfait">
-      <button type="button" class="linkbtn" id="forfait-toggle" aria-expanded="false">Vous ne pourrez pas venir le 20 mars ? Déclarez forfait</button>
-      <form id="forfait-form" class="forfait-form" novalidate hidden>
-        <div class="field"><label for="ff-name">Prénom et nom</label><input type="text" id="ff-name" maxlength="40" autocomplete="name" placeholder="Ex. Lucie Dupont"></div>
-        <button class="btn" type="submit" id="ff-btn"><svg viewBox="0 0 24 24"><path d="M5 21V4M5 4h13l-2 4 2 4H5"/></svg><span>Déclarer forfait</span></button>
-        <p class="status" id="ff-status" aria-live="polite"></p>
-        <p class="ff-note">Vous changez d'avis ? Inscrivez-vous dans une écurie : le forfait est remplacé.</p>
-      </form>
-      <div class="ff-list" id="ff-list" hidden></div>
     </div>
   </section>
 
@@ -917,20 +814,16 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     <p class="lead">Quatre roues à changer, le plus vite possible. Appuyez sur GO, puis touchez les quatre roues. Le chrono s'arrête à la dernière. Enregistrez votre temps : le meilleur chrono de la grille au 20 mars reçoit un cadeau sur le podium.</p>
     <div class="pit-wrap">
       <div class="pit" id="pit">
-        <div class="pit3d" id="pit3d"></div>
         <svg viewBox="0 0 400 160" class="pit-car" aria-hidden="true"><use href="#f1car-detail"/></svg>
         <button type="button" class="wheel" data-w="0" style="left:17.5%;top:13.75%" aria-label="Roue arrière gauche"></button>
         <button type="button" class="wheel" data-w="1" style="left:17.5%;top:86.25%" aria-label="Roue arrière droite"></button>
         <button type="button" class="wheel" data-w="2" style="left:82.25%;top:14.4%" aria-label="Roue avant gauche"></button>
         <button type="button" class="wheel" data-w="3" style="left:82.25%;top:85.6%" aria-label="Roue avant droite"></button>
-        <div class="pit-cd" id="pit-cd" aria-live="assertive"><div class="cd-lights"><i></i><i></i><i></i></div><div class="cd-word" id="cd-word">Prêt</div><div class="cd-hint">Ne touchez pas les roues avant le vert</div></div>
       </div>
       <div class="pit-side">
         <div class="pit-clock" id="pit-clock">0.00</div>
         <div class="pit-team" id="pit-team"><i></i>Stand L&amp;L Racing</div>
         <div class="pit-verdict" id="pit-verdict">Prêt au stand.</div>
-        <div class="pit-splits" id="pit-splits" aria-label="Temps intermédiaires"><span data-s="0"><small>AR G</small><b>–</b></span><span data-s="1"><small>AR D</small><b>–</b></span><span data-s="2"><small>AV G</small><b>–</b></span><span data-s="3"><small>AV D</small><b>–</b></span></div>
-        <div class="pit-delta" id="pit-delta" hidden></div>
         <div class="btn-row">
           <button class="btn primary" type="button" id="pit-go">GO</button>
           <button class="btn" type="button" id="pit-reset" hidden>Nouvel arrêt</button>
@@ -962,13 +855,6 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     <div class="circuit">
       <div class="track-card">
         <span class="tn">Tracé officiel · sens antihoraire</span>
-        <div class="trk-hud" id="trk-hud" aria-hidden="true">
-          <span class="th-lap">Tour <b id="th-lap">1</b></span>
-          <span class="th-turn" id="th-turn">Ligne des stands</span>
-          <span class="th-time" id="th-time">0:00.00</span>
-          <span class="th-best">Meilleur <b id="th-best">–</b></span>
-          <span class="th-drs" id="th-drs">DRS</span>
-        </div>
         <svg viewBox="0 0 640 420" aria-label="Tracé imaginaire du circuit de la Palette Verte">
           <defs>
             <path id="trk" d="M 150 372 L 430 372 C 480 372 492 342 470 318 C 452 298 418 300 404 278 C 388 254 420 232 456 230 C 512 227 556 212 560 170 C 563 136 540 104 500 100 C 468 97 452 122 420 118 C 384 113 372 78 332 70 C 290 62 262 92 236 72 C 214 55 176 48 144 60 C 104 75 96 118 120 146 C 140 170 110 188 92 212 C 72 238 108 256 100 286 C 93 314 60 326 72 350 C 84 374 120 372 150 372 Z"/>
@@ -993,10 +879,9 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
             <text x="134" y="332">VIRAGE</text>
           </g>
           <g fill="#c8102e"><circle cx="476" cy="326" r="4"/><circle cx="410" cy="282" r="4"/><circle cx="560" cy="170" r="4"/><circle cx="500" cy="100" r="4"/><circle cx="332" cy="70" r="4"/><circle cx="144" cy="60" r="4"/><circle cx="92" cy="212" r="4"/><circle cx="72" cy="350" r="4"/></g>
-          <use href="#trk" id="trail" fill="none" stroke="#c8102e" stroke-width="6" stroke-linecap="round" opacity="0" pathLength="1000"/>
           <g id="lapcar" color="#c8102e">
-            <g transform="translate(-18,-6.5) scale(.225)"><use href="#f1car" width="160" height="60"/></g>
-
+            <g transform="translate(-14,-5) scale(.175)"><use href="#f1car" width="160" height="60"/></g>
+            <animateMotion dur="18s" repeatCount="indefinite" rotate="auto"><mpath href="#trk"/></animateMotion>
           </g>
         </svg>
       </div>
@@ -1028,8 +913,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
       <p class="lap">Commissaires <b>4</b> · Drapeaux <b>4</b></p>
     </div>
     <p class="lead">Quatre commissaires de course, reconnaissables à leur tenue orange, circulent toute la soirée avec les quatre drapeaux en main. À tout moment, l'un d'eux peut en lever un devant vous : pénitence immédiate, sans appel ni enquête des stewards. Leur identité ne sera révélée que le jour de la course. Les pilotes désignés roulent à l'eau : pour eux, le drapeau à damier est permanent.</p>
-    <div class="marshal-draw"><button type="button" class="btn" id="flag-draw"><svg viewBox="0 0 24 24"><path d="M5 21V4M5 4h13l-2 4 2 4H5"/></svg>Tirer un drapeau au sort</button><span class="eyebrow">ou touchez un commissaire</span></div>
-    <div class="marshals" id="marshals">
+    <div class="marshals" aria-hidden="true">
       <div class="mshl"><svg viewBox="0 0 130 214"><use href="#marshal"/><line x1="24" y1="141" x2="8" y2="100" stroke="#d9d2c5" stroke-width="2"/><path d="M8 99 L-4 93 L-4 105 L8 109 Z" fill="#f5c518"/><line x1="24" y1="141" x2="16" y2="96" stroke="#d9d2c5" stroke-width="2"/><path d="M16 95 L4 89 L4 101 L16 105 Z" fill="#e0141c"/><line x1="24" y1="141" x2="24" y2="93" stroke="#d9d2c5" stroke-width="2"/><path d="M24 92 L12 86 L12 98 L24 102 Z" fill="url(#chkflag)"/><path d="M91 16 L122 21 L122 39 L91 44 Z" fill="#1ec760"/></svg><span>Commissaire n°1 · ???</span></div>
       <div class="mshl"><svg viewBox="0 0 130 214"><use href="#marshal"/><line x1="24" y1="141" x2="8" y2="100" stroke="#d9d2c5" stroke-width="2"/><path d="M8 99 L-4 93 L-4 105 L8 109 Z" fill="#1ec760"/><line x1="24" y1="141" x2="16" y2="96" stroke="#d9d2c5" stroke-width="2"/><path d="M16 95 L4 89 L4 101 L16 105 Z" fill="#e0141c"/><line x1="24" y1="141" x2="24" y2="93" stroke="#d9d2c5" stroke-width="2"/><path d="M24 92 L12 86 L12 98 L24 102 Z" fill="url(#chkflag)"/><path d="M91 16 L122 21 L122 39 L91 44 Z" fill="#f5c518"/></svg><span>Commissaire n°2 · ???</span></div>
       <div class="mshl"><svg viewBox="0 0 130 214"><use href="#marshal"/><line x1="24" y1="141" x2="8" y2="100" stroke="#d9d2c5" stroke-width="2"/><path d="M8 99 L-4 93 L-4 105 L8 109 Z" fill="#1ec760"/><line x1="24" y1="141" x2="16" y2="96" stroke="#d9d2c5" stroke-width="2"/><path d="M16 95 L4 89 L4 101 L16 105 Z" fill="#f5c518"/><line x1="24" y1="141" x2="24" y2="93" stroke="#d9d2c5" stroke-width="2"/><path d="M24 92 L12 86 L12 98 L24 102 Z" fill="url(#chkflag)"/><path d="M91 16 L122 21 L122 39 L91 44 Z" fill="#e0141c"/></svg><span>Commissaire n°3 · ???</span></div>
@@ -1063,33 +947,10 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     </div>
   </section>
 
-  <section id="faq">
-    <div class="sec-head">
-      <div>
-        <p class="eyebrow">Briefing des pilotes</p>
-        <h2 class="sec-title">Questions fréquentes</h2>
-      </div>
-    </div>
-    <div class="faq">
-      <details><summary>Comment je m'inscris ?</summary><p>Dans « Choisissez votre écurie » : touchez une écurie, indiquez votre prénom et votre nom, validez. Une seule inscription par personne. Pour changer d'écurie, retapez votre nom, choisissez-en une autre et validez : l'ancien choix est remplacé.</p></details>
-      <details><summary>Je viens en couple ou avec des amis, on doit être dans la même écurie ?</summary><p>Non. Chacun s'inscrit individuellement et choisit librement. Rejoignez vos amis ou allez défier l'écurie d'en face, c'est tout l'intérêt.</p></details>
-      <details><summary>Comment je m'habille ?</summary><p>Aux couleurs de l'écurie que vous avez choisie, version élégante : vous pourriez monter sur le podium.</p></details>
-      <details><summary>C'est quoi les drapeaux ?</summary><p>Quatre commissaires de course en orange circulent toute la soirée. Drapeau vert : une gorgée à offrir. Jaune : trois gorgées. Rouge : affond. Damier : un verre d'eau. Les pilotes désignés roulent à l'eau toute la soirée.</p></details>
-      <details><summary>Et le pit stop challenge ?</summary><p>Changez les quatre roues le plus vite possible et enregistrez votre temps avec votre prénom et votre nom complets. Le meilleur chrono au 20 mars reçoit un cadeau sur le podium.</p></details>
-      <details><summary>Où vont mes photos ?</summary><p>Sur le paddock photo (bouton « Le jour de la course » en haut). Elles s'affichent pour tous les pilotes et le site devient l'album souvenir après la fête.</p></details>
-      <details><summary>Je ne peux pas me connecter / ça ne marche pas</summary><p>Rechargez la page, parfois deux fois, pour forcer la dernière version. Si le problème persiste, un message à Lucie ou Lilian et on règle ça.</p></details>
-    </div>
-  </section>
-
   <footer>
     <p class="tag"><b>Grand Prix</b> de nos 30 ans · 20 · 03 · 2027</p>
     <span class="chq" aria-hidden="true"></span>
     <p class="tag">L&amp;L Racing · Saison 2027</p>
-    <div class="a2hs" id="a2hs" hidden>
-      <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 7v8M8.5 11.5L12 15l3.5-3.5"/></svg>
-      <div><b>Gardez le Grand Prix sous la main</b><span id="a2hs-text">Ajoutez le site à votre écran d'accueil : il s'ouvrira comme une application.</span></div>
-      <button type="button" class="btn" id="a2hs-btn" hidden>Installer</button>
-    </div>
   </footer>
 </div>
 
@@ -1099,24 +960,15 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
   <span class="ob-line">Mode Verstappen activé · tribune en feu</span>
 </div>
 <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
-<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
-<div class="lic-modal" id="lic-modal" hidden role="dialog" aria-modal="true" aria-label="Votre super licence">
-  <div class="lic-box">
-    <button type="button" class="lic-close" id="lic-close" aria-label="Fermer">✕</button>
-    <p class="eyebrow">Votre super licence</p>
-    <div class="lic-preview"><img id="lic-img" alt="Super licence du pilote"><div class="lic-wait" id="lic-wait">Impression en cours…</div></div>
-    <div class="btn-row">
-      <button type="button" class="btn primary" id="lic-share"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>Partager</button>
-      <a class="btn" id="lic-dl" href="#" download="super-licence-grandprix30.png"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Télécharger</a>
-    </div>
-    <p class="lic-note">À envoyer à votre écurie ou à poster en story. Votre numéro vous suit jusqu'au 20 mars.</p>
-  </div>
-</div>
 <div class="pitwall" aria-hidden="true">
   <span class="kerb"></span>
-  <nav class="pitnav" aria-label="Sections"><a href="#ticket">Billet</a><a href="#programme">Programme</a><a href="#grille">Écuries</a><a href="#pitstop">Pit stop</a><a href="#photos">Photos</a><a href="#faq">Infos</a></nav>
+  <span class="mark" style="left:8%">Grille</span>
+  <span class="mark" style="left:30%">Billet</span>
+  <span class="mark" style="left:50%">Programme</span>
+  <span class="mark" style="left:70%">Écuries</span>
+  <span class="mark" style="left:86%">Circuit</span>
+  <span class="mark" style="left:96%">Photos</span>
   <span class="speed" id="speed">Vitesse <b>0</b> km/h</span>
-  <span class="drs" id="drs">DRS activé</span>
   <span class="road"></span>
   <span class="finish"></span>
   <svg class="car" id="scrollcar" viewBox="0 0 160 60"><use href="#f1car"/></svg>
@@ -1385,7 +1237,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
   function myKey(){ var n = norm($("f-p1").value); return n ? keyOf(n) : null; }
   function isMine(e){ var k = myKey(); return (k && e.id === k) || (k && keyOf(e.pilot1) === k) || (!k && e.id === myId); }
   function myEntry(){ return entries.filter(isMine)[0]; }
-  function badge(t){ return t.logo ? '<img class="tlogo" loading="lazy" src="' + t.logo + '" alt="' + esc(t.name) + '">' : '<b class="tcode">' + esc(t.code) + '</b>'; }
+  function badge(t){ return t.logo ? '<img class="tlogo" src="' + t.logo + '" alt="' + esc(t.name) + '">' : '<b class="tcode">' + esc(t.code) + '</b>'; }
   function teamByName(n){ for (var i = 0; i < TEAMS.length; i++) if (TEAMS[i].name === n) return TEAMS[i]; return null; }
   function seatsOf(teamName, excludeMine){
     var out = [];
@@ -1463,7 +1315,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     $("side-who").textContent = p1 || "Votre nom";
     var t = teamByName(selectedTeam);
     var tm = $("side-team");
-    tm.innerHTML = '<i></i>' + (t ? (t.logo ? '<img class="tlogo" loading="lazy" src="' + t.logo + '" alt="">' : '<b class="tcode" style="--tc:' + t.color + '">' + esc(t.code) + '</b>') + ' ' + esc(t.name) : "Aucune écurie choisie");
+    tm.innerHTML = '<i></i>' + (t ? (t.logo ? '<img class="tlogo" src="' + t.logo + '" alt="">' : '<b class="tcode" style="--tc:' + t.color + '">' + esc(t.code) + '</b>') + ' ' + esc(t.name) : "Aucune écurie choisie");
     tm.style.setProperty("--tc", t ? t.color : "");
     var mine = myEntry();
     if (mine && !selectedTeam) selectedTeam = mine.team;
@@ -1711,12 +1563,39 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     }).catch(function(){ $("pit-save").disabled = false; $("pit-status").textContent = "Le stand n'a pas reçu le temps. Vérifiez votre connexion."; $("pit-status").className = "status err"; });
   });
   if (!API_URL) setPitEntries(pitDemoLoad());
-  window.GP30 = {teams: TEAMS, keyOf: keyOf, norm: norm, esc: esc, fmt: fmt, maxSeats: MAX_SEATS,
-    entries: function(){ return entries; }, pitEntries: function(){ return pitEntries; },
-    postEntry: postEntry, loadEntries: loadEntries, renderTeams: renderTeams, renderSide: renderSide, setStatus: setStatus,
-    team: function(t){ if (t !== undefined) selectedTeam = t; return selectedTeam; }, admin: function(){ return adminPin; }, adminDelete: adminDelete};
+
+  /* ============ RADIO : MESSAGES TAPÉS AU FUR ET À MESURE ============ */
+  (function(){
+    var radios = Array.prototype.slice.call(document.querySelectorAll(".radio"));
+    if (!radios.length || reduced || !("IntersectionObserver" in window)) return;
+    radios.forEach(function(r){
+      r.querySelectorAll("p").forEach(function(p){
+        var b = p.querySelector("b"), node = p.childNodes[p.childNodes.length - 1], full = node.textContent;
+        p.setAttribute("data-full", full); p.setAttribute("aria-label", (b ? b.textContent + " : " : "") + full);
+        var span = document.createElement("span"); span.className = "typed"; node.textContent = ""; p.appendChild(span); p.classList.add("pending");
+      });
+    });
+    function typeRadio(r){
+      var ps = Array.prototype.slice.call(r.querySelectorAll("p")), k = 0;
+      r.classList.add("tx");
+      function next(){
+        if (k >= ps.length) { r.classList.remove("tx"); return; }
+        var p = ps[k++], span = p.querySelector(".typed"), full = p.getAttribute("data-full"), i = 0;
+        p.classList.remove("pending"); p.classList.add("typing");
+        (function step(){
+          span.textContent = full.slice(0, ++i);
+          if (i < full.length) setTimeout(step, 28 + Math.random() * 30);
+          else { p.classList.remove("typing"); setTimeout(next, 550); }
+        })();
+      }
+      next();
+    }
+    var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { io.unobserve(e.target); setTimeout(function(){ typeRadio(e.target); }, 200); } }); }, {rootMargin: "0px 0px -15% 0px"});
+    radios.forEach(function(r){ io.observe(r); });
+    // filet de sécurité : une radio déjà dépassée sans avoir été tapée reçoit son texte tel quel
+    setInterval(function(){ radios.forEach(function(r){ if (r.querySelector("p.pending") && !r.classList.contains("tx") && r.getBoundingClientRect().bottom < 0) { io.unobserve(r); r.querySelectorAll("p").forEach(function(p){ p.classList.remove("pending"); p.querySelector(".typed").textContent = p.getAttribute("data-full"); }); } }); }, 4000);
+  })();
 })();
 </script>
-<script src="test/extras.js?v=647094c8" defer></script>
 </body>
 </html>
