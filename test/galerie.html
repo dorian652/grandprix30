@@ -36,6 +36,8 @@ h1,h2{margin:0;text-wrap:balance}
 .chip{font-family:var(--display);font-weight:700;letter-spacing:.14em;font-size:.85rem;text-transform:uppercase;border:1px solid var(--line);padding:6px 12px;border-radius:999px;font-variant-numeric:tabular-nums}
 .chip b{color:var(--red)}
 .eyebrow{font-family:var(--display);font-weight:700;font-size:.82rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin:0}
+.f1{display:inline-block;height:11px;width:auto;vertical-align:-1px;margin-right:10px}
+footer .f1-foot{height:18px;display:block;margin:0 0 12px}
 .sec-title{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(2rem,5vw,3rem);letter-spacing:.02em;line-height:.95}
 .lead{max-width:62ch;color:var(--muted);margin:14px 0 0}
 .hero{padding-block:36px 8px}
@@ -107,7 +109,7 @@ footer{padding-top:40px;border-top:1px solid var(--line);margin-top:40px;font-fa
   </header>
 
   <section class="hero">
-    <p class="eyebrow">Paddock photo</p>
+    <p class="eyebrow"><img class="f1" src="logos/f1-red.png" alt="Formula 1">Paddock photo</p>
     <h1 class="sec-title">Les photos de la soirée</h1>
     <p class="lead">Déposez vos photos pendant et après le Grand Prix : elles apparaissent ici pour tous les pilotes. Les images sont réduites automatiquement avant l'envoi, ça passe même en 4G dans la salle.</p>
 
@@ -151,7 +153,7 @@ footer{padding-top:40px;border-top:1px solid var(--line);margin-top:40px;font-fa
   <div class="wall" id="wall"></div>
   <div class="empty" id="empty">Aucune photo pour l'instant. La première est à vous.</div>
 
-  <footer>Grand Prix de nos 30 ans · 20 · 03 · 2027</footer>
+  <footer><img class="f1 f1-foot" src="logos/f1-cream.png" alt="Formula 1">Grand Prix de nos 30 ans · 20 · 03 · 2027</footer>
 </div>
 
 <div class="lb" id="lb" hidden>
