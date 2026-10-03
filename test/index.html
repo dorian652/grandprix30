@@ -416,7 +416,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
 }
 .testband{position:sticky;top:0;z-index:100;background:#f5c518;color:#151210;text-align:center;font-family:"Barlow Condensed",sans-serif;font-weight:800;letter-spacing:.2em;text-transform:uppercase;font-size:.8rem;padding:6px 10px}.testband a{color:#151210}
 </style>
-<link rel="stylesheet" href="test/extras.css?v=89beaba1">
+<link rel="stylesheet" href="test/extras.css?v=fe9346f5">
 </head>
 <body>
 <div class="testband">Version test · rien n'est enregistré ici · <a href="./">site officiel</a></div>
@@ -684,8 +684,10 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
       <span>Piste : <b id="w-track">…</b></span>
       <span>Air : <b id="w-temp">…</b></span>
       <span>Vent : <b id="w-wind">…</b></span>
-      <span>Ciel : <b id="w-sky">…</b></span>
+      <span>Ciel : <i class="wi" id="w-icon" aria-hidden="true"></i><b id="w-sky">…</b></span>
+      <span>Pneus : <i class="tyre" id="w-tyre" aria-hidden="true"></i><b id="w-tyre-label">…</b></span>
       <span id="w-note">Météo en direct à la Palette Verte</span>
+      <span id="w-forecast" class="w-forecast" hidden></span>
       <span id="cd-note" hidden></span>
     </div>
   </div>
@@ -959,6 +961,13 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     <div class="circuit">
       <div class="track-card">
         <span class="tn">Tracé officiel · sens antihoraire</span>
+        <div class="trk-hud" id="trk-hud" aria-hidden="true">
+          <span class="th-lap">Tour <b id="th-lap">1</b></span>
+          <span class="th-turn" id="th-turn">Ligne des stands</span>
+          <span class="th-time" id="th-time">0:00.00</span>
+          <span class="th-best">Meilleur <b id="th-best">–</b></span>
+          <span class="th-drs" id="th-drs">DRS</span>
+        </div>
         <svg viewBox="0 0 640 420" aria-label="Tracé imaginaire du circuit de la Palette Verte">
           <defs>
             <path id="trk" d="M 150 372 L 430 372 C 480 372 492 342 470 318 C 452 298 418 300 404 278 C 388 254 420 232 456 230 C 512 227 556 212 560 170 C 563 136 540 104 500 100 C 468 97 452 122 420 118 C 384 113 372 78 332 70 C 290 62 262 92 236 72 C 214 55 176 48 144 60 C 104 75 96 118 120 146 C 140 170 110 188 92 212 C 72 238 108 256 100 286 C 93 314 60 326 72 350 C 84 374 120 372 150 372 Z"/>
@@ -983,9 +992,10 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
             <text x="134" y="332">VIRAGE</text>
           </g>
           <g fill="#c8102e"><circle cx="476" cy="326" r="4"/><circle cx="410" cy="282" r="4"/><circle cx="560" cy="170" r="4"/><circle cx="500" cy="100" r="4"/><circle cx="332" cy="70" r="4"/><circle cx="144" cy="60" r="4"/><circle cx="92" cy="212" r="4"/><circle cx="72" cy="350" r="4"/></g>
+          <use href="#trk" id="trail" fill="none" stroke="#c8102e" stroke-width="6" stroke-linecap="round" opacity="0" pathLength="1000"/>
           <g id="lapcar" color="#c8102e">
-            <g transform="translate(-14,-5) scale(.175)"><use href="#f1car" width="160" height="60"/></g>
-            <animateMotion dur="18s" repeatCount="indefinite" rotate="auto"><mpath href="#trk"/></animateMotion>
+            <g transform="translate(-18,-6.5) scale(.225)"><use href="#f1car" width="160" height="60"/></g>
+
           </g>
         </svg>
       </div>
@@ -1017,7 +1027,8 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
       <p class="lap">Commissaires <b>4</b> · Drapeaux <b>4</b></p>
     </div>
     <p class="lead">Quatre commissaires de course, reconnaissables à leur tenue orange, circulent toute la soirée avec les quatre drapeaux en main. À tout moment, l'un d'eux peut en lever un devant vous : pénitence immédiate, sans appel ni enquête des stewards. Leur identité ne sera révélée que le jour de la course. Les pilotes désignés roulent à l'eau : pour eux, le drapeau à damier est permanent.</p>
-    <div class="marshals" aria-hidden="true">
+    <div class="marshal-draw"><button type="button" class="btn" id="flag-draw"><svg viewBox="0 0 24 24"><path d="M5 21V4M5 4h13l-2 4 2 4H5"/></svg>Tirer un drapeau au sort</button><span class="eyebrow">ou touchez un commissaire</span></div>
+    <div class="marshals" id="marshals">
       <div class="mshl"><svg viewBox="0 0 130 214"><use href="#marshal"/><line x1="24" y1="141" x2="8" y2="100" stroke="#d9d2c5" stroke-width="2"/><path d="M8 99 L-4 93 L-4 105 L8 109 Z" fill="#f5c518"/><line x1="24" y1="141" x2="16" y2="96" stroke="#d9d2c5" stroke-width="2"/><path d="M16 95 L4 89 L4 101 L16 105 Z" fill="#e0141c"/><line x1="24" y1="141" x2="24" y2="93" stroke="#d9d2c5" stroke-width="2"/><path d="M24 92 L12 86 L12 98 L24 102 Z" fill="url(#chkflag)"/><path d="M91 16 L122 21 L122 39 L91 44 Z" fill="#1ec760"/></svg><span>Commissaire n°1 · ???</span></div>
       <div class="mshl"><svg viewBox="0 0 130 214"><use href="#marshal"/><line x1="24" y1="141" x2="8" y2="100" stroke="#d9d2c5" stroke-width="2"/><path d="M8 99 L-4 93 L-4 105 L8 109 Z" fill="#1ec760"/><line x1="24" y1="141" x2="16" y2="96" stroke="#d9d2c5" stroke-width="2"/><path d="M16 95 L4 89 L4 101 L16 105 Z" fill="#e0141c"/><line x1="24" y1="141" x2="24" y2="93" stroke="#d9d2c5" stroke-width="2"/><path d="M24 92 L12 86 L12 98 L24 102 Z" fill="url(#chkflag)"/><path d="M91 16 L122 21 L122 39 L91 44 Z" fill="#f5c518"/></svg><span>Commissaire n°2 · ???</span></div>
       <div class="mshl"><svg viewBox="0 0 130 214"><use href="#marshal"/><line x1="24" y1="141" x2="8" y2="100" stroke="#d9d2c5" stroke-width="2"/><path d="M8 99 L-4 93 L-4 105 L8 109 Z" fill="#1ec760"/><line x1="24" y1="141" x2="16" y2="96" stroke="#d9d2c5" stroke-width="2"/><path d="M16 95 L4 89 L4 101 L16 105 Z" fill="#f5c518"/><line x1="24" y1="141" x2="24" y2="93" stroke="#d9d2c5" stroke-width="2"/><path d="M24 92 L12 86 L12 98 L24 102 Z" fill="url(#chkflag)"/><path d="M91 16 L122 21 L122 39 L91 44 Z" fill="#e0141c"/></svg><span>Commissaire n°3 · ???</span></div>
@@ -1073,6 +1084,11 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     <p class="tag"><b>Grand Prix</b> de nos 30 ans · 20 · 03 · 2027</p>
     <span class="chq" aria-hidden="true"></span>
     <p class="tag">L&amp;L Racing · Saison 2027</p>
+    <div class="a2hs" id="a2hs" hidden>
+      <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 7v8M8.5 11.5L12 15l3.5-3.5"/></svg>
+      <div><b>Gardez le Grand Prix sous la main</b><span id="a2hs-text">Ajoutez le site à votre écran d'accueil : il s'ouvrira comme une application.</span></div>
+      <button type="button" class="btn" id="a2hs-btn" hidden>Installer</button>
+    </div>
   </footer>
 </div>
 
@@ -1082,6 +1098,7 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
   <span class="ob-line">Mode Verstappen activé · tribune en feu</span>
 </div>
 <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 <div class="pitwall" aria-hidden="true">
   <span class="kerb"></span>
   <nav class="pitnav" aria-label="Sections"><a href="#ticket">Billet</a><a href="#programme">Programme</a><a href="#grille">Écuries</a><a href="#pitstop">Pit stop</a><a href="#photos">Photos</a><a href="#faq">Infos</a></nav>
@@ -1687,6 +1704,6 @@ html.orange .light.red{background:#ff7a00;box-shadow:0 0 14px rgba(255,122,0,.9)
     team: function(t){ if (t !== undefined) selectedTeam = t; return selectedTeam; }, admin: function(){ return adminPin; }, adminDelete: adminDelete};
 })();
 </script>
-<script src="test/extras.js?v=6279abcb" defer></script>
+<script src="test/extras.js?v=a549d96a" defer></script>
 </body>
 </html>

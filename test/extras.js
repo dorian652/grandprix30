@@ -371,3 +371,220 @@
   var teamsEl = $("teams"); if (teamsEl) new MutationObserver(renderForfaits).observe(teamsEl, {childList: true});
   setTimeout(renderForfaits, 900);
 })();
+
+/* ===== Quatrième passe : visuel (circuit piloté, météo illustrée, programme en direct, drapeaux, écran d'accueil) ===== */
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var beep = function(f, d, v){ if (window.GP30X) window.GP30X.beep(f, d, v); };
+  var RACE = Date.UTC(2027, 2, 20, 18, 30); // 20 mars 2027, 19h30 à Bruxelles (heure d'hiver)
+  // heure simulée (version test) : ?simule=2027-03-20T22:10
+  var simulated = null; try { var m = location.search.match(/[?&]simule=([^&]+)/); if (m) { var dt = new Date(decodeURIComponent(m[1]) + (m[1].indexOf("Z") < 0 && m[1].indexOf("+") < 0 ? "+01:00" : "")); if (!isNaN(dt)) simulated = dt.getTime() - Date.now(); } } catch(e){}
+  function now(){ return Date.now() + (simulated || 0); }
+  function myColor(){
+    try { var saved = JSON.parse(localStorage.getItem("gp30-entry") || "null"); if (saved && saved.team) { var b = document.querySelector('.team[data-team="' + saved.team + '"]'); if (b) return getComputedStyle(b).getPropertyValue("--tc").trim(); } } catch(e){}
+    return "";
+  }
+
+  /* ---------- Toast ---------- */
+  var toastEl = $("toast"), toastTimer = null;
+  function toast(html, cls){ if (!toastEl) return; toastEl.innerHTML = html; toastEl.className = "toast on" + (cls ? " " + cls : ""); toastEl.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(function(){ toastEl.classList.remove("on"); setTimeout(function(){ toastEl.hidden = true; }, 300); }, 3800); }
+
+  /* ---------- Circuit : voiture pilotée, vitesse selon les virages, chrono au tour ---------- */
+  (function(){
+    var trk = $("trk"), car = $("lapcar"), trail = $("trail"), hud = $("trk-hud"); if (!trk || !car) return;
+    var L = trk.getTotalLength(), N = 720, pts = [], curv = [];
+    for (var i = 0; i < N; i++) pts.push(trk.getPointAtLength(i / N * L));
+    function headAt(i){ var a = pts[(i - 1 + N) % N], b = pts[(i + 1) % N]; return Math.atan2(b.y - a.y, b.x - a.x); }
+    var heads = []; for (i = 0; i < N; i++) heads.push(headAt(i));
+    for (i = 0; i < N; i++) { var d = heads[(i + 1) % N] - heads[i]; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI; curv.push(Math.abs(d)); }
+    // lissage en anticipant (on freine avant le virage, on réaccélère en sortie)
+    var sm = []; for (i = 0; i < N; i++) { var acc = 0, w = 0; for (var k = -6; k <= 14; k++) { var wt = k < 0 ? 0.6 : 1; acc += curv[(i + k + N) % N] * wt; w += wt; } sm.push(acc / w); }
+    var cmax = 0; sm.forEach(function(c){ if (c > cmax) cmax = c; });
+    var speedF = sm.map(function(c){ var x = Math.min(1, c / (cmax * 0.8)); return 0.38 + 0.62 * (1 - Math.pow(x, 0.8)); });
+    var avg = speedF.reduce(function(a, b){ return a + b; }, 0) / N;
+    var base = L / 17.5 / avg; // environ 17,5 s au tour
+    // virages : fraction du tour la plus proche de chaque repère rouge
+    var turns = [[476, 326, "T1 · Épingle du bar"], [410, 282, "T2 · Le Raidillon"], [560, 170, "T4 · Double droite"], [500, 100, "T5 · Épingle du podium"], [332, 70, "T7 · Courbe du gâteau"], [144, 60, "T8 · Arrêt de bus"], [92, 212, "T10 · Chicane des bulles"], [72, 350, "T12 · Dernier virage"]];
+    turns = turns.map(function(t){ var bi = 0, bd = 1e9; pts.forEach(function(p, j){ var dd = (p.x - t[0]) * (p.x - t[0]) + (p.y - t[1]) * (p.y - t[1]); if (dd < bd) { bd = dd; bi = j; } }); return {f: bi / N, name: t[2]}; }).sort(function(a, b){ return a.f - b.f; });
+    var straightEnd = 0; pts.forEach(function(p, j){ if (p.y > 371 && p.x < 431 && j < N / 2) straightEnd = j / N; });
+    function zone(f){
+      for (var j = 0; j < turns.length; j++) if (Math.abs(f - turns[j].f) < 0.028) return turns[j].name;
+      if (f < straightEnd) return "Ligne droite des stands";
+      for (j = 0; j < turns.length; j++) if (turns[j].f > f) return "Vers " + turns[j].name.split(" · ")[0];
+      return "Retour vers la ligne";
+    }
+    var color = myColor(); if (color) { car.setAttribute("color", color); if (trail) trail.setAttribute("stroke", color); }
+    // traînée en trois segments de plus en plus discrets
+    var trails = [];
+    if (trail) {
+      // de vrais <path> (pathLength n'a pas d'effet sur <use>) : trois segments de plus en plus discrets
+      [[70, .55], [140, .28], [220, .12]].forEach(function(cfg){
+        var t = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        t.setAttribute("d", trk.getAttribute("d")); t.setAttribute("pathLength", "1000"); t.setAttribute("fill", "none");
+        t.setAttribute("stroke", trail.getAttribute("stroke")); t.setAttribute("stroke-width", "6"); t.setAttribute("stroke-linecap", "round");
+        t.setAttribute("opacity", cfg[1]); t.setAttribute("stroke-dasharray", cfg[0] + " " + (1000 - cfg[0])); t.setAttribute("data-len", cfg[0]);
+        trail.parentNode.insertBefore(t, trail); trails.push(t);
+      });
+      trail.remove();
+    }
+    var elLap = $("th-lap"), elTurn = $("th-turn"), elTime = $("th-time"), elBest = $("th-best"), elDrs = $("th-drs");
+    function fmtLap(ms){ var s = ms / 1000; return Math.floor(s / 60) + ":" + (s % 60 < 10 ? "0" : "") + (s % 60).toFixed(2); }
+    var pos = 0, lap = 1, lapStart = 0, best = null, lapMul = 1, last = null, lastTurn = "", visible = true, paused = false;
+    function place(f){
+      var idx = Math.floor(f * N) % N, p = pts[idx], h = heads[idx] * 180 / Math.PI;
+      car.setAttribute("transform", "translate(" + p.x.toFixed(2) + "," + p.y.toFixed(2) + ") rotate(" + h.toFixed(2) + ")");
+      trails.forEach(function(t){ var len = parseFloat(t.getAttribute("data-len")); t.setAttribute("stroke-dashoffset", (len - f * 1000).toFixed(1)); });
+    }
+    place(0.02); // sur la ligne dès le chargement, même hors écran
+    if (reduced) { if (hud) hud.hidden = true; return; }
+    if ("IntersectionObserver" in window) new IntersectionObserver(function(es){ es.forEach(function(e){ visible = e.isIntersecting; }); }).observe(trk.closest("svg"));
+    document.addEventListener("visibilitychange", function(){ last = null; });
+    function frame(ts){
+      requestAnimationFrame(frame);
+      if (!visible || document.hidden) { last = null; return; }
+      if (last === null) { last = ts; if (!lapStart) lapStart = ts; return; }
+      var dt = Math.min(0.1, (ts - last) / 1000); last = ts;
+      var idx = Math.floor(pos * N) % N;
+      pos += base * speedF[idx] * lapMul * dt / L;
+      if (pos >= 1) {
+        pos -= 1; var lt = ts - lapStart; lapStart = ts; lap++;
+        if (!best || lt < best) { best = lt; if (elBest) elBest.textContent = fmtLap(best); if (elBest) { elBest.classList.add("purple"); setTimeout(function(){ elBest.classList.remove("purple"); }, 1200); } }
+        if (elLap) elLap.textContent = lap; lapMul = 0.97 + Math.random() * 0.06;
+      }
+      place(pos);
+      if (elTime) elTime.textContent = fmtLap(ts - lapStart);
+      var z = zone(pos); if (z !== lastTurn && elTurn) { elTurn.textContent = z; lastTurn = z; }
+      if (elDrs) elDrs.classList.toggle("on", pos < straightEnd && pos > 0.01);
+    }
+    requestAnimationFrame(frame);
+  })();
+
+  /* ---------- Météo : icônes, pneus conseillés, prévision du 20 mars ---------- */
+  (function(){
+    var sky = $("w-sky"), icon = $("w-icon"), track = $("w-track"), tyre = $("w-tyre"), tyreLabel = $("w-tyre-label"), fc = $("w-forecast");
+    var I = {
+      sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+      cloudsun: '<path d="M7 18h10a4 4 0 0 0 .5-8 5.5 5.5 0 0 0-10.3 1.5A3.3 3.3 0 0 0 7 18z"/><path d="M17 4v1.5M21 8h-1.5M19.6 5.4l-1 1"/>',
+      cloud: '<path d="M7 19h11a4 4 0 0 0 .6-8 6 6 0 0 0-11.5 1.6A3.7 3.7 0 0 0 7 19z"/>',
+      fog: '<path d="M4 10h16M4 14h12M8 18h12M7 6h10"/>',
+      rain: '<path d="M7 15h11a4 4 0 0 0 .6-8 6 6 0 0 0-11.5 1.6A3.7 3.7 0 0 0 7 15z"/><path d="M9 18l-1 3M13 18l-1 3M17 18l-1 3"/>',
+      snow: '<path d="M7 14h11a4 4 0 0 0 .6-8 6 6 0 0 0-11.5 1.6A3.7 3.7 0 0 0 7 14z"/><path d="M9 17v4M7.5 19.5h3M13 17v4M11.5 19.5h3M17 17v4M15.5 19.5h3"/>',
+      storm: '<path d="M7 14h11a4 4 0 0 0 .6-8 6 6 0 0 0-11.5 1.6A3.7 3.7 0 0 0 7 14z"/><path d="M13 14l-2.5 4.5h3L11 23"/>'
+    };
+    function pick(label){
+      label = (label || "").toLowerCase();
+      if (label.indexOf("dégagé") >= 0) return "sun"; if (label.indexOf("peu nuageux") >= 0) return "cloudsun"; if (label.indexOf("couvert") >= 0) return "cloud";
+      if (label.indexOf("brouillard") >= 0) return "fog"; if (label.indexOf("orage") >= 0) return "storm"; if (label.indexOf("neige") >= 0) return "snow";
+      if (label.indexOf("pluie") >= 0 || label.indexOf("averse") >= 0 || label.indexOf("bruine") >= 0) return "rain"; return "";
+    }
+    function paint(){
+      if (!sky || !icon) return;
+      var k = pick(sky.textContent);
+      icon.innerHTML = k ? '<svg viewBox="0 0 24 24">' + I[k] + '</svg>' : ""; icon.className = "wi " + k;
+      if (track && tyre) {
+        var t = track.textContent.toLowerCase(), cls = "", lab = "…";
+        if (t === "sèche") { cls = "slick"; lab = "slicks tendres"; } else if (t === "mouillée") { cls = "wet"; lab = "pluie"; } else if (t === "brouillard") { cls = "inter"; lab = "intermédiaires"; } else if (t === "enneigée") { cls = "snowt"; lab = "chaînes"; } else if (t === "inconnue") { lab = "au choix"; }
+        tyre.className = "tyre " + cls; tyreLabel.textContent = lab;
+      }
+    }
+    if (sky) { new MutationObserver(paint).observe(sky, {childList: true, characterData: true, subtree: true}); setTimeout(paint, 2500); }
+    // prévision pour le 20 mars : disponible dans la fenêtre de 15 jours d'Open-Meteo
+    function forecast(){
+      if (!fc) return;
+      var days = (RACE - now()) / 864e5;
+      if (days > 15.5 || days < -1) { fc.hidden = true; return; }
+      var u = "https://api.open-meteo.com/v1/forecast?latitude=50.567&longitude=4.170&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FBrussels&start_date=2027-03-20&end_date=2027-03-20";
+      fetch(u).then(function(r){ return r.json(); }).then(function(d){
+        var dd = d.daily; if (!dd || !dd.weather_code) throw new Error("vide");
+        var code = dd.weather_code[0], lab = code === 0 ? "dégagé" : code <= 2 ? "peu nuageux" : code === 3 ? "couvert" : (code === 45 || code === 48) ? "brouillard" : code <= 67 ? "pluie" : code <= 77 ? "neige" : code <= 82 ? "averses" : code <= 86 ? "neige" : "orage";
+        var k = pick(lab);
+        fc.innerHTML = 'Prévision 20 mars : ' + (k ? '<i class="wi ' + k + '"><svg viewBox="0 0 24 24">' + I[k] + '</svg></i>' : '') + '<b>' + lab + ' · ' + Math.round(dd.temperature_2m_max[0]) + '° / ' + Math.round(dd.temperature_2m_min[0]) + '°' + (dd.precipitation_probability_max && dd.precipitation_probability_max[0] != null ? ' · pluie ' + dd.precipitation_probability_max[0] + ' %' : '') + '</b>';
+        fc.hidden = false;
+      }).catch(function(){ fc.hidden = true; });
+    }
+    forecast(); setInterval(forecast, 60 * 60 * 1000);
+  })();
+
+  /* ---------- Programme : étape en cours le soir du Grand Prix ---------- */
+  (function(){
+    var items = Array.prototype.slice.call(document.querySelectorAll(".prog li")); if (!items.length) return;
+    var starts = items.map(function(li){
+      var t = li.querySelector("time").textContent.trim(); if (!/^\d{1,2}:\d{2}$/.test(t)) return null;
+      var h = parseInt(t.split(":")[0], 10), mi = parseInt(t.split(":")[1], 10); var min = h * 60 + mi - (19 * 60 + 30); if (min < -6 * 60) min += 24 * 60; // 01:00 = lendemain
+      return RACE + min * 60000;
+    });
+    function update(){
+      var n = now(), cur = -1;
+      if (n < RACE - 45 * 60000 || n > RACE + 20 * 3600000) { items.forEach(function(li){ li.classList.remove("done", "now"); var tg = li.querySelector(".now-tag"); if (tg) tg.remove(); }); return; }
+      starts.forEach(function(s, i){ if (s !== null && n >= s) cur = i; });
+      if (cur === -1 && n >= RACE - 45 * 60000) cur = 0; // juste avant l'ouverture : on pointe l'ouverture
+      if (cur >= 0 && starts[cur + 1] === null) { /* dernière étape sans heure : atteinte après l'étape précédente */ }
+      var lastTimed = -1; starts.forEach(function(s, i){ if (s !== null) lastTimed = i; });
+      if (cur === lastTimed && n >= starts[lastTimed] + 2 * 3600000 && items[lastTimed + 1]) cur = lastTimed + 1; // deux heures après le safety car : drapeau à damier
+      items.forEach(function(li, i){
+        li.classList.toggle("done", i < cur); li.classList.toggle("now", i === cur);
+        var tg = li.querySelector(".now-tag");
+        if (i === cur && !tg) { tg = document.createElement("span"); tg.className = "now-tag"; tg.textContent = "En cours"; li.querySelector("h3").appendChild(tg); }
+        if (i !== cur && tg) tg.remove();
+      });
+    }
+    update(); setInterval(update, 30000);
+  })();
+
+  /* ---------- Commissaires : drapeau levé au toucher, tirage au sort ---------- */
+  (function(){
+    var box = $("marshals"); if (!box) return;
+    var ms = Array.prototype.slice.call(box.querySelectorAll(".mshl"));
+    var FLAGS = [
+      {k: "green", name: "vert", text: "une gorgée à offrir à la personne de votre choix."},
+      {k: "yellow", name: "jaune", text: "trois gorgées, sans dépasser personne."},
+      {k: "red", name: "rouge", text: "affond ! Course interrompue le temps de vider le verre."},
+      {k: "checker", name: "à damier", text: "un verre d'eau. Hydratation obligatoire avant de repartir."}
+    ];
+    var busy = false;
+    function wave(i, fromDraw){
+      if (busy) return; busy = true;
+      var m = ms[i], f = FLAGS[i];
+      ms.forEach(function(x){ x.classList.remove("raise"); });
+      void m.offsetWidth; m.classList.add("raise"); beep(f.k === "checker" ? 520 : 880, 0.12, 0.18);
+      var card = document.querySelectorAll(".flagcard")[i];
+      if (card) { card.classList.remove("hit"); void card.offsetWidth; card.classList.add("hit"); }
+      toast('<b>' + (fromDraw ? "Tirage au sort · " : "") + 'Le commissaire n°' + (i + 1) + ' lève le drapeau ' + f.name + '</b><span>' + f.text.charAt(0).toUpperCase() + f.text.slice(1) + '</span>', f.k);
+      setTimeout(function(){ m.classList.remove("raise"); busy = false; }, 1400);
+    }
+    ms.forEach(function(m, i){
+      m.setAttribute("role", "button"); m.setAttribute("tabindex", "0"); m.setAttribute("aria-label", "Commissaire n°" + (i + 1) + " : lever le drapeau " + FLAGS[i].name);
+      m.addEventListener("click", function(){ wave(i, false); });
+      m.addEventListener("keydown", function(e){ if (e.key === "Enter" || e.key === " ") { e.preventDefault(); wave(i, false); } });
+    });
+    var draw = $("flag-draw");
+    if (draw) draw.addEventListener("click", function(){
+      if (busy) return; draw.disabled = true;
+      // roulement sur les quatre commissaires avant de s'arrêter
+      var seq = 0, total = 10 + Math.floor(Math.random() * 4), pickI = Math.floor(Math.random() * 4);
+      (function step(){
+        ms.forEach(function(x, j){ x.classList.toggle("pick", j === seq % 4); }); beep(440, 0.04, 0.08);
+        seq++;
+        if (seq < total) setTimeout(step, 90 + seq * 18);
+        else { ms.forEach(function(x){ x.classList.remove("pick"); }); wave(pickI, true); setTimeout(function(){ draw.disabled = false; }, 1500); }
+      })();
+    });
+  })();
+
+  /* ---------- Ajouter à l'écran d'accueil ---------- */
+  (function(){
+    var box = $("a2hs"), txt = $("a2hs-text"), btn = $("a2hs-btn"); if (!box) return;
+    var standalone = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone === true;
+    var ua = navigator.userAgent || "", ios = /iphone|ipad|ipod/i.test(ua) && !window.MSStream, android = /android/i.test(ua);
+    var dismissed = false; try { dismissed = localStorage.getItem("gp30-a2hs") === "1"; } catch(e){}
+    if (standalone || dismissed || (!ios && !android)) return;
+    if (ios) txt.textContent = "Sur iPhone : touchez le bouton Partager de Safari, puis « Sur l'écran d'accueil ». Le Grand Prix s'ouvrira comme une application.";
+    else txt.textContent = "Sur Android : menu ⋮ de Chrome, puis « Ajouter à l'écran d'accueil ».";
+    box.hidden = false;
+    var deferred = null;
+    window.addEventListener("beforeinstallprompt", function(e){ e.preventDefault(); deferred = e; btn.hidden = false; txt.textContent = "Installez le Grand Prix sur votre téléphone : il s'ouvrira comme une application."; });
+    btn.addEventListener("click", function(){ if (!deferred) return; deferred.prompt(); deferred.userChoice.then(function(){ deferred = null; btn.hidden = true; }); });
+    window.addEventListener("appinstalled", function(){ box.hidden = true; try { localStorage.setItem("gp30-a2hs", "1"); } catch(e){} });
+  })();
+})();
